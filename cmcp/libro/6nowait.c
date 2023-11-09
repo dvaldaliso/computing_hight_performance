@@ -8,7 +8,7 @@ int main() {
 
     #pragma omp parallel
     {
-        #pragma omp for nowait
+        #pragma omp for nowait 
         for (i = 0; i < n; i++) {
           
             #pragma omp critical

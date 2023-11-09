@@ -11,6 +11,9 @@ int main()
   
   #pragma omp parallel for
   for (i=0; i<n; i++) {
+    //La razon por la que esta este if es para que se entre lo menos posible a la seccion critical
+    // y varios hilos hagan su trabajo, de lo contrario si eliminamos este if practicamente seria
+    // secuencial.
     if (a[i] > cur_max) {
         #pragma omp critical
         if (a[i] > cur_max) {// El segundo if es necesario porque se ha leído cur_max fuera de la sección crítica Esta solución entra en la sección crítica con menor frecuencia

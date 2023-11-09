@@ -1,7 +1,15 @@
 # Cloud_computing
 
 ## CMCP -- programcion parallea
-### Compilacion
+### Compilacion openMP
 ### gcc -fopenmp file.c -o fileprograma
 #### Ejecucion
 ### ./fileprograma
+
+## MPI
+## Compilacion
+## mpicc -Wall -o hellow hellow.c
+### mpicc -show
+## Ejecucion
+### mpiexec -n p programa [argumentos]
+#### mpiexec -n 2 ./hellow

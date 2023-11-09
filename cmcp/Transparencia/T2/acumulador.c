@@ -30,7 +30,7 @@ int main()
   }
   printf("valor de la suma total compartida: %d\n", sumCompartida);
 
-  //reduccion
+  //reduccion este es el correcto
   int sumaRed = 0;
   #pragma omp parallel for reduction(+:sumaRed)
   for (i=0; i<n; i++) {

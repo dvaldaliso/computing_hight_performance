@@ -33,6 +33,7 @@
 #include "misc.h"
 #include "omp.h"
 #include <time.h>
+#include <omp.h>
 int width = 640, height = 480, maxit = 160, invert = 0;
 int levels = 256, rev = 0, idiv = 1, mag = 1;
 double ulx = -2.4, uly = 1.4, lly = -1.4, bulx, buly, blly, bail = 16.0;
@@ -95,8 +96,8 @@ int main(int argc, char **argv)
  double start = omp_get_wtime( );
  //omp_set_num_threads(8);
   /* For each vertical line... */
- #pragma omp parallel for schedule(runtime) private(y, x, i, a, b, w, u, v, k, value)
-  for(j = 0; j < height; j++) {
+ #pragma omp parallel for schedule(runtime) private(y, x, i, a, b, w, u, v, k, value) 
+ for(j = 0; j < height; j++) {
      y = uly - inc*(j);
     //printf("valor de j : %d decremento:%lf valor uly:%lf valor de y:%lf\n",j,inc,uly,y);
    
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
     for(i = 0, x = ulx; i < width; i++, x += inc) {
       a = x;
       b = y;
-    printf("valor de a : %lf  valor de b:%lf\n",a,b);
+    //printf("valor de a : %lf  valor de b:%lf\n",a,b);
       /* Inner loop for the point (x, y). */
       for(k = 1; k <= maxit; k++) {
 

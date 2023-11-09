@@ -7,11 +7,11 @@ int big(int i){
 int main()
 {
  int i;
- int N=5;
+ int N=6;
  int a[N];
  
  //Secuencial
- int j = 5;
+ int j = 6;
   for (i=0; i<N; i++) {
     j += 2;
     a[i] = big(j);
@@ -20,6 +20,7 @@ int main()
   #pragma omp parallel for schedule(static,2)
   for (i=0; i<N; i++) {
     int j = 5 + 2*(i+1);//Aqui independizamos el valor de j en el ciclo
+    printf("numero de hilo: %d\n", omp_get_thread_num());
     a[i] = big(j);
   }
   printf("valor de la 1ra posicion de a: %d",a[0]);

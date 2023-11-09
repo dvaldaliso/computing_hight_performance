@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
+#include <omp.h>
 
 int main(int argc, char **argv)
 {
@@ -15,7 +15,7 @@ int main(int argc, char **argv)
   s += h;
   
   #pragma omp barrier
-  printf(" %d\n",s);
+  printf("valor h: %d valor de s:%d\n", h, s);
 }
   return 0;
 }

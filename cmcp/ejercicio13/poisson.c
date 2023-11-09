@@ -29,13 +29,13 @@ void jacobi_step_parallel(int nlocal,int M,double *x,double *b,double *t)
   int i, j, ld=M+2;
   //Dirección hacia abajo
   //MPI_Send(void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
-  MPI_Send(x+ld*nlocal, ld, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  //MPI_Send(x+ld*nlocal, ld, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   
-  MPI_Recv(x, ld, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  //MPI_Recv(x, ld, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
   //Dirección hacia arriba
-  MPI_Send(x+(ld*1), ld, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-  MPI_Recv(x+(ld*nlocal+1), ld, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  //MPI_Send(x+(ld*1), ld, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  //MPI_Recv(x+(ld*nlocal+1), ld, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   
   for (i=1; i<=nlocal; i++) {
     for (j=1; j<=M; j++) {

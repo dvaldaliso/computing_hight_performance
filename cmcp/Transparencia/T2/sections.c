@@ -1,12 +1,16 @@
 #include <omp.h>
 #include <stdio.h>
-void work1()
+void Xaxis()
 {
-    printf("Work1\n");
+    printf("Xaxis\n");
 }
-void work2()
+void Yaxis()
 {
-    printf("Work2\n");
+    printf("Yaxis\n");
+}
+void Zaxis()
+{
+    printf("Zaxis\n");
 }
 int main()
 {
@@ -20,16 +24,6 @@ int main()
             Zaxis();
     }
 
-   #pragma omp parallel
-    {
-    #pragma omp single nowait
-        printf("Empieza work1\n");
-    work1();
-    #pragma omp single
-        printf("Finalizando work1\n");
-    #pragma omp single nowait
-        printf("Terminado work1, empieza work2\n");
-    work2();
-    }
+ 
 return 0;
 }
