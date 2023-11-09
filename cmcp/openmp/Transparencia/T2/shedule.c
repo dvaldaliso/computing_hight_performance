@@ -17,7 +17,7 @@ int main()
     a[i] = big(j);
   }
 //Shedule Parallel
-  #pragma omp parallel for schedule(static,2)
+  #pragma omp parallel for schedule(dynamic,2)
   for (i=0; i<N; i++) {
     int j = 5 + 2*(i+1);//Aqui independizamos el valor de j en el ciclo
     printf("numero de hilo: %d\n", omp_get_thread_num());

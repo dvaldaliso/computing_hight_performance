@@ -10,8 +10,6 @@ void work2()
 }
 int main()
 {
- 
-
    #pragma omp parallel
     {
     #pragma omp single nowait
