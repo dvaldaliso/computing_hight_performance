@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #define NREPS 10000
 
 /* 
@@ -27,6 +26,7 @@ int main(int argc, char **argv)
   int i, j, k, N=50, b=4;
   double *A, *v, *w;
 
+
   /* Extracción de argumentos */
   if (argc > 1) { /* El usuario ha indicado el valor de N */
      if ((N = atoi(argv[1])) < 0) N = 50;
@@ -38,7 +38,6 @@ int main(int argc, char **argv)
     printf("Error: ancho de banda excesivo, N=%d, b=%d\n", N, b);
     exit(1);
   }
-
   /* Reserva de memoria */
   A = (double*)calloc(N*N,sizeof(double));
   v = (double*)calloc(N,sizeof(double));
@@ -46,6 +45,7 @@ int main(int argc, char **argv)
 
   /* Inicializar datos */
   printf("Matriz A\n");
+
   for (i=0; i<N; i++) A[i*N+i] = 2*b;
   for (i=0; i<N; i++) {
     for (j=0; j<N; j++) {
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
         //printf("valor i %d, valor N %d, valor j %d, valor combinado = %d\n",i,N,j,(i*N+j));
         A[i*N+j] = -1.0;
       } 
-      printf(" [%d,%d]=%lf",i,j, A[i*N+j]);
+      printf("%lf", A[i*N+j]);
     }
      printf("\n");
   }
