@@ -13,91 +13,25 @@ void matvec(int nlocal, int N,int b,double *A, double *v, double *w, int rank, i
 {
   int i, j, li, ls, iglobal;
 
-  if (rank == 0) {
-    // Envía al siguiente y recibe del siguiente
-    //printf("P%d v[%d]: %g",rank, nlocal, v[nlocal]);
-    //SEND RCIBE ARRIBA Y SEND RECIBE Y AABJO TRANSPARENCIA 35
-    MPI_Sendrecv(
-      &v[nlocal], 
-    b,
-    MPI_DOUBLE, 
-    rank +1, 
-    0,
-    &v[nlocal+b], 
-    b, 
-    MPI_DOUBLE, 
-    rank +1, 
-    0, 
-    MPI_COMM_WORLD,
- MPI_STATUS_IGNORE);
-    //MPI_Send(&v[nlocal], b, MPI_DOUBLE, rank +1, 0, MPI_COMM_WORLD);
-    //MPI_Recv(&v[nlocal+b], b, MPI_DOUBLE, rank +1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    //printf("P%d v[%d]: %g",rank, nlocal, v[nlocal]);
+  if (rank < size - 1) {
+   //MPI_Sendrecv(sendbuf, sendcount, sendtype, dest, sendtag,recvbuf, recvcount, recvtype, source, recvtag, comm,status)
+   MPI_Sendrecv( &v[nlocal+b-1],b,MPI_DOUBLE,rank + 1,0,&v[nlocal+b-1],b,MPI_DOUBLE,rank + 1,1,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+   //MPI_Send(&v[nlocal+b-1], b, MPI_DOUBLE, rank + 1, 0, MPI_COMM_WORLD);
+   //MPI_Recv(&v[nlocal+b-1], b, MPI_DOUBLE, rank + 1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   }
-  if (rank != 0 && rank != size -1) {
-    // Envía al siguiente y recibe del siguiente
-    MPI_Sendrecv(
-      &v[nlocal],
-      b,
-      MPI_DOUBLE,
-      rank +1,
-      0,
-      &v[nlocal+b],
-      b,
-      MPI_DOUBLE,
-      rank + 1,
-      0,
-      MPI_COMM_WORLD,
-      MPI_STATUS_IGNORE);
-    //MPI_Send(&v[nlocal], b, MPI_DOUBLE, rank +1, 0, MPI_COMM_WORLD);// ESTE SENDRECIBE
-    //MPI_Recv(&v[nlocal+b], b, MPI_DOUBLE, rank +1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-    // Envía al anterior y recibe del anterior
-    MPI_Sendrecv(
-      &v[b],
-      b,
-      MPI_DOUBLE,
-      rank - 1,
-      0,
-      &v[0],
-      b,
-      MPI_DOUBLE,
-      rank - 1,
-      0,
-      MPI_COMM_WORLD,
-      MPI_STATUS_IGNORE);
-    //MPI_Send(&v[b], b, MPI_DOUBLE, rank -1, 0, MPI_COMM_WORLD);
-    //MPI_Recv(&v[0], b, MPI_DOUBLE, rank -1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);//ESTE SENDRECIB
-}
-  //printf("size %d, rank %d", size, rank);
-  if (rank == size -1) {
-    // Envía al anterior y recibe del anterior
-    //printf("P%d v[%d]: %g", rank, 0, v[0]);
-    MPI_Sendrecv(
-      &v[b],
-      b,
-      MPI_DOUBLE,
-      rank -1,
-      0,
-      &v[0], 
-      b, 
-      MPI_DOUBLE, 
-      rank -1, 
-      0, 
-      MPI_COMM_WORLD,
-      MPI_STATUS_IGNORE);
-    //MPI_Send(&v[b], b, MPI_DOUBLE, rank -1, 0, MPI_COMM_WORLD);
-    //MPI_Recv(&v[0], b, MPI_DOUBLE, rank -1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    //printf("P%d v[%d]: %g", rank, 0, v[0]);
-}
-
+  if (rank > 0) {
+    MPI_Sendrecv(&v[0], b, MPI_DOUBLE, rank - 1, 1, &v[0], b, MPI_DOUBLE, rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    //MPI_Send(&v[0], b, MPI_DOUBLE, rank - 1, 1, MPI_COMM_WORLD);
+    //MPI_Recv(&v[0], b, MPI_DOUBLE, rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  }
   for (i=0; i<nlocal; i++) {
     iglobal = i + nlocal * rank;
     w[i] = 0.0;
     li = iglobal-b<0? 0: iglobal-b;  /* limite inferior */
     ls = iglobal+b>N-1? N-1: iglobal+b;  /* limite superior */
     for (j=li; j<=ls; j++) {
-      w[i] += A[i*N+j] * v[j-nlocal*rank+b]; // i es local pero la j es calculada respecto al iglobal
+      w[i] += A[i*N+j] * 1//v[j-nlocal*rank+b]; // i es local pero la j es calculada respecto al iglobal
       //if (rank == 1) printf("Proceso : %g\n", v[j]);
     }
   }
@@ -131,42 +65,27 @@ int main(int argc, char **argv)
 
   /* Reserva de memoria */
   local_A = (double*)malloc(nlocal*N*sizeof(double));
-  w = (double*)malloc((nlocal + (2*b))*sizeof(double));// tener en en cuenta 2*b (w y v deben ser iguales)
+  w = (double*)malloc((nlocal)*sizeof(double));// tener en en cuenta 2*b (w y v deben ser iguales)
   v = (double*)malloc((nlocal + (2*b))*sizeof(double));
 
   /* Inicializar datos */
-if (rank == 0) {
-        A = (double*)malloc(N * N * sizeof(double));
-        for (i=0; i<N; i++) A[i*N+i] = 2*b;
-        for (i = 0; i < N; i++) {
-            for (j = 0; j < N; j++) {
-                if (i!=j && abs(i - j) <= b) {
-                    A[i * N + j] = -1.0;
-                } 
-          }
+  if (rank == 0) {
+      A = (double*)malloc(N * N * sizeof(double));
+      for (i=0; i<N; i++) A[i*N+i] = 2*b;
+      for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+          if (i!=j && abs(i - j) <= b) {
+            A[i * N + j] = -1.0;
+          } 
         }
-    }
-    // Scatter A and v
-    MPI_Scatter(
-      A,
-      nlocal * N, 
-      MPI_DOUBLE, 
-      local_A, 
-      nlocal * N, 
-      MPI_DOUBLE, 
-      0, 
-      MPI_COMM_WORLD);
+      }
+  }
+  // Scatter A and v
+  //MPI_Scatter(sendbuf, sendcount, sendtype, recvbuf,recvcount, recvtype, root, comm)  
+  MPI_Scatter( A, nlocal * N, MPI_DOUBLE, local_A, nlocal * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   for (i=0; i<nlocal+2*b; i++) v[i] = 1.0;
 
-/*
-  for (i=0; i<N; i++){
-   for (j=0; j<N; j++){
-  //printf("Proceso %d: v[%d] = %g\n",rank, i, v[i]);
-    printf("A[%d,%d] = %g\n", i, j, A[i*N+j]);
-  }
-}
-*/
 
   /* Multiplicación de matrices */
   for (k=0; k<NREPS; k++) matvec(nlocal,N,b,local_A,v,w,rank,size);
@@ -175,16 +94,8 @@ if (rank == 0) {
   if (rank == 0) {
       W = (double *)calloc((N), sizeof(double));
   }
-
-  MPI_Gather(
-    w,
-    nlocal, 
-    MPI_DOUBLE, 
-    W, 
-    nlocal, 
-    MPI_DOUBLE, 
-    0, 
-    MPI_COMM_WORLD);
+  //MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+  MPI_Gather( w, nlocal, MPI_DOUBLE, W, nlocal, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   /* Imprimir solución */
 
