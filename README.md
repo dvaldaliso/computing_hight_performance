@@ -2,7 +2,9 @@
 
 ## CMCP -- programcion parallea
 ### Compilacion openMP
-### gcc -fopenmp file.c -o fileprograma
+### gcc-4.2 >gcc -fopenmp prg-omp.c -o prg-omp
+### sun > cc -xopenmp -x03 prg-omp.c
+### intel > icc -openmp prg-omp.c
 #### Ejecucion
 ### ./fileprograma
 
