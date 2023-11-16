@@ -99,7 +99,7 @@ int main(int argc, char **argv)
   //MPI_Scatter(sendbuf, sendcount, sendtype, recvbuf,recvcount, recvtype, root, comm)  
   MPI_Scatter( A, nlocal * N, MPI_DOUBLE, local_A, nlocal * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-  for (i=0; i<nlocal+b; i++) vlocal[i] = 1.0;
+  for (i=0; i<nlocal; i++) vlocal[i] = 1.0;
 
 
   /* Multiplicación de matrices */
