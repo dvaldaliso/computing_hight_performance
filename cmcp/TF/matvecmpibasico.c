@@ -25,11 +25,10 @@ void matvec(int nlocal,int N,int b,double *A, double *vlocal, double *wlocal, in
   MPI_Sendrecv( &vlocal[0],2, MPI_DOUBLE, next, 0, &vlocal[3], 2, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
  */
   
-
 // Envía al siguiente y recibe del anterior(abajo)  
-  MPI_Sendrecv( &vlocal[b],b, MPI_DOUBLE, next, 0, &vlocal[0], b, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  MPI_Sendrecv( &vlocal[nlocal+b-1],b, MPI_DOUBLE, next, 0, &vlocal[0], b, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   //Envia al anterior y recibe del siguiente
-  MPI_Sendrecv( &vlocal[b],b, MPI_DOUBLE, prev, 0, &vlocal[nlocal+b], b, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  MPI_Sendrecv( &vlocal[0],b, MPI_DOUBLE, prev, 0, &vlocal[nlocal+b-1], b, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   /*for (int i = 0; i < nlocal+2*b; i++)
   {
    printf(" v[%d]:%lf rank:%d ",i,vlocal[i],rank);
@@ -98,7 +97,7 @@ int main(int argc, char **argv)
   //MPI_Scatter(sendbuf, sendcount, sendtype, recvbuf,recvcount, recvtype, root, comm)  
   MPI_Scatter( A, nlocal * N, MPI_DOUBLE, local_A, nlocal * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-  for (i=b; i<=nlocal; i++) vlocal[i] = 1.0;
+  for (i=0; i<nlocal+2*b; i++) vlocal[i] = 1.0;
 
 
   /* Multiplicación de matrices */
