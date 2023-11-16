@@ -17,6 +17,9 @@ void matvec(int N,int b,double *A, double *v, double *w)
     ls = i+b>N-1? N-1: i+b;  /* limite superior */
     for (j=li; j<=ls; j++) {
       w[i] += A[i*N+j]*v[j];
+      /*if(i!=j){
+        w[j] += A[i*N+j] * 1;
+      }*/
     }
   }
 }
@@ -54,7 +57,7 @@ int main(int argc, char **argv)
         //printf("valor i %d, valor N %d, valor j %d, valor combinado = %d\n",i,N,j,(i*N+j));
         A[i*N+j] = -1.0;
       } 
-      printf("%lf", A[i*N+j]);
+      printf(" [%d,%d]:%lf",i, j, A[i*N+j]);
     }
      printf("\n");
   }
