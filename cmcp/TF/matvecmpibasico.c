@@ -105,20 +105,20 @@ int main(int argc, char **argv)
  
   
   //MPI_Scatter(v, local_rows, MPI_DOUBLE, localV + b, local_rows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  //MPI_Scatter(V, nlocal , MPI_DOUBLE, &vlocal[b] , nlocal, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  for (i=b; i<nlocal+b; i++) vlocal[i] = 1.0; // inicia solo la parte local del vector
+  MPI_Scatter(V, nlocal , MPI_DOUBLE, &vlocal[b] , nlocal, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  //for (i=b; i<nlocal+b; i++) vlocal[i] = 1.0; // inicia solo la parte local del vector
 
-  //double tInicio, tFinal;
-  //MPI_Barrier(MPI_COMM_WORLD);
-  // Inicio de medicion de tiempo
-  //tInicio = MPI_Wtime();  
+  double tInicio, tFinal;
+  MPI_Barrier(MPI_COMM_WORLD);
+  //Inicio de medicion de tiempo
+  tInicio = MPI_Wtime();  
 
   /* Multiplicación de matrices */
   for (k=0; k<NREPS; k++) matvec(nlocal, N, b, local_A, vlocal, wlocal, rank, size);
   //MPI_Barrier(MPI_COMM_WORLD);
   // fin de medicion de tiempo
-  //tFinal = MPI_Wtime();
-  //imprimirVector( rank,  size, wlocal, b, nlocal);
+  tFinal = MPI_Wtime();
+  imprimirVector( rank,  size, wlocal, b, nlocal);
  
   double *W = NULL;
 
@@ -128,11 +128,11 @@ int main(int argc, char **argv)
 
   //MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
   MPI_Gather( wlocal, nlocal, MPI_DOUBLE, W, nlocal, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
+  MPI_Finalize();
   /* Imprimir solución */
   printf("Matriz resultante W\n");
    if (rank == 0) {
-   //printf("Tiempo empleado en el cálculo: %g segundos", tFinal-tInicio);
+   printf("Tiempo empleado en el cálculo: %g segundos", tFinal-tInicio);
    if (N<100) for (i=0; i<N; i++) printf("w[%d] = %g\n", i, W[i]);
       free(W);
   }
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
   free(A);
   free(vlocal);
   free(wlocal);
-  MPI_Finalize();
+  
 
   return 0;
 }
