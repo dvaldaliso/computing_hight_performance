@@ -41,7 +41,7 @@ void matvec(int nlocal,int N,int b,double *A, double *vlocal, double *wlocal, in
     li = iglobal-b<0? 0: iglobal-b;  //limite inferior 
     ls = iglobal+b>N-1? N-1: iglobal+b;  // limite superior 
     for (jglobal=li; jglobal<=ls; jglobal++) {
-      int jlocal = jglobal - (nlocal*rank);
+      int jlocal = jglobal - (nlocal*rank-b);
       wlocal[ilocal] += A[ilocal*N+jglobal]* vlocal[jlocal];
       printf("V[%d]:%lf",jlocal, vlocal[jlocal]);
     }
