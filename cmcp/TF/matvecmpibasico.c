@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
-#define NREPS 1000
+#define NREPS 1
 
 /* 
  * Multiplicación de una matriz banda por un vector
@@ -34,11 +34,12 @@ void matvec(int nlocal,int N,int b,double *A, double *vlocal, double *wlocal, in
   if (rank == size-1) next = MPI_PROC_NULL;
   else next = rank+1;
  
-  MPI_Sendrecv(&vlocal[b], b, MPI_DOUBLE, prev, 0, &vlocal[nlocal+b], b, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  MPI_Sendrecv(vlocal + b, b, MPI_DOUBLE, prev, 0, vlocal + nlocal + b, b, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-  MPI_Sendrecv(&vlocal[nlocal], b, MPI_DOUBLE, next, 0, &vlocal[0], b, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  MPI_Sendrecv(vlocal + nlocal, b, MPI_DOUBLE, next, 0, vlocal , b, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
  
-  
+ 
+  printf("termine\n");
   for (ilocal=0; ilocal<nlocal; ilocal++) {
     int iglobal = ilocal +(nlocal*rank);
     wlocal[ilocal] = 0.0;
@@ -46,9 +47,10 @@ void matvec(int nlocal,int N,int b,double *A, double *vlocal, double *wlocal, in
     ls = iglobal+b>N-1? N-1: iglobal+b;  // limite superior 
     for (jglobal=li; jglobal<=ls; jglobal++) {
       int jlocal = jglobal - (nlocal*rank-b);
-      wlocal[ilocal] += A[ilocal*N+jglobal]* vlocal[jlocal];
+      wlocal[ilocal] += A[ilocal*N+jglobal] * vlocal[jlocal];
     }
   }
+  printf("\n");
 }
 
 int main(int argc, char **argv) 
@@ -120,7 +122,8 @@ int main(int argc, char **argv)
   tFinal = MPI_Wtime();
   imprimirVector( rank,  size, wlocal, b, nlocal);
  
-  double *W = NULL;
+
+  double *W = NULL;//Esto no apunta a una direccion de memoria especifica, mas adelante le daremos una direcciòn de memoria
 
   if (rank == 0) {
       W = (double *)calloc((N), sizeof(double));

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <mpi.h>
 
-#define NREPS 1000
+#define NREPS 1
 
 /*
  * Multiplicación de una matriz banda por un vector
@@ -26,7 +26,6 @@ void matvec(int nlocal, int N,int b,double *A, double *v, double *w, double *aux
   for (int ilocal=0; ilocal<nlocal; ilocal++) {
     int iglobal = ilocal + (nlocal * rank);
     
-    //li = iglobal-b<0? 0: iglobal-b;  /* limite inferior */
     li = iglobal;  /* limite inferior */
     ls = iglobal+b > N-1 ? N-1: iglobal+b;  /* limite superior */
     
@@ -38,15 +37,14 @@ void matvec(int nlocal, int N,int b,double *A, double *v, double *w, double *aux
       if(iglobal!=jglobal){
         w[jlocal] += A[ilocal*N+jglobal] * v[ilocal];
       }
+      printf("here ilocal %d jlocal %d\n", ilocal,jlocal );
     }
   }
-  
   MPI_Sendrecv( &w[nlocal],b,MPI_DOUBLE, next,0,&auxw[0],b, MPI_DOUBLE, prev, 0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
-  for (int i=0; i<b; i++) {
+ for (int i=0; i<b; i++) {
     w[i] += auxw[i];
   }
-
 }
 
 int main(int argc, char **argv)
@@ -75,7 +73,7 @@ int main(int argc, char **argv)
 
 //En este ejercicio tener en cuenta que funciona para divisiones con resto 0
   nlocal= N / size;
-  printf("%d %d %d\n",nlocal,rank,size);
+  //printf("%d %d %d\n",nlocal,rank,size);
   /* Reserva de memoria */
   /*Se puede usar calloc que inicializa los valores en 0 a diferencia de malloc*/
   local_A = (double*)calloc(nlocal*N,sizeof(double));

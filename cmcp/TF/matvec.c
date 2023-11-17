@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define NREPS 10000
+#define NREPS 1
 
 /* 
  * Multiplicación de una matriz banda por un vector
@@ -17,10 +17,7 @@ void matvec(int N,int b,double *A, double *v, double *w)
     ls = i+b>N-1? N-1: i+b;  /* limite superior */
     for (j=li; j<=ls; j++) {
       w[i] += A[i*N+j]*v[j];
-      /*if(i!=j){
-        w[j] += A[i*N+j] * 1;
-      }*/
-    }
+     }
   }
 }
 
@@ -57,13 +54,13 @@ int main(int argc, char **argv)
         //printf("valor i %d, valor N %d, valor j %d, valor combinado = %d\n",i,N,j,(i*N+j));
         A[i*N+j] = -1.0;
       } 
-      printf(" [%d,%d]:%lf",i, j, A[i*N+j]);
+      printf(" %lf", A[i*N+j]);
     }
      printf("\n");
   }
   
   
-printf("Matriz v\n");
+printf("Vector v\n");
   for (i=0; i<N; i++) {
     v[i] = 1.0;
     if(i==N-1){
@@ -77,7 +74,7 @@ printf("Matriz v\n");
   for (k=0; k<NREPS; k++) matvec(N,b,A,v,w);
   
   /* Imprimir solución */
-  printf("Matriz resultante W\n");
+  printf("W\n");
   if (N<100) for (i=0; i<N; i++) printf("w[%d] = %g\n", i, w[i]);
 
   free(A);
