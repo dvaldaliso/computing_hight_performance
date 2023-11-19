@@ -3,7 +3,8 @@
         "type_traits": "c",
         "random": "c",
         "cmath": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "stdio.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

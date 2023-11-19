@@ -16,6 +16,7 @@ int N=5;
      if ((N = atoi(argv[1])) < 0) N = 50;
   }
   int isPrime=isprime(N); 
-  printf("%d\n",isPrime);
+  char result=isPrime?"Is primo":"No es primo";
+  printf("%s\n",result);
  
 }

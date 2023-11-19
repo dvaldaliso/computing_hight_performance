@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <mpi.h>
 
 /*
  * Un paso del método de Jacobi para la ecuación de Poisson
@@ -23,27 +22,6 @@ void jacobi_step(int N,int M,double *x,double *b,double *t)
     }
   }
 }
-//
-void jacobi_step_parallel(int nlocal,int M,double *x,double *b,double *t)
-{
-  int i, j, ld=M+2;
-  //Dirección hacia abajo
-  //MPI_Send(void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
-  //MPI_Send(x+ld*nlocal, ld, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-  
-  //MPI_Recv(x, ld, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-  //Dirección hacia arriba
-  //MPI_Send(x+(ld*1), ld, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-  //MPI_Recv(x+(ld*nlocal+1), ld, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-  
-  for (i=1; i<=nlocal; i++) {
-    for (j=1; j<=M; j++) {
-      t[i*ld+j] = (b[i*ld+j] + x[(i+1)*ld+j] + x[(i-1)*ld+j] + x[i*ld+(j+1)] + x[i*ld+(j-1)])/4.0;
-    }
-  }
-}
-
 
 /*
  * Método de Jacobi para la ecuación de Poisson
@@ -74,7 +52,7 @@ void jacobi_poisson(int N,int M,double *x,double *b)
   while (!conv && k<maxit) {
 
     /* calcula siguiente vector */
-    jacobi_step_parallel(N,M,x,b,t);
+    jacobi_step(N,M,x,b,t);
 
     /* criterio de parada: ||x_{k}-x_{k+1}||<tol */
     s = 0.0;
@@ -101,12 +79,8 @@ void jacobi_poisson(int N,int M,double *x,double *b)
 
 int main(int argc, char **argv)
 {
-  int i, j, numprocs, myid, nlocal, N=60, M=60, ld;
+  int i, j, N=60, M=60, ld;
   double *x, *b, h=0.01, f=1.5;
-
-  MPI_Init(&argc,&argv);
-  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-  MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 
   /* Extracción de argumentos */
   if (argc > 1) { /* El usuario ha indicado el valor de N */
@@ -116,24 +90,24 @@ int main(int argc, char **argv)
     if ((M = atoi(argv[2])) < 0) M = 60;
   }
   ld = M+2;  /* leading dimension */
-  nlocal=N/numprocs;
+
   /* Reserva de memoria */
   x = (double*)calloc((N+2)*(M+2),sizeof(double));
   b = (double*)calloc((N+2)*(M+2),sizeof(double));
 
   /* Inicializar datos */
-  for (i=1; i<=nlocal; i++) {
+  for (i=1; i<=N; i++) {
     for (j=1; j<=M; j++) {
       b[i*ld+j] = h*h*f;  /* suponemos que la función f es constante en todo el dominio */
     }
   }
 
   /* Resolución del sistema por el método de Jacobi */
-  jacobi_poisson(nlocal,M,x,b);
+  jacobi_poisson(N,M,x,b);
 
   /* Imprimir solución (solo para comprobación, se omite en el caso de problemas grandes) */
-  if (nlocal<=60) {
-    for (i=1; i<=nlocal; i++) {
+  if (N<=60) {
+    for (i=1; i<=N; i++) {
       for (j=1; j<=M; j++) {
         printf("%g ", x[i*ld+j]);
       }
