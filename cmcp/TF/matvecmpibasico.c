@@ -86,19 +86,18 @@ int main(int argc, char **argv)
   /* Inicializar datos */
   if (rank == 0) {
       A = (double*)calloc(N * N , sizeof(double));
+      V = (double*)calloc(N, sizeof(double));
       
       for (i=0; i<N; i++) A[i*N+i] = 2*b;
       for (i = 0; i < N; i++) {
+        V[k] = 1.0;
         for (j = 0; j < N; j++) {
           if (i!=j && abs(i - j) <= b) {
             A[i * N + j] = -1.0;
           } 
         }
       }
-      V = (double*)calloc(N, sizeof(double));
-      for (k = 0; k < N; k++){
-         V[k] = 1.0;
-      }
+     
   }
   
 // Scatter A and v

@@ -13,3 +13,5 @@
 ## Ejecucion
 ### mpiexec -n p programa [argumentos]
 #### mpiexec -n 2 ./hellow
+
+# interesante 
