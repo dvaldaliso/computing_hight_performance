@@ -17,11 +17,12 @@ int main(int argc, char *argv[])
          scanf("%d",&n);
      }
      /* Communication: value of n from process 0 to all other processes */
-     if (myid == 0) {
+     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+     /*if (myid == 0) {
          for (p=1; p<numprocs; p++) MPI_Send(&n, 1, MPI_INT, p, 11, MPI_COMM_WORLD);
      } else {
          MPI_Recv(&n, 1, MPI_INT, 0, 11, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-     }
+     }*/
      /* End communication */
      if (n == 0)
          break;
@@ -35,7 +36,9 @@ int main(int argc, char *argv[])
          mypi = h * sum;
          /* Communication: receive in process 0 the value of mypi from the rest of processes
             and accumulate it on pi in process 0 */
-         if (myid == 0) {
+        //MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm)
+        MPI_Reduce(&mypi, &pi, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        /*if (myid == 0) {
              pi = mypi;
              for (p=1; p<numprocs; p++) {
                  MPI_Recv(&aux, 1, MPI_DOUBLE, MPI_ANY_SOURCE, 22, MPI_COMM_WORLD, &status);
@@ -44,7 +47,7 @@ int main(int argc, char *argv[])
              }
          } else {
              MPI_Send(&mypi, 1, MPI_DOUBLE, 0, 22, MPI_COMM_WORLD);
-         }
+         }*/
          /* End communication */
          if (myid == 0)
              printf("pi is approximately %.16f, Error is %.16f\n",
