@@ -5,26 +5,29 @@
 
 void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double *local_sum, int rank, int size) {
     int i, j, ld = M + 2;
-    int n_local = N / size; 
-    double local_s = 0.0;  
+    int nlocal = N / size; 
+    double local_s = 0.0;
+    int next = rank + 1;
+    int prev = rank - 1;
+
 
     if (rank < size - 1) {
-        MPI_Send(&x[n_local * ld], M + 2, MPI_DOUBLE, rank + 1, 0, MPI_COMM_WORLD);
+        MPI_Send(&x[nlocal * ld], ld, MPI_DOUBLE, next, 0, MPI_COMM_WORLD);
     }
 
     if (rank > 0) {
-        MPI_Recv(&x[0], M + 2, MPI_DOUBLE, rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&x[0], ld, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
     if (rank > 0) {
-        MPI_Send(&x[ld], M + 2, MPI_DOUBLE, rank - 1, 1, MPI_COMM_WORLD);
+        MPI_Send(&x[ld], ld, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD);
     }
 
     if (rank < size - 1) {
-        MPI_Recv(&x[(n_local + 1) * ld], M + 2, MPI_DOUBLE, rank + 1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&x[(nlocal + 1) * ld], ld, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
-    for (i = 1; i <= n_local; i++) {
+    for (i = 1; i <= nlocal; i++) {
         for (j = 1; j <= M; j++) {
             t[i*ld+j] = (b[i*ld+j] + x[(i+1)*ld+j] + x[(i-1)*ld+j] + x[i*ld+(j+1)] + x[i*ld+(j-1)])/4.0;
             local_s += (x[i * ld + j] - t[i * ld + j]) * (x[i * ld + j] - t[i * ld + j]);
@@ -37,7 +40,7 @@ void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double 
 
 void parallel_jacobi_poisson(int N, int M, double *x, double *b, int rank, int size) {
     int i, j, k, ld = M + 2, conv = 0, maxit = 10000;
-    double *t, s, tol = 1e-6, local_sum, global_sum = 0.0;
+    double *t, tol = 1e-6, local_sum, global_sum = 0.0;
         
     int n_local = N / size; 
 
@@ -101,21 +104,21 @@ int main(int argc, char **argv) {
     parallel_jacobi_poisson(N, M, x, b, rank, size);
 
    if (N <= 60) {
-    double *full_x = NULL;
+    double *X = NULL;
     if (rank == 0) {
-        full_x = (double *)calloc((N+2) * (M + 2), sizeof(double));
+        X = (double *)calloc((N+2) * (M + 2), sizeof(double));
     }
-    MPI_Gather(x + ld, n_local * ld, MPI_DOUBLE, full_x + ld, n_local * ld, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gather(x + ld, n_local * ld, MPI_DOUBLE, X + ld, n_local * ld, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     if (rank == 0) {
         for (i = 1; i <= N; i++) {
             for (j = 1; j <= M; j++) {
-                printf("%g ", full_x[i * ld + j]);
+                printf("%g ", X[i * ld + j]);
             }
             printf("\n");
         }
     }
     if (rank == 0) {
-        free(full_x);
+        free(X);
     }
 }
     free(x);

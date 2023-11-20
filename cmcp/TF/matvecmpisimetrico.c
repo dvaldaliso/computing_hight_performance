@@ -18,7 +18,7 @@ void matvec(int nlocal, int N,int b,double *A, double *v, double *w, double *aux
   else prev = rank-1;
   if (rank == size-1) next = MPI_PROC_NULL;
   else next = rank+1;
- // Envía al anterior y recibe del siguiente(arriba)  
+ // Envía al anterior y recibe el siguiente(ir hacia arriba)  
   MPI_Sendrecv( &v[0],b, MPI_DOUBLE, prev, 0, &v[nlocal], b, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   for (int ilocal=0; ilocal<nlocal+b; ilocal++) {
     w[ilocal] = 0.0;
@@ -32,7 +32,7 @@ void matvec(int nlocal, int N,int b,double *A, double *v, double *w, double *aux
     for (int jglobal=li; jglobal<=ls; jglobal++) {
       int jlocal = jglobal - (nlocal*rank );
      
-      w[ilocal] += A[ilocal*N+jglobal] * v[jlocal]; // i es local pero la j es calculada respecto al iglobal
+      w[ilocal] += A[ilocal*N+jglobal] * v[jlocal];
       
       if(iglobal!=jglobal){
         w[jlocal] += A[ilocal*N+jglobal] * v[ilocal];
@@ -40,6 +40,7 @@ void matvec(int nlocal, int N,int b,double *A, double *v, double *w, double *aux
       printf("here ilocal %d jlocal %d\n", ilocal,jlocal );
     }
   }
+   // Envía al siguiente y recibe el siguiente(ir hacia abajo)
   MPI_Sendrecv( &w[nlocal],b,MPI_DOUBLE, next,0,&auxw[0],b, MPI_DOUBLE, prev, 0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
  for (int i=0; i<b; i++) {
@@ -96,7 +97,7 @@ int main(int argc, char **argv)
   // Scatter A and v
   //MPI_Scatter(sendbuf, sendcount, sendtype, recvbuf,recvcount, recvtype, root, comm)  
   MPI_Scatter( A, nlocal * N, MPI_DOUBLE, local_A, nlocal * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
+  //repartimos los valores de v a vlocales de cada procesos( Esto se puede hacer con scatter mirar el basic)
   for (i=0; i<nlocal; i++) vlocal[i] = 1.0;
 
 
