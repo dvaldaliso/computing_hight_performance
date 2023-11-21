@@ -36,9 +36,12 @@ void matvec(int nlocal, int N,int b,double *A, double *v, double *w, double *aux
       
       if(iglobal!=jglobal){
         w[jlocal] += A[ilocal*N+jglobal] * v[ilocal];
+        //printf("distintos i != j: \n");
       }
-      printf("here ilocal %d jlocal %d\n", ilocal,jlocal );
+      //printf("wi[%d]:%lf = %lf * v[%d]:%lf-- \n",ilocal, w[ilocal] , A[ilocal*N+jglobal] , jlocal, v[jlocal] );
+      //printf("wj[%d]:%lf = %lf * v[%d]:%lf --\n",jlocal, w[jlocal] , A[ilocal*N+jglobal] , ilocal, v[ilocal] );
     }
+     //printf("rank %d\n", rank );
   }
    // Envía al siguiente y recibe el siguiente(ir hacia abajo)
   MPI_Sendrecv( &w[nlocal],b,MPI_DOUBLE, next,0,&auxw[0],b, MPI_DOUBLE, prev, 0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
