@@ -38,7 +38,7 @@ int main( int argc, char *argv[] ) {
   /* PRINCIPIO DEL CODIGO A INCLUIR                        */
 
   // Bucle a paralelizar
-  #pragma omp parallel for private(v) 
+  #pragma omp parallel for schedule(runtime)
   for( int v=0; v<n_vectores; v++ ) {
     /* Cálculo de la media */
     double sum = 0.0;
