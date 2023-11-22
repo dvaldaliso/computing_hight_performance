@@ -9,6 +9,23 @@
  *  w = A*v, con A matriz cuadrada de dimensión N y ancho de banda b
  *  Algoritmo orientado a filas
  */
+void imprimirVector(int rank, int size, double* v, int b, int nlocal){
+   for (int i = 0; i < size; i++)
+    {
+        if (rank == i)
+        {
+            printf("rank %d: \n", rank);
+              for (int j = 0; j < nlocal + b; j++)
+            {
+               
+                    printf("%3.0f ", v[j]);
+               
+            }
+            printf("\n");
+        }
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+}
 void matvec(int nlocal, int N,int b,double *A, double *v, double *w, double *auxw, int rank, int size)
 {
   int li, ls;
@@ -102,6 +119,7 @@ int main(int argc, char **argv)
   MPI_Scatter( A, nlocal * N, MPI_DOUBLE, local_A, nlocal * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   //repartimos los valores de v a vlocales de cada procesos( Esto se puede hacer con scatter mirar el basic)
   for (i=0; i<nlocal; i++) vlocal[i] = 1.0;
+  //imprimirVector(rank, size, vlocal, b, nlocal);
 
 
   /* Multiplicación de matrices */

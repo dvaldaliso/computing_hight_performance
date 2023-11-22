@@ -15,3 +15,6 @@
 #### mpiexec -n 2 ./hellow
 
 # interesante 
+
+# TPP Tecnologia de la programacion paralela
+## gcc -o actividad1 actividad1.c ctimer.c -lm
