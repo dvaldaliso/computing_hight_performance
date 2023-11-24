@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
-#define NREPS 1
+#define NREPS 20000
 
 /* 
  * Multiplicación de una matriz banda por un vector
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
       
       for (i=0; i<N; i++) A[i*N+i] = 2*b;
       for (i = 0; i < N; i++) {
-        V[k] = 1.0;
+        V[i] = 1.0;
         for (j = 0; j < N; j++) {
           if (i!=j && abs(i - j) <= b) {
             A[i * N + j] = -1.0;

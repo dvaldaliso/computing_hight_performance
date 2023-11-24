@@ -3,6 +3,7 @@
 #include <math.h>
 
 /*
+ *Poison lo que hace es calcular al media de los valores que estan alrededero de el
  * Un paso del método de Jacobi para la ecuación de Poisson
  *
  *   Argumentos:
