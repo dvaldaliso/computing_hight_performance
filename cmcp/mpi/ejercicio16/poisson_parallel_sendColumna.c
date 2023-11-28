@@ -3,7 +3,7 @@
 #include <math.h>
 #include <mpi.h>
 
-void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double *local_sum, int rank, int size) {
+void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double *local_sum, int rank, int size, MPI_Datatype coltype) {
     int mlocal = M / size; 
     int i, j, ld = mlocal + 2;
     
@@ -19,15 +19,15 @@ void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double 
     }
 
     if (rank > 0) {
-        MPI_Recv(&x[0], ld, coltype, left, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&x[0], 1, coltype, left, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
     if (rank > 0) {
-        MPI_Send(&x[ld], ld, coltype, left, 1, MPI_COMM_WORLD);
+        MPI_Send(&x[ld], 1, coltype, left, 1, MPI_COMM_WORLD);
     }
 
     if (rank < size - 1) {
-        MPI_Recv(&x[(mlocal + 1) * ld], ld, coltype, right, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&x[(mlocal + 1) * ld], 1, coltype, right, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
     for (i = 1; i <= N; i++) {
@@ -41,7 +41,7 @@ void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double 
 }
 
 
-void parallel_jacobi_poisson(int N, int M, double *x, double *b, int rank, int size) {
+void parallel_jacobi_poisson(int N, int M, double *x, double *b, int rank, int size, MPI_Datatype coltype) {
     int mlocal = M / size;
     int i, j, k, ld = mlocal + 2, conv = 0, maxit = 10000;
     double *t, tol = 1e-6, local_sum, global_sum = 0.0;
@@ -52,7 +52,7 @@ void parallel_jacobi_poisson(int N, int M, double *x, double *b, int rank, int s
     k = 0;
 
     while (!conv && k < maxit) {
-        parallel_jacobi_step(N, M, x, b, t, &local_sum, rank, size);
+        parallel_jacobi_step(N, M, x, b, t, &local_sum, rank, size, coltype);
 
         MPI_Allreduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
@@ -94,6 +94,7 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
     int mlocal = N / size;
+    //Creamos nuestro tipo de datos columna
     MPI_Datatype coltype;
    //MPI_Type_vector(count, length, stride, type, newtype)
     MPI_Type_vector(N, 1, mlocal, MPI_DOUBLE, &coltype);
@@ -109,7 +110,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    parallel_jacobi_poisson(N, M, x, b, rank, size);
+    parallel_jacobi_poisson(N, M, x, b, rank, size, coltype);
 
    if (N <= 60) {
     double *X = NULL;
