@@ -1,6 +1,6 @@
 # Cloud_computing
 
-## CMCP -- programcion parallea
+## CMCP -- programacion paralela
 ### Compilacion openMP
 ### gcc -fopenmp file.c -o fileprograma
 #### Ejecucion
