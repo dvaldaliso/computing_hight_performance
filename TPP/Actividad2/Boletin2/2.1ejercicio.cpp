@@ -23,9 +23,18 @@ double& Tabla::operator[](int i){
     return elem[i];
 }
 ostream& operator <<( ostream& outStream , const Tabla& t ) {
-return outStream << *t.elem  ;
+  string result;
+  for (int i = 0; i < t.sz; i++)
+  {
+    result+= to_string(*(t.elem+i)) + " ";
+  }
+  
+return outStream <<"[" <<result << "]" << endl ;
 }
-Tabla::~Tabla(){ delete [] elem;}
+Tabla::~Tabla(){
+  cout << " destroy " << sz << endl ;
+   delete [] elem;
+   }
 /* El código desarrollado en la Actividad 2 debe funcionar con el siguiente programa principal */
 /* donde getN es el método que permite obtener la dimensión de la Tabla                        */
 
@@ -46,7 +55,7 @@ int main() {
    }   
    //para que imprima el t1 implementar friend(funcion amiga)
    cout << "Tabla 1: " << t1; 
-   /*for( int i=0; i<t2.getN(); i++ ) { 
+   for( int i=0; i<t2.getN(); i++ ) { 
      t2[i] = rand() % 100;
    }   
    cout << "Tabla 2: " << t2; 
@@ -55,5 +64,4 @@ int main() {
    Tabla t4(5);
    t4 = t1; 
    cout << "Tabla 4: " << t4; 
-*/
 }

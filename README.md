@@ -1,18 +1,21 @@
 # Cloud_computing
 
 ## CMCP -- programacion paralela
-### Compilacion openMP
-### gcc -fopenmp file.c -o fileprograma
-#### Ejecucion
-### ./fileprograma
+### openMP
+### Compilacion -> gcc -fopenmp file.c -o fileprograma
+#### 
+### Ejecucion -> ./fileprograma
 
 ## MPI
-## Compilacion
-## mpicc -Wall -o hellow hellow.c
+## Compilacion -> mpicc -Wall -o hellow hellow.c
 ### mpicc -show
-## Ejecucion
-### mpiexec -n p programa [argumentos]
+### Ejecucion -> mpiexec -n p programa [argumentos]
 #### mpiexec -n 2 ./hellow
+
+## Cuda
+# Compilacion -> nvcc -o dquery dquery.cu
+# Ejecucion   -> ./dquery
+
 
 # interesante 
 
@@ -23,5 +26,3 @@
 ### Para correr con tareas OMP_NUM_THREADS=4 OMP_SCHEDULE=guided ./prog
 ### gcc -fopenmp -o knapsackBF knapsackBF.c -lm -DCHECK (se pone el -DCHECK PARA QUE EJECUTE UNA PARTE ESPECIFICA DEL CODIGO)
 
-## Ver como instralar Kuda
-# GPU
