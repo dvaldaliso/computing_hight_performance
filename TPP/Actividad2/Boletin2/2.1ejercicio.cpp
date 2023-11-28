@@ -12,6 +12,7 @@ public:
     Tabla(int n);
     double& operator[](int i);
     int getN() const {return sz;}
+    friend ostream& operator <<( ostream& , const Tabla& );
     ~Tabla();
 };
 
@@ -21,7 +22,9 @@ Tabla::Tabla(int s): elem{new double[s]}, sz{s} {}
 double& Tabla::operator[](int i){
     return elem[i];
 }
-
+ostream& operator <<( ostream& outStream , const Tabla& t ) {
+return outStream << *t.elem  ;
+}
 Tabla::~Tabla(){ delete [] elem;}
 /* El código desarrollado en la Actividad 2 debe funcionar con el siguiente programa principal */
 /* donde getN es el método que permite obtener la dimensión de la Tabla                        */
@@ -36,7 +39,7 @@ int main() {
 
 
    Tabla t1; 
-   //Tabla t2(5);
+   Tabla t2(5);
 
    for( int i=0; i<t1.getN(); i++ ) { 
      t1[i] = rand() % 100;
