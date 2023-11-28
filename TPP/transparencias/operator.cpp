@@ -15,7 +15,7 @@ public:
     Vector operator+(const Vector& other)const {
         return Add(other);
     };
-
+    //el friend se utiliza para poder utilizar fuera los atributos privados y protegidos
     //friend Vector operator*(const Vector& lf, const Vector& other) const {};
     float getx()const{return x;}
     float gety()const{return y;}
