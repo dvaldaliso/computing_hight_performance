@@ -24,7 +24,6 @@ int main( int argc, char *argv[] ) {
     sscanf(argv[2],"%d",&tam_max);
   }
 
-  thread *task = new thread[n_vectores];
 
   double **M = (double **) malloc (n_vectores*sizeof(double*));
   int *tam = (int *) malloc (n_vectores*sizeof(int));
@@ -47,7 +46,7 @@ int main( int argc, char *argv[] ) {
   // Bucle a paralelizar 
   for( int v=0; v<n_vectores; v++ ) {
     /* Cálculo de la media */
-    task[v] = thread{ [=](int v){
+    async([=](int v),{
                             double sum=0.0;
                             for(int i=0; i<tam[v];i++){
                                 sum += M[v][i];
@@ -59,15 +58,10 @@ int main( int argc, char *argv[] ) {
                                sum += ( M[v][i] - media[v] ) * ( M[v][i] - media[v] );
                             }
                             desvt[v] = sqrt( sum/tam[v] );
-                         },v 
-                    };
+                         },v)
+  };
     
-  }
- for (v = 0; v < n_vectores; v++)
- {
-  task[v].join();
- }
- delete [] task;
+
  
   /* FIN DEL CODIGO A INCLUIR                              */
   /*********************************************************/
