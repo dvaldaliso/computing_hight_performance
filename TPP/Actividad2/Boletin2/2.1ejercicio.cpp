@@ -8,8 +8,10 @@ private:
     double* elem;
     int sz;
 public:
-    Tabla();
-    Tabla(int n);
+    Tabla ();
+    Tabla (int n);
+    Tabla ( const Tabla& copy );
+    Tabla& operator =( const Tabla& );
     double& operator[](int i);
     int getN() const {return sz;}
     friend ostream& operator <<( ostream& , const Tabla& );
@@ -19,9 +21,25 @@ public:
 Tabla::Tabla(): elem{new double[10]}, sz{10} {}
 Tabla::Tabla(int s): elem{new double[s]}, sz{s} {}
 
-double& Tabla::operator[](int i){
-    return elem[i];
+// Crear una copia
+Tabla::Tabla(const Tabla& copy) {
+  elem = new double[copy.getN()];
+  for (int i=0; i<copy.getN(); i++){
+    elem[i] = copy.elem[i];
+  }
+  sz= copy.getN();
 }
+
+// Operador de posicion
+double& Tabla::operator[](int i){
+  if ( i <0 || sz <= i ) throw out_of_range { " Vector :: operator [] " };
+    return elem [ i ];
+}
+// Operador de asignacion
+Tabla& Tabla :: operator =( const Tabla& copy ) {
+  return *this;
+}
+// Operador de imprimir
 ostream& operator <<( ostream& outStream , const Tabla& t ) {
   string result;
   for (int i = 0; i < t.sz; i++)
@@ -31,6 +49,7 @@ ostream& operator <<( ostream& outStream , const Tabla& t ) {
   
 return outStream <<"[" <<result << "]" << endl ;
 }
+//Destructor
 Tabla::~Tabla(){
   cout << " destroy " << sz << endl ;
    delete [] elem;

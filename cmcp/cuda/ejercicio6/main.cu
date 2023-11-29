@@ -17,6 +17,9 @@ int main(int argc, char**argv) {
 
     // Initialize host variables ----------------------------------------------
 
+    float *h_A, *h_B, *h_C;
+    float *d_A, *d_B, *d_C;
+
     printf("\nSetting up the problem..."); fflush(stdout);
     startTime(&timer);
 
@@ -45,6 +48,9 @@ int main(int argc, char**argv) {
     printf("    Vector size = %u\n", n);
 
     // Allocate device variables ----------------------------------------------
+    cudaMalloc( (void**)&d_A, n*sizeof(float));
+    cudaMalloc( (void**)&d_B, n*sizeof(float));
+    cudaMalloc( (void**)&d_C, n*sizeof(float));
 
     printf("Allocating device variables..."); fflush(stdout);
     startTime(&timer);

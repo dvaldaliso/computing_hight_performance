@@ -25,4 +25,4 @@
 ## ssh -Y -l dvallop@alumno.upv.es knights.dsic.upv.es
 ### Para correr con tareas OMP_NUM_THREADS=4 OMP_SCHEDULE=guided ./prog
 ### gcc -fopenmp -o knapsackBF knapsackBF.c -lm -DCHECK (se pone el -DCHECK PARA QUE EJECUTE UNA PARTE ESPECIFICA DEL CODIGO)
-
+## Compilacion c++ -> g++ -o file file.cpp
