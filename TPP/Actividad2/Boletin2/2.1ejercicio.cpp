@@ -10,7 +10,7 @@ private:
 public:
     Tabla ();
     Tabla (int n);
-    Tabla ( const Tabla& copy );
+    Tabla ( Tabla& copy );
     Tabla& operator =( const Tabla& );
     double& operator[](int i);
     int getN() const {return sz;}
@@ -22,12 +22,10 @@ Tabla::Tabla(): elem{new double[10]}, sz{10} {}
 Tabla::Tabla(int s): elem{new double[s]}, sz{s} {}
 
 // Crear una copia
-Tabla::Tabla(const Tabla& copy) {
-  elem = new double[copy.getN()];
+Tabla::Tabla(Tabla& copy): elem{new double[copy.getN()]}, sz{copy.getN()} {
   for (int i=0; i<copy.getN(); i++){
-    elem[i] = copy.elem[i];
+    elem[i] = copy[i];
   }
-  sz= copy.getN();
 }
 
 // Operador de posicion
@@ -37,7 +35,13 @@ double& Tabla::operator[](int i){
 }
 // Operador de asignacion
 Tabla& Tabla :: operator =( const Tabla& copy ) {
-  return *this;
+  double * p = new double [ copy.getN()];
+  for ( int i =0; i != copy.getN() ; ++ i )
+    p [ i ] = copy.elem [ i ];
+  delete [] elem ;  // delete old elements
+  elem = p ;
+  sz = copy.getN() ;
+  return * this ;
 }
 // Operador de imprimir
 ostream& operator <<( ostream& outStream , const Tabla& t ) {
@@ -49,6 +53,24 @@ ostream& operator <<( ostream& outStream , const Tabla& t ) {
   
 return outStream <<"[" <<result << "]" << endl ;
 }
+/*
+// read { " name " , number } pair .
+istream & operator > >( istream & is , Entry & e ) {
+char c , c2 ;
+if ( is > > c && c == ’{ ’ && is > > c2 && c2 == ’" ’ ) {
+string name ;
+while ( is . get ( c ) && c != ’" ’ ) name += c ;
+if ( is > > c && c == ’ , ’) {
+int number = 0;
+if ( is > > number > > c && c == ’} ’ ) {
+e = { name , number };
+return is ;
+}
+}
+}
+is . setf ( ios_base :: failbit ); // register the failure in the stream
+return is ;
+}*/
 //Destructor
 Tabla::~Tabla(){
   cout << " destroy " << sz << endl ;
@@ -83,4 +105,12 @@ int main() {
    Tabla t4(5);
    t4 = t1; 
    cout << "Tabla 4: " << t4; 
+
+ /* Tabla t5{5};
+  for( auto &e : t5 ) {
+    e = rand() % 100;
+  }
+  cout << "Tabla 5: " << t5;
+*/
+  
 }
