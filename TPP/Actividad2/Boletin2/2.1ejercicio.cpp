@@ -55,50 +55,6 @@ return outStream <<"[" <<result << "]" << endl ;
 }
 
 
-template < typename T >
-class TablaTemplate {
-  private :
-    T* elem ; // points to an array of sz elements of type T
-    int sz ;
-  public :
-    TablaTemplate ( int s );
-    ~ TablaTemplate () { delete [] elem ; }
-  // ... copy and move operations ...
-    T& operator []( int i );
-    const T& operator[]( int i ) const ;
-    int getN() const { return sz ; }
-};
-
-//Templates: iterators
-template < typename T >
-T* begin( TablaTemplate<T>& x ) {
-return x.getN() ? &x[0] : nullptr ;
-}
-
-template < typename T >
-T* end ( TablaTemplate <T>& x ) {
-return begin( x )+ x.getN(); // pointer to one - past - last element
-}
-
-
-/*
-// read { " name " , number } pair .
-istream & operator > >( istream & is , Entry & e ) {
-char c , c2 ;
-if ( is > > c && c == ’{ ’ && is > > c2 && c2 == ’" ’ ) {
-string name ;
-while ( is . get ( c ) && c != ’" ’ ) name += c ;
-if ( is > > c && c == ’ , ’) {
-int number = 0;
-if ( is > > number > > c && c == ’} ’ ) {
-e = { name , number };
-return is ;
-}
-}
-}
-is . setf ( ios_base :: failbit ); // register the failure in the stream
-return is ;
-}*/
 //Destructor
 Tabla::~Tabla(){
   cout << " destroy " << sz << endl ;
@@ -135,13 +91,8 @@ int main() {
    cout << "Tabla 4: " << t4; 
 
  
-/*
-   TablaTemplate<int> t5{5};
-  //Templates: iterators
-  for( auto &e : t5 ) {
-    e = rand() % 100;
-  }
-  cout << "Tabla 5: " << t5;
-*/
+
+
+
   
 }
