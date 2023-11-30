@@ -1,4 +1,5 @@
 
+#include <future>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -6,8 +7,9 @@
 #include <thread>
 #include <ostream>   
 #include <iostream>
-using namespace std;
 
+using namespace std;
+// g++ -std=c++11 actividad5Async.c -o actividad5Async ctimer.c
 int main( int argc, char *argv[] ) {
 
   int v, i;
@@ -46,7 +48,7 @@ int main( int argc, char *argv[] ) {
   // Bucle a paralelizar 
   for( int v=0; v<n_vectores; v++ ) {
     /* Cálculo de la media */
-    async([=](int v),{
+    async([=](int v){
                             double sum=0.0;
                             for(int i=0; i<tam[v];i++){
                                 sum += M[v][i];
@@ -58,7 +60,7 @@ int main( int argc, char *argv[] ) {
                                sum += ( M[v][i] - media[v] ) * ( M[v][i] - media[v] );
                             }
                             desvt[v] = sqrt( sum/tam[v] );
-                         },v)
+                         },v);
   };
     
 
