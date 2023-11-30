@@ -14,7 +14,7 @@ public:
     Tabla& operator =( const Tabla& );
     double& operator[](int i);
     int getN() const {return sz;}
-    friend ostream& operator <<( ostream& , const Tabla& );
+    friend ostream& operator <<( ostream& , Tabla& );
     ~Tabla();
 };
 
@@ -44,14 +44,25 @@ Tabla& Tabla :: operator =( const Tabla& copy ) {
   return * this ;
 }
 // Operador de imprimir
-ostream& operator <<( ostream& outStream , const Tabla& t ) {
-  string result;
-  for (int i = 0; i < t.sz; i++)
-  {
-    result+= to_string(*(t.elem+i)) + " ";
-  }
-  
-return outStream <<"[" <<result << "]" << endl ;
+ostream& operator <<( ostream& os ,  Tabla& e ) {
+   os << "[";
+    for (size_t i = 0; i < e.getN(); ++i) {
+        os << e[i];
+        if (i < e.getN() - 1) {
+            os << ", ";
+        }
+    }
+    os << "]"<<endl;
+    return os;
+}
+
+//Templates: iterators
+double* begin( Tabla& x ) {
+return x.getN() ? &x[0] : nullptr ;
+}
+
+double* end ( Tabla& x ) {
+return begin( x )+ x.getN(); // pointer to one - past - last element
 }
 
 
@@ -91,7 +102,12 @@ int main() {
    cout << "Tabla 4: " << t4; 
 
  
-
+  Tabla t5{5};
+    //Templates: iterators
+    for( auto &e : t5 ) {
+      e = rand() % 100;
+    }
+    cout << "Tabla 5: " << t5;
 
 
   
