@@ -9,7 +9,7 @@
 #include <iostream>
 
 using namespace std;
-// g++ -std=c++11 actividad5Async.c -o actividad5Async ctimer.c
+//compilacion -> g++ -std=c++11 actividad5Async.c -o actividad5Async ctimer.c
 int main( int argc, char *argv[] ) {
 
   int v, i;
