@@ -61,7 +61,6 @@ ostream& operator <<( ostream& os , Tabla& e ) {
 double* begin( Tabla& x ) {
 return x.getN() ? &x[0] : nullptr ;
 }
-
 double* end ( Tabla& x ) {
 return begin( x )+ x.getN(); // pointer to one - past - last element
 }
@@ -102,13 +101,12 @@ int main() {
    t4 = t1; 
    cout << "Tabla 4: " << t4; 
 
- 
+  //Templates: iterators
   Tabla t5{5};
-    //Templates: iterators
-    for( auto &e : t5 ) {
-      e = rand() % 100;
-    }
-    cout << "Tabla 5: " << t5;
+  for( auto &e : t5 ) {
+    e = rand() % 100;
+  }
+  cout << "Tabla 5: " << t5;
 
 
   
