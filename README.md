@@ -26,3 +26,6 @@
 ### Para correr con tareas OMP_NUM_THREADS=4 OMP_SCHEDULE=guided ./prog
 ### gcc -fopenmp -o knapsackBF knapsackBF.c -lm -DCHECK (se pone el -DCHECK PARA QUE EJECUTE UNA PARTE ESPECIFICA DEL CODIGO)
 ## Compilacion c++ -> g++ -o file file.cpp
+
+## Makefile
+# Todos los ejercicios que tengan este archivo -> ./make 
