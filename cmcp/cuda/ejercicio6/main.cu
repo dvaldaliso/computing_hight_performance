@@ -10,6 +10,9 @@
 #include "support.h"
 #include "kernel.cu"
 
+// tamano de los vectores
+#define BLOCK 5 // tamano del bloque
+
 int main(int argc, char**argv) {
 
     Timer timer;
@@ -17,7 +20,6 @@ int main(int argc, char**argv) {
 
     // Initialize host variables ----------------------------------------------
 
-    float *h_A, *h_B, *h_C;
     float *d_A, *d_B, *d_C;
 
     printf("\nSetting up the problem..."); fflush(stdout);
@@ -48,24 +50,13 @@ int main(int argc, char**argv) {
     printf("    Vector size = %u\n", n);
 
     // Allocate device variables ----------------------------------------------
-    cudaMalloc( (void**)&d_A, n*sizeof(float));
-    cudaMalloc( (void**)&d_B, n*sizeof(float));
-    cudaMalloc( (void**)&d_C, n*sizeof(float));
-
     printf("Allocating device variables..."); fflush(stdout);
     startTime(&timer);
 
     //INSERT CODE HERE
-
-
-
-
-
-
-
-
-
-
+    cudaMalloc( (void**)&d_A, n*sizeof(float));
+    cudaMalloc( (void**)&d_B, n*sizeof(float));
+    cudaMalloc( (void**)&d_C, n*sizeof(float));
 
 
     cudaDeviceSynchronize();
@@ -77,25 +68,28 @@ int main(int argc, char**argv) {
     startTime(&timer);
 
     //INSERT CODE HERE
-
-
-
-
+    cudaMemcpy(d_A, h_A, n*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, n*sizeof(float), cudaMemcpyHostToDevice);
 
 
     cudaDeviceSynchronize();
     stopTime(&timer); printf("%f s\n", elapsedTime(timer));
 
     // Launch kernel ----------------------------------------------------------
-
     printf("Launching kernel..."); fflush(stdout);
     startTime(&timer);
 
     //INSERT CODE HERE
+     int nBloques = n/BLOCK;
+    if (n%BLOCK != 0)
+    {
+        nBloques = nBloques + 1;
+    }
+    int hilosB = BLOCK;
+    printf("Vector de %d elementos\n", n);
+    printf("Lanzamiento con %d bloques (%d hilos)\n", nBloques, nBloques*hilosB);
 
-
-
-
+    vecAddKernel<<< nBloques, hilosB >>>( d_A, d_B, d_C, n);
 
     cuda_ret = cudaGetLastError();
     if(cuda_ret != cudaSuccess) FATAL("Unable to launch kernel");
@@ -108,7 +102,7 @@ int main(int argc, char**argv) {
     startTime(&timer);
 
     //INSERT CODE HERE
-
+    cudaMemcpy(h_C, d_C, n*sizeof(float), cudaMemcpyDeviceToHost);
 
 
     cudaDeviceSynchronize();
@@ -127,7 +121,9 @@ int main(int argc, char**argv) {
     free(h_C);
 
     //INSERT CODE HERE
-
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
 
 
 
