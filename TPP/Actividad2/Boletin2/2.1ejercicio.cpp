@@ -43,8 +43,9 @@ Tabla& Tabla :: operator =( const Tabla& copy ) {
   sz = copy.getN() ;
   return * this ;
 }
+// Ver la diferencia del const en "Operador de asignacion" y "Operador de imprimir"
 // Operador de imprimir
-ostream& operator <<( ostream& os ,  Tabla& e ) {
+ostream& operator <<( ostream& os , Tabla& e ) {
    os << "[";
     for (size_t i = 0; i < e.getN(); ++i) {
         os << e[i];
