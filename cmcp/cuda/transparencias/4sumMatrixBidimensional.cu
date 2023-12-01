@@ -25,15 +25,26 @@ int main(int argc, char** argv)
     float *dev_A, *dev_B, *dev_C;
     // reserva en el host
     hst_A = (float*)malloc(N*N*sizeof(float));
+    hst_B = (float*)malloc(N*N*sizeof(float));
+    hst_C = (float*)malloc(N*N*sizeof(float));
+    
     // reserva en el device
     cudaMalloc( (void**)&dev_A, N*N*sizeof(float));
+    cudaMalloc( (void**)&dev_B, N*N*sizeof(float));
+    cudaMalloc( (void**)&dev_C, N*N*sizeof(float));
+    
     // incializacion
+    
     for(int i=0;i<N*N;i++)
     {
         hst_A[i] = (float)( rand() % 10 );
+        hst_B[i] = (float)( rand() % 10 );
     }
     // copia de datos
     cudaMemcpy( dev_A, hst_A, N*N*sizeof(float), cudaMemcpyHostToDevice );
+    cudaMemcpy( dev_B, hst_B, N*N*sizeof(float), cudaMemcpyHostToDevice );
+    cudaMemcpy( dev_C, hst_C, N*N*sizeof(float), cudaMemcpyHostToDevice );
+    
     // dimensiones del kernel
     dim3 Nbloques(1);
     dim3 hilosB(N,N);
@@ -44,7 +55,23 @@ int main(int argc, char** argv)
 
     // impresion de resultados
     printf("A:\n");
+     for(int i=0;i<N;i++)
+    {
+        for(int j=0;j<N;j++)
+        {
+            printf("%2.0f ",hst_A[j+i*N]);
+        }
+        printf("\n");
+    }
     printf("B:\n");
+     for(int i=0;i<N;i++)
+    {
+        for(int j=0;j<N;j++)
+        {
+            printf("%2.0f ",hst_B[j+i*N]);
+        }
+        printf("\n");
+    }
     printf("C:\n");
     for(int i=0;i<N;i++)
     {
