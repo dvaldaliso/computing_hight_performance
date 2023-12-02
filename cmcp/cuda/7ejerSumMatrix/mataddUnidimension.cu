@@ -5,8 +5,14 @@ __global__ void matAddKernel(float* A, float* B, float* C, int n) {
 
     // Calculate global thread indices based on the block and thread indices ----
     int fila = blockIdx.x * blockDim.x + threadIdx.x;
-    int col = blockIdx.y * blockDim.y + threadIdx.y;
-    int indice = fil * n + col;
+    int col;
+    int indice; 
+    for (col = 0; col < count; col++)
+    {
+       indice = fil * n + col;
+       if (fila<n && col<n) C[indice] = A[indice] + B[indice];
+    }
+    
 
     // Use global indices to determine which elements to read, add, and write ---
     if (fila<n && col<n) C[indice] = A[indice] + B[indice];
