@@ -9,13 +9,13 @@ __global__ void matAddKernel(float* A, float* B, float* C, int n) {
     int indice; 
     for (col = 0; col < count; col++)
     {
-       indice = fil * n + col;
+       indice = col + fil * n ;
        if (fila<n && col<n) C[indice] = A[indice] + B[indice];
     }
     
 
     // Use global indices to determine which elements to read, add, and write ---
-    if (fila<n && col<n) C[indice] = A[indice] + B[indice];
+    //if (fila<n && col<n) C[indice] = A[indice] + B[indice];
 
 }
 
