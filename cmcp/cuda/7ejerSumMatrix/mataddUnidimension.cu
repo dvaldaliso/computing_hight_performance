@@ -7,10 +7,13 @@ __global__ void matAddKernel(float* A, float* B, float* C, int n) {
     int fila = blockIdx.x * blockDim.x + threadIdx.x;
     int col;
     int indice; 
-    for (col = 0; col < count; col++)
+    if (fila<n)
     {
-       indice = col + fil * n ;
-       if (fila<n && col<n) C[indice] = A[indice] + B[indice];
+        for (col = 0; col < n; col++)
+        {
+         indice = col + fila * n ;
+         C[indice] = A[indice] + B[indice];
+        }
     }
     
 
