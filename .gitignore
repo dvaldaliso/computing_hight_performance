@@ -1,3 +1,2 @@
 # Ignora la carpeta node_modules
-/PSC/Tarea4/NodeJS/01.1_REQ-REP/node_modules
-/PSC/Tarea4/NodeJS/02.1_PUB-SUB/node_modules
+**/node_modules
