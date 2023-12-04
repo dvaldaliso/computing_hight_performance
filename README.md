@@ -1,20 +1,19 @@
 # Cloud_computing
 
-## CMCP -- programacion paralela
-### openMP
-### Compilacion -> gcc -fopenmp file.c -o fileprograma
-#### 
-### Ejecucion -> ./fileprograma
+##  CMCP -- programacion paralela
+###    openMP
+###     Compilacion -> gcc -fopenmp file.c -o fileprograma
+###     Ejecucion -> ./fileprograma
 
-## MPI
-## Compilacion -> mpicc -Wall -o hellow hellow.c
-### mpicc -show
-### Ejecucion -> mpiexec -n p programa [argumentos]
-#### mpiexec -n 2 ./hellow
+##     MPI
+##      Compilacion -> mpicc -Wall -o hellow hellow.c
+###     mpicc -show
+###     Ejecucion -> mpiexec -n p programa [argumentos]
+###    mpiexec -n 2 ./hellow
 
-## Cuda
-# Compilacion -> nvcc -o dquery dquery.cu
-# Ejecucion   -> ./dquery
+##     Cuda
+#       Compilacion -> nvcc -o dquery dquery.cu
+#       Ejecucion   -> ./dquery
 
 
 # interesante 
@@ -34,3 +33,5 @@
 # Esta asignatura es en Matlab
 
 ## PSC -> Programacion Sistemas cloud
+### Chat
+### golang -> dependencias -> go get    
