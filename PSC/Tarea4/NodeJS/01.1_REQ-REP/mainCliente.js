@@ -5,7 +5,16 @@
 // ....................................................
 
 var zmq = require('zeromq')
+const readline = require('readline');
+function initReadLine(){
+	return readline.createInterface({
+		input: process.stdin,
+		output: process.stdout
+	  });
+}
 
+
+ 
 // ....................................................
 var MI_NOMBRE = (process.argv[2] ? process.argv[2]  : "noname")
 
@@ -63,4 +72,26 @@ process.on('SIGINT', function() {
 	console.log ( " ** SIGINT capturada: cerrando !! ** ")
 	socketParaPedir.close()
 })
+
+function main() {
+	//init socket
+	//const socket= intiSocket();
+	// Leer mensaje
+	const read =  initReadLine();
+	
+	read.setPrompt(`What is your age? `);
+	read.prompt();
+	read.on('line', (userInput)=>{
+		console.log(`Age received by the user: ${userInput}`);
+		read.close();
+	});
+	  
+	  // Evento que se dispara cuando la interfaz de lectura se cierra
+	read.on('close', () => {
+		console.log('¡Hasta luego!');
+	}); 
+	
+	// enviar al servidor
+}
+main()
 

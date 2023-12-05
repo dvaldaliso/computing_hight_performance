@@ -10,6 +10,7 @@
 		"servidor": "node mainServidor.js"
 	},
 	"dependencies": {
+		"readline": "^1.3.0",
 		"zeromq": "^5.2.0"
 	}
 }

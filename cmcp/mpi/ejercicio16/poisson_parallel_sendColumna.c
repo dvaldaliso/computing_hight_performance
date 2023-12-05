@@ -97,6 +97,7 @@ int main(int argc, char **argv) {
     //Creamos nuestro tipo de datos columna
     MPI_Datatype coltype;
    //MPI_Type_vector(count, length, stride, type, newtype)
+    
     MPI_Type_vector(N, 1, mlocal, MPI_DOUBLE, &coltype);
     MPI_Type_commit(&coltype);
 
