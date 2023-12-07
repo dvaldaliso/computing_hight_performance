@@ -4,7 +4,7 @@
 %columnas de B. A continuación, calcula la matriz por cajas multiplicando las particiones anteriores de forma similar
 %a como hicimos con la primera forma de multiplicar matrices, salvo que ahora, en vez de ir multiplicando escalares
 %vamos multiplicando cajas:
-%function C = mult5(A, B)
+function C = mult5(A, B)
     [m, n, q] = check(A, B);
     M = particion(m)
     N = particion(n)
