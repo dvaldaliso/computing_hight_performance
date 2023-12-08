@@ -1,22 +1,3 @@
-%% Tarea 1.- Unidad temática 1
-%% EJERCICIO 1.
-% Se pretende realizar el producto matriz por matriz, C=A*B donde A∈R^mxr, 
-% B∈R^rxn. Implementa un programa en MATLAB que realice dicho cálculo de 
-% las siguientes formas:
-
-% a.- Producto matriz por matriz  utilizando operaciones vectoriales, 
-% versión fila y columna.
-% ESTO LO HE SACADO DE CHATGPT
-% Definir matrices A y B
-%A = [1, 2; 3, 4; 5, 6];
-%B = [7, 8, 9; 10, 11, 12];
-A = rand (5);
-B = rand (5);
-
-% Calcular el producto matriz por matriz utilizando la función
-productoMatrizPorMatriz(A, B);
-
-
 %% EJERCICIO 2.
 % Resuelve el problema de autovalores asociado al caso de estudio 1 para 
 % las matrices asociadas al reactor Biblis 
