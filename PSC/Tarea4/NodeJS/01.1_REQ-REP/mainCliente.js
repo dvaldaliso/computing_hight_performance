@@ -4,8 +4,8 @@
 // (no debería hacerse así)
 // ....................................................
 
-var zmq = require('zeromq')
-const readline = require('readline');
+import * as zmq from "zeromq"
+import * as readline from "readline"
 function initReadLine(){
 	return readline.createInterface({
 		input: process.stdin,
@@ -42,7 +42,7 @@ socketParaPedir.on("message", function(respuesta) {
 
 // ....................................................
 // conectar
-socketParaPedir.connect("tcp://localhost:5555")
+socketParaPedir.connect("tcp://localhost:5556")
 
 // ....................................................
 //
@@ -52,7 +52,7 @@ socketParaPedir.connect("tcp://localhost:5555")
 // Sin embargo, la biblioteca para JS parece que lo tolera
 //
 
-enviarMensaje = function (n, origen) {
+function enviarMensaje (n, origen) {
 	if (n <= N) {
 		setTimeout(function() {
 			console.log("enviando petición ", n, '...')
