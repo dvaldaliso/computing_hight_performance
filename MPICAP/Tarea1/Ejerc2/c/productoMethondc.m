@@ -12,8 +12,8 @@ function [y] = prodMethodc(x,L21,L22,L11,M11,M12)
 
 	val2=L22*x; %  producto matriz diagonal por vector
 	
-    %val3=gmres(L22,val2,10,1.e-7,1000); % Resolucin de sistema no simtrico
-	val3=1./L21 .*val2; % Resolucin de sistema simtrico y del +
+    %val3=gmres(L22,val2,10,1.e-7,1000); % Resolucion de sistema no simetrico
+	val3=1./L21 .*val2; % Resolucion de sistema simetrico y del +
 	
     val4=M11.*val3; % Producto matriz diagonal por vector
 	
@@ -23,10 +23,8 @@ function [y] = prodMethodc(x,L21,L22,L11,M11,M12)
     val6=bicg(L11,val1,1.e-7,1000)
 
     val7=L21.*val6
-    
 
-
-	%y=gmres(L11,val1,10,1.e-7,1000); %Resolucin de sistema no simtrico
-	y=cgs(L22,val7,1.e-7,1000); %Resolucin de sistema simtrico y del +
+	%y=gmres(L11,val1,10,1.e-7,1000); %Resolucion de sistema no simetrico
+	y=cgs(L22,val7,1.e-7,1000); %Resolucion de sistema simetrico y del +
      
 end
