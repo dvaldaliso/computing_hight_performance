@@ -6,7 +6,7 @@
 
 int main()
 {
-  //omp_set_num_threads(3);
+  omp_set_num_threads(3);
   #pragma omp parallel
   {
     printf("threads = %d\n",omp_get_num_threads());

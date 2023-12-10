@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "omp.h"
+#include <time.h> 
 
 /*
  * Multiplicación de matrices
@@ -10,20 +11,19 @@
 void matmat(int n,double *A, double *B, double *C)
 {
   int i, j, k;
-  double start = omp_get_wtime( );
-  #pragma omp parallel for
+  
+  #pragma omp parallel for private(j,k)
   for (i=0; i<n; i++) {
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (j=0; j<n; j++) {
       C[i*n+j] = 0.0;
-      #pragma omp parallel for
+      //#pragma omp parallel for reduction(+:C[i*n+j])
       for (k=0; k<n; k++) {
         C[i*n+j] += A[i*n+k]*B[k*n+j];
       }
     }
   }
-  double end = omp_get_wtime( );  
-  printf("tiempo = %g\n",end-start);
+  
 }
 
 /*
@@ -71,9 +71,11 @@ int main(int argc, char **argv)
       B[i+n*j] = drand48();
     }
   }
-
+ double start = omp_get_wtime( );
   /* Multiplicación de matrices */
   matmat(n,A,B,C);
+ double end = omp_get_wtime( );  
+ printf("multiplicacion tomo %f segundos en ejecutarse \n", end-start); 
 
   /* Comprobación de resultado */
   if (n<1000) verify(n,A,B,C);
