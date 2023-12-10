@@ -3,6 +3,20 @@
 #include <math.h>
 #include "omp.h"
 #include <time.h> 
+/*
+Imprimir resultado
+*/
+void imprimirMatriz(double *M, int n){
+  int i,j;
+  for(i = 0; i < n; i++)
+	{
+		for(j = 0; j < n; j++)
+		{
+			printf("%f ", M[i*n+j]);
+		}
+		printf("\n");
+	}
+}
 
 /*
  * Multiplicación de matrices
@@ -12,9 +26,9 @@ void matmat(int n,double *A, double *B, double *C)
 {
   int i, j, k;
   
-  #pragma omp parallel for private(j,k)
+  #pragma omp parallel for private(i,j,k)
   for (i=0; i<n; i++) {
-    //#pragma omp parallel for
+    //#pragma omp parallel for private(j,k)
     for (j=0; j<n; j++) {
       C[i*n+j] = 0.0;
       //#pragma omp parallel for reduction(+:C[i*n+j])
@@ -67,16 +81,21 @@ int main(int argc, char **argv)
   /* Inicializar matrices */
   for (i=0; i<n; i++) {
     for (j=0; j<n; j++) {
-      A[i+n*j] = drand48();
-      B[i+n*j] = drand48();
+      A[i+n*j] = 2;
+      B[i+n*j] = 2;
     }
   }
+printf("matriz A \n"); 
+ imprimirMatriz(A,n); 
+ printf("matriz B \n"); 
+ imprimirMatriz(B,n); 
+
  double start = omp_get_wtime( );
   /* Multiplicación de matrices */
   matmat(n,A,B,C);
  double end = omp_get_wtime( );  
  printf("multiplicacion tomo %f segundos en ejecutarse \n", end-start); 
-
+ imprimirMatriz(C,n); 
   /* Comprobación de resultado */
   if (n<1000) verify(n,A,B,C);
 
