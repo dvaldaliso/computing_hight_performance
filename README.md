@@ -1,8 +1,11 @@
 # Cloud_computing
+## Makefile (Es usado para agrupar ciertas reglas para la comiplacion)
+## Todos los ejercicios que tengan este archivo -> ./make 
 
 ## CMCP -- programacion paralela
 ##    openMP
 ###     Compilacion -> gcc -fopenmp file.c -o fileprograma
+###     Ejecucion shedule -> OMP_NUM_THREADS=4 OMP_SCHEDULE=guided ./fileprograma
 ###     Ejecucion -> ./fileprograma
 
 ##     MPI
@@ -26,8 +29,7 @@
 ### gcc -fopenmp -o knapsackBF knapsackBF.c -lm -DCHECK (se pone el -DCHECK PARA QUE EJECUTE UNA PARTE ESPECIFICA DEL CODIGO)
 ## Compilacion c++ -> g++ -o file file.cpp
 
-## Makefile
-## Todos los ejercicios que tengan este archivo -> ./make 
+
 
 # MPICAP
 ## Esta asignatura es en Matlab

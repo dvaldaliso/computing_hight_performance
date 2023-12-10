@@ -28,12 +28,11 @@
  */
 
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include "misc.h"
-#include "omp.h"
-#include <time.h>
 #include <omp.h>
+#include <stdio.h>
+#include <time.h>
 int width = 640, height = 480, maxit = 160, invert = 0;
 int levels = 256, rev = 0, idiv = 1, mag = 1;
 double ulx = -2.4, uly = 1.4, lly = -1.4, bulx, buly, blly, bail = 16.0;
@@ -82,7 +81,7 @@ int main(int argc, char **argv)
   unsigned char value;
   //clock_t inicio, fin;
   //double tiempo;
-  //get_options(argc, argv, options, help_string);
+  get_options(argc, argv, options, help_string);
 
   FILE* ppm = fopen(file,"w");
   if (!ppm) { printf("cannot write file\n"); exit(1); }
