@@ -11,7 +11,7 @@ __global__ void matAddKernel(float* A, float* B, float* C, int n) {
     {
         for (col = 0; col < n; col++)
         {
-         indice = col + fila * n ;
+         indice = fila + col * n ;
          C[indice] = A[indice] + B[indice];
         }
     }
@@ -85,7 +85,7 @@ int main(int argc, char**argv) {
     printf("Launching kernel..."); fflush(stdout);
     startTime(&timer);
 
-    dim3 nhilos(32,32);
+    dim3 nhilos(32);
     dim3 nbloques(ceil(float(n)/nhilos.x),ceil(float(n)/nhilos.y));
     matAddKernel<<<nbloques,nhilos>>>(d_A, d_B, d_C, n);
 

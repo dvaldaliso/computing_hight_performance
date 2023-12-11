@@ -15,7 +15,7 @@ typedef struct {
 
 #define min(a,b) ((a)<(b)?(a):(b))
 #define BS 256
-
+//Memoria global
 __global__ void matvec_kernel(int n,double *A,double *x,double *y)
 {
   int i,j;

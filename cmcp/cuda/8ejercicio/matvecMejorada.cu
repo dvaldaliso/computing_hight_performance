@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #define BS 256
+
 typedef struct {
     struct timeval startTime;
     struct timeval endTime;
@@ -15,7 +16,7 @@ typedef struct {
 
 #define min(a,b) ((a)<(b)?(a):(b))
 #define BS 256
-
+//Memoria compartida
 __global__ void matvec_kernel(int n,double *A,double *x,double *y)
 {
   int i,j,k;
@@ -32,6 +33,7 @@ __global__ void matvec_kernel(int n,double *A,double *x,double *y)
     for (j=k; j<min(k+BS,n); j++) {
       res += A[i+j*n]*buff[j-k];
     }
+    __syncthreads();
   }
 
   if (i<n) y[i] = res;
