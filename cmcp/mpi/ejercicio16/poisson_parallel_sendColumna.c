@@ -82,25 +82,23 @@ int main(int argc, char **argv) {
         M = atoi(argv[2]);
         if (M <= 0) M = 60;
     }
-    ld = M + 2;
+   
     int rank, size;
     MPI_Init(&argc, &argv);
     MPI_Comm comm = MPI_COMM_WORLD;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
     int mlocal = N / size;
+    ld = mlocal + 2;
     //Creamos nuestro tipo de datos columna
     MPI_Datatype coltype;
    //MPI_Type_vector(count, length, stride, type, newtype)    
-    MPI_Type_vector(N, 1, mlocal+2, MPI_DOUBLE, &coltype);
+    MPI_Type_vector(N+2, 1, mlocal+2, MPI_DOUBLE, &coltype);
     MPI_Type_commit(&coltype);
     
     MPI_Datatype column_type_resized;
     MPI_Type_create_resized(coltype, 0, sizeof(double), &column_type_resized);
     MPI_Type_commit(&column_type_resized);
-    
-  
-
     
     x = (double *)calloc((N+2) * (mlocal + 2), sizeof(double));
     b = (double *)calloc((N+2) * (mlocal + 2), sizeof(double));
