@@ -3,19 +3,15 @@
 #include <math.h>
 #include <mpi.h>
 
-void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double *local_sum, int rank, int size, MPI_Datatype coltype) {
-    int mlocal = M / size; 
+void parallel_jacobi_step(int N, int mlocal, double *x, double *b, double *t, double *local_sum, int rank, int size, MPI_Datatype coltype) {
     int i, j, ld = mlocal + 2;
     
     double local_s = 0.0;
     int right = rank + 1;
     int left = rank - 1;
-
-    
-  
     
     if (rank < size - 1) {
-        MPI_Send(&x[mlocal * ld], 1, coltype, right, 0, MPI_COMM_WORLD);
+        MPI_Send(&x[ld-1], 1, coltype, right, 0, MPI_COMM_WORLD);
     }
 
     if (rank > 0) {
@@ -23,11 +19,11 @@ void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double 
     }
 
     if (rank > 0) {
-        MPI_Send(&x[ld], 1, coltype, left, 1, MPI_COMM_WORLD);
+        MPI_Send(&x[1], 1, coltype, left, 1, MPI_COMM_WORLD);
     }
 
     if (rank < size - 1) {
-        MPI_Recv(&x[(mlocal + 1) * ld], 1, coltype, right, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&x[ld], 1, coltype, right, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
     for (i = 1; i <= N; i++) {
@@ -41,8 +37,7 @@ void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double 
 }
 
 
-void parallel_jacobi_poisson(int N, int M, double *x, double *b, int rank, int size, MPI_Datatype coltype) {
-    int mlocal = M / size;
+void parallel_jacobi_poisson(int N, int mlocal, double *x, double *b, int rank, int size, MPI_Datatype coltype) {
     int i, j, k, ld = mlocal + 2, conv = 0, maxit = 10000;
     double *t, tol = 1e-6, local_sum, global_sum = 0.0;
         
@@ -52,7 +47,7 @@ void parallel_jacobi_poisson(int N, int M, double *x, double *b, int rank, int s
     k = 0;
 
     while (!conv && k < maxit) {
-        parallel_jacobi_step(N, M, x, b, t, &local_sum, rank, size, coltype);
+        parallel_jacobi_step(N, mlocal, x, b, t, &local_sum, rank, size, coltype);
 
         MPI_Allreduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
@@ -96,10 +91,15 @@ int main(int argc, char **argv) {
     int mlocal = N / size;
     //Creamos nuestro tipo de datos columna
     MPI_Datatype coltype;
-   //MPI_Type_vector(count, length, stride, type, newtype)
-    
-    MPI_Type_vector(N, 1, mlocal, MPI_DOUBLE, &coltype);
+   //MPI_Type_vector(count, length, stride, type, newtype)    
+    MPI_Type_vector(N, 1, mlocal+2, MPI_DOUBLE, &coltype);
     MPI_Type_commit(&coltype);
+    
+    MPI_Datatype column_type_resized;
+    MPI_Type_create_resized(coltype, 0, sizeof(double), &column_type_resized);
+    MPI_Type_commit(&column_type_resized);
+    
+  
 
     
     x = (double *)calloc((N+2) * (mlocal + 2), sizeof(double));
@@ -111,14 +111,21 @@ int main(int argc, char **argv) {
         }
     }
 
-    parallel_jacobi_poisson(N, M, x, b, rank, size, coltype);
+    parallel_jacobi_poisson(N, mlocal, x, b, rank, size, coltype);
+    
+    //para que al final el proceso 0 reciba todas las columnas calculadas por los demás procesos.
+   // Crear un tipo de dato derivado para enviar y recibir columnas via
+
 
    if (N <= 60) {
     double *X = NULL;
     if (rank == 0) {
         X = (double *)calloc((N+2) * (M + 2), sizeof(double));
     }
-    MPI_Gather(x + ld, mlocal * ld, MPI_DOUBLE, X + ld, mlocal * ld, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    /* &x[1] es lo mismo que x + 1 en c++, como es una direccion de mememoria, 
+    es como decirle: 1 posicion a la derecha en la memoria*/
+    MPI_Gather(x + 1, mlocal , column_type_resized, X + 1, mlocal, column_type_resized, 0, MPI_COMM_WORLD);
+    MPI_Type_free(&column_type_resized);
     if (rank == 0) {
         for (i = 1; i <= N; i++) {
             for (j = 1; j <= M; j++) {
@@ -126,10 +133,9 @@ int main(int argc, char **argv) {
             }
             printf("\n");
         }
+         free(X);
     }
-    if (rank == 0) {
-        free(X);
-    }
+   
 }
     free(x);
     free(b);

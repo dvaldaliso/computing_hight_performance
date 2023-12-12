@@ -3,9 +3,8 @@
 #include <math.h>
 #include <mpi.h>
 
-void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double *local_sum, int rank, int size) {
+void parallel_jacobi_step(int nlocal, int M, double *x, double *b, double *t, double *local_sum, int rank, int size) {
     int i, j, ld = M + 2;
-    int nlocal = N / size; 
     double local_s = 0.0;
     int next = rank + 1;
     int prev = rank - 1;
@@ -38,18 +37,17 @@ void parallel_jacobi_step(int N, int M, double *x, double *b, double *t, double 
 }
 
 
-void parallel_jacobi_poisson(int N, int M, double *x, double *b, int rank, int size) {
+void parallel_jacobi_poisson(int n_local, int M, double *x, double *b, int rank, int size) {
     int i, j, k, ld = M + 2, conv = 0, maxit = 10000;
     double *t, tol = 1e-6, local_sum, global_sum = 0.0;
         
-    int n_local = N / size; 
 
     t = (double *)calloc((n_local+2) * (M + 2), sizeof(double));
 
     k = 0;
 
     while (!conv && k < maxit) {
-        parallel_jacobi_step(N, M, x, b, t, &local_sum, rank, size);
+        parallel_jacobi_step(n_local, M, x, b, t, &local_sum, rank, size);
 
         MPI_Allreduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
@@ -101,13 +99,15 @@ int main(int argc, char **argv) {
         }
     }
 
-    parallel_jacobi_poisson(N, M, x, b, rank, size);
+    parallel_jacobi_poisson(n_local, M, x, b, rank, size);
 
    if (N <= 60) {
     double *X = NULL;
     if (rank == 0) {
         X = (double *)calloc((N+2) * (M + 2), sizeof(double));
     }
+    /* &x[ld] es lo mismo que x + ld en c++, como es una direccion de mememoria, 
+    es como decirle en es posicion ld elementos al lado*/
     MPI_Gather(x + ld, n_local * ld, MPI_DOUBLE, X + ld, n_local * ld, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     if (rank == 0) {
         for (i = 1; i <= N; i++) {
@@ -116,10 +116,9 @@ int main(int argc, char **argv) {
             }
             printf("\n");
         }
-    }
-    if (rank == 0) {
         free(X);
     }
+   
 }
     free(x);
     free(b);

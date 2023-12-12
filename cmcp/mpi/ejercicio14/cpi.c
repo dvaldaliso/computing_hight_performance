@@ -4,13 +4,12 @@
 
 int main(int argc, char *argv[])
 {
-  int n, myid, numprocs, i, p;
+  int n, myid, numprocs, i;
   double PI25DT = 3.141592653589793238462643;
-  double mypi, pi, h, sum, x, aux;
+  double mypi, pi, h, sum, x;
   MPI_Init(&argc,&argv);
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myid);
-  MPI_Status status;
   while (1) {
      if (myid == 0) {
          printf("Enter the number of intervals: (0 quits)\n");
@@ -18,11 +17,6 @@ int main(int argc, char *argv[])
      }
      /* Communication: value of n from process 0 to all other processes */
      MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-     /*if (myid == 0) {
-         for (p=1; p<numprocs; p++) MPI_Send(&n, 1, MPI_INT, p, 11, MPI_COMM_WORLD);
-     } else {
-         MPI_Recv(&n, 1, MPI_INT, 0, 11, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-     }*/
      /* End communication */
      if (n == 0)
          break;
@@ -38,16 +32,6 @@ int main(int argc, char *argv[])
             and accumulate it on pi in process 0 */
         //MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm)
         MPI_Reduce(&mypi, &pi, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-        /*if (myid == 0) {
-             pi = mypi;
-             for (p=1; p<numprocs; p++) {
-                 MPI_Recv(&aux, 1, MPI_DOUBLE, MPI_ANY_SOURCE, 22, MPI_COMM_WORLD, &status);
-                 printf("[MPI process %d] I received value %lf, from rank %d.\n", myid, aux, status.MPI_SOURCE);
-                 pi += aux;
-             }
-         } else {
-             MPI_Send(&mypi, 1, MPI_DOUBLE, 0, 22, MPI_COMM_WORLD);
-         }*/
          /* End communication */
          if (myid == 0)
              printf("pi is approximately %.16f, Error is %.16f\n",
