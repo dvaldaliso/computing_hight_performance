@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "ctimer.h"
-
+// Compilacion gcc -o actividad1 actividad1.c ctimer.c -lm
 int main( int argc, char *argv[] ) {
 
   int v, i;

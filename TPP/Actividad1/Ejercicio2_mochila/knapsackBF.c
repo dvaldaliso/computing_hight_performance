@@ -1,9 +1,9 @@
-#include <omp.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "ctimer.h"
+
 
 int main( int argc, char *argv[] ) {
   if( argc<3 ) {
@@ -16,7 +16,7 @@ int main( int argc, char *argv[] ) {
   int cap, k, y, x, resto;
   long max;
   double val;
-  sscanf(argv[1],"%d",&n);
+  sscanf(argv[1],"%d",&n);//Leer datos
   sscanf(argv[2],"%d",&c);
   printf("Problema de la mochila con %d piedras y capacidad = %d\n",n,c);
   int w[n];
@@ -44,15 +44,13 @@ int main( int argc, char *argv[] ) {
 
   valor = 0;
   capacidad = c;
-  memset(solucion,0,n*sizeof(int));
+  memset(solucion,0,n*sizeof(int)); //asigna a solucion un bloque de memoria
   max = (long) powl(2,n);
+  printf("max: %ld\n",max);
   if( max < 0 ) {
     printf("El problema no se puede calcular\n");
     return 0;
   }
-double elapsed, ucpu, scpu;
-  ctimer(&elapsed,&ucpu,&scpu);
-	#pragma omp parallel for private(cap,val,k,y,s,resto)
   for( x=0; x<max; x++ ) {
     cap = c;
     val = 0;
@@ -69,10 +67,6 @@ double elapsed, ucpu, scpu;
       y /= 2;
       k++;
     }
-	if ( cap>=0)
-{
-	#pragma omp critical
-{
     if( cap>=0 ) {
       if( val >= valor ) {
         valor = val;
@@ -80,11 +74,8 @@ double elapsed, ucpu, scpu;
 	memcpy( solucion, s, n*sizeof(int) );
       }
     }
-}
   }
-}
-ctimer(&elapsed,&ucpu,&scpu);
-  printf("Tiempo = %f segundos\n",elapsed); 
+
 #ifdef CHECK
   printf("Solucion = [");
   for( int i=0; i<n; i++ ) {

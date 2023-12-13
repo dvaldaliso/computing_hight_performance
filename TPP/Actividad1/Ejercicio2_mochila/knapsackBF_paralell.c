@@ -1,9 +1,9 @@
-
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
+#include "ctimer.h"
 
 int main( int argc, char *argv[] ) {
   if( argc<3 ) {
@@ -50,6 +50,9 @@ int main( int argc, char *argv[] ) {
     printf("El problema no se puede calcular\n");
     return 0;
   }
+double elapsed, ucpu, scpu;
+  ctimer(&elapsed,&ucpu,&scpu);
+	#pragma omp parallel for private(cap,val,k,y,s,resto)
   for( x=0; x<max; x++ ) {
     cap = c;
     val = 0;
@@ -66,15 +69,22 @@ int main( int argc, char *argv[] ) {
       y /= 2;
       k++;
     }
-    if( cap>=0 ) {
-      if( val >= valor ) {
-        valor = val;
-        capacidad = cap;
-	memcpy( solucion, s, n*sizeof(int) );
-      }
+  if ( cap>=0)
+  {
+    #pragma omp critical
+    {
+        if( cap>=0 ) {
+          if( val >= valor ) {
+            valor = val;
+            capacidad = cap;
+              memcpy( solucion, s, n*sizeof(int) );
+          }
+        }
     }
   }
-
+}
+ctimer(&elapsed,&ucpu,&scpu);
+  printf("Tiempo = %f segundos\n",elapsed); 
 #ifdef CHECK
   printf("Solucion = [");
   for( int i=0; i<n; i++ ) {
