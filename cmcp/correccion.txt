@@ -1,0 +1,8 @@
+Corrección del profesor:
+E2: Falta imprimir el número de hilos
+E2: El valor de la integral que muestra el programa es incorrecto, sin embargo dices que muestra el mismo resultado sin paralelizar??? Debería dar aproximadamente 1.
+E5: Había que modificar el programa para imprimir otro parámetro, como la anchura del bus de memoria.
+E7: Tienes un problema en la versión unidimensional, los tiempos son muy malos. El kernel parece estar bien, y la definición de nhilos también, pero nbloques lo sigues definiendo como bidimensional??
+E9: Deberías haber ejecutado los dos programas con matrices del mismo tamaño.
+E13: No se hace nada para el problema de la secuencialización.
+E16: Parece que está todo bien. Sin embargo, el MPI_Gather creo que no va a funcionar porque el tipo de datos debe ser distinto en el buffer de envío y el de recepción, ya que el stride es distinto.

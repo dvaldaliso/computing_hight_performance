@@ -6,8 +6,8 @@
 /* Funcion f(x) de la cual se quiere calcular la integral */
 double f(double x)
 {
-   return pow(10*x-14.0/3.0,3)-150*x+120;
-   //return M_PI/2.0*sin(x*M_PI);
+   //return pow(10*x-14.0/3.0,3)-150*x+120;
+   return M_PI/2.0*sin(x*M_PI);
 }
 
 /* Calculo de la integral de la funcion f */
