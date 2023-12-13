@@ -11,6 +11,7 @@ void Foo( double& f ) {
 
 void ParallelApplyFoo( double a[], size_t n ) {
     const size_t GrainSize = 1;
+    //[=] esto se utiliza para ver como se van a tratar las variables que estan fueras en este caso "a"
     parallel_for( blocked_range<size_t>( 0, n, GrainSize ), [=](const blocked_range<size_t>& r ){
          //const blocked_range<size_t>& r; 
          for( size_t i=r.begin(); i!=r.end(); ++i )
