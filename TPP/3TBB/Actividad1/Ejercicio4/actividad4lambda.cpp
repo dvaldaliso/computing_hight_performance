@@ -17,7 +17,7 @@ double Foo( double f ){
 double ParallelSumFoo(  double a[], size_t n ) {
   const int GrainSize=1;
  return parallel_reduce( blocked_range<size_t>(0, n, GrainSize), 
-  0.d,
+  0.0,
   [=](const blocked_range<size_t>& r, double sum)->double {
     for( size_t i=r.begin(); i!=r.end(); ++i )
         sum += Foo(a[i]);
