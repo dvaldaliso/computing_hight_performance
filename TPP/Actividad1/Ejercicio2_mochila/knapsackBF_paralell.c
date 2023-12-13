@@ -4,7 +4,8 @@
 #include <string.h>
 #include <math.h>
 #include "ctimer.h"
-
+//compilacion -> gcc -fopenmp -o knapsackBF_paralell knapsackBF_paralell.c ctimer.c -lm -DCHECK
+//ejecucion -> OMP_NUM_THREADS=4 ./knapsackBF_paralell
 int main( int argc, char *argv[] ) {
   if( argc<3 ) {
     fprintf(stderr,"Uso: %s priedras capacidad\n",argv[0]);
@@ -69,20 +70,20 @@ double elapsed, ucpu, scpu;
       y /= 2;
       k++;
     }
-  if ( cap>=0)
-  {
-    #pragma omp critical
+    if ( cap>=0)
     {
-        if( cap>=0 ) {
-          if( val >= valor ) {
-            valor = val;
-            capacidad = cap;
-              memcpy( solucion, s, n*sizeof(int) );
+      #pragma omp critical
+      {
+          if( cap>=0 ) {
+            if( val >= valor ) {
+              valor = val;
+              capacidad = cap;
+                memcpy( solucion, s, n*sizeof(int) );
+            }
           }
-        }
+      }
     }
   }
-}
 ctimer(&elapsed,&ucpu,&scpu);
   printf("Tiempo = %f segundos\n",elapsed); 
 #ifdef CHECK
