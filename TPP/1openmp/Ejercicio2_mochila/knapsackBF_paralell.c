@@ -63,8 +63,8 @@ double elapsed, ucpu, scpu;
     while( y>0 && cap>=0 ) {
       resto = y%2;
       if( resto ) {
-        cap -= w[k];
-        val += p[k];
+        cap -= w[k]; // A la capacidad disponible le restamos el peso del nuevo elemento
+        val += p[k]; // Aumentando el valor por cada nuevo elemento
       }
       s[k] = resto;
       y /= 2;
@@ -84,7 +84,7 @@ double elapsed, ucpu, scpu;
       }
     }
   }
-ctimer(&elapsed,&ucpu,&scpu);
+  ctimer(&elapsed,&ucpu,&scpu);
   printf("Tiempo = %f segundos\n",elapsed); 
 #ifdef CHECK
   printf("Solucion = [");

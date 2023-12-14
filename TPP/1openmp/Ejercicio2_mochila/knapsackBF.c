@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 
+// https://www.youtube.com/watch?v=IZHvQTx2bZ0
 
 int main( int argc, char *argv[] ) {
   if( argc<3 ) {
@@ -45,6 +46,7 @@ int main( int argc, char *argv[] ) {
   valor = 0;
   capacidad = c;
   memset(solucion,0,n*sizeof(int)); //asigna a solucion un bloque de memoria
+  //Dado que hay n elementos, puede haber 2 elevado a la n posibles combinaciones.
   max = (long) powl(2,n);
   printf("max: %ld\n",max);
   if( max < 0 ) {
@@ -57,10 +59,10 @@ int main( int argc, char *argv[] ) {
     k = 0;
     memset(s,0,n*sizeof(int));
     y = x;
-    while( y>0 && cap>=0 ) {
+    while( y>0 && cap>=0 ) {// esto verifica si a la mochila le queda espacio
       resto = y%2;
       if( resto ) {
-        cap -= w[k];
+        cap -= w[k]; // disminuimos el espacio en cuanto le vamos introduciendo elementos
         val += p[k];
       }
       s[k] = resto;
@@ -71,7 +73,7 @@ int main( int argc, char *argv[] ) {
       if( val >= valor ) {
         valor = val;
         capacidad = cap;
-	memcpy( solucion, s, n*sizeof(int) );
+	      memcpy( solucion, s, n*sizeof(int) );
       }
     }
   }
