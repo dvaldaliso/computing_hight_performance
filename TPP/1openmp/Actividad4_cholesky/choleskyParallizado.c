@@ -12,7 +12,23 @@
 #define	L(i,j)	L[j*n+i]
 #define	A(i,j)	A[j*n+i]
 #define	C(i,j)	C[j*n+i]
-
+/*
+Las operaciones etiquetadas como potrf, trsm, gemm y syrk en el algoritmo referencian a las
+rutinas de las librerı́as BLAS/LAPACK. Estas rutinas son:
+dpotrf calcula la factorización de Cholesky de una matriz real de doble precisión simétrica y defi-
+nida positiva. La cabecera de esta rutina ası́ como la descripción de sus parámetros se pueden en-
+contrar en http://www.netlib.org/clapack/clapack-3.2.1-CMAKE/SRC/VARIANTS/cholesky/
+TOP/dpotrf.c, o https://github.com/vtjnash/atlas-3.10.0/blob/master/interfaces/lapack/
+C/src/clapack_dpotrf.c para la interfaz C.
+dtrsm resuelve un sistema de ecuaciones con múltiples vectores independientes. La cabecera de
+esta rutina ası́ como la descripción de sus parámetros se pueden encontrar en http://www.netlib.
+org/clapack/cblas/dtrsm.c, o https://software.intel.com/es-es/node/520783 para la in-
+terfaz C.
+dgemm multiplica dos matrices. La cabecera de esta rutina ası́ como la descripción de sus paráme-
+tros se pueden encontrar en http://www.netlib.org/clapack/cblas/dgemm.c, o https://software.
+intel.com/es-es/node/520775 para la interfaz C.
+*/
+//gcc -o cholesky cholesky.c -llapack -lblas -lm ctimer.c
 int cholesky_escalar( int n, double *C );
 int cholesky_bloques( int n, int b, double *C );
 

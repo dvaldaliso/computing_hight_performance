@@ -5,6 +5,7 @@
 #include "ctimer.h"
 #include <omp.h>
 //Paralelizado por tareas
+// gcc -fopenmp -o actividad1 actividad1.c ctimer.c -lm
 int main( int argc, char *argv[] ) {
 
   int v, i;

@@ -1,3 +1,4 @@
+// gcc -o knapsack knapsack.c ctimer.c
 
 /* 
  * Problema de la mochila.
@@ -68,10 +69,12 @@ void knapsackv( int piedras, int c, double *valor, int s[] ) {
       piedras--;
       double valor_sin_piedra;
       knapsackv( piedras, c, &valor_sin_piedra, s );
+     
       double valor_con_piedra;
       int s1[piedras];
       knapsackv( piedras, c-w[piedras], &valor_con_piedra, s1 );
       valor_con_piedra += p[piedras];
+      
       if( valor_sin_piedra > valor_con_piedra ) {
         *valor = valor_sin_piedra;
         s[piedras] = 0;
@@ -151,4 +154,3 @@ int main( int argc, char *argv[] ) {
   free(p);
   return 0;
 }
-

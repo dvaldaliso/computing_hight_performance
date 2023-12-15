@@ -16,7 +16,7 @@
 #include "ctimer.h"
 #include <omp.h>
 #include <math.h>
-
+// gcc -fopenmp -o knapsack knapsackParalell.c ctimer.c
 int *w;
 double *p;
 
@@ -48,8 +48,10 @@ double knapsack( int piedras, int c, int cutoff ) {
 
        #pragma omp task shared(valor_sin_piedra)
        valor_sin_piedra = knapsack( piedras, c, cutoff );
+      
        #pragma omp task shared(valor_con_piedra)
        valor_con_piedra = knapsack( piedras, c-w[piedras], cutoff ) + p[piedras];
+      
        #pragma omp taskwait
        valor = valor_sin_piedra > valor_con_piedra ?  valor_sin_piedra : valor_con_piedra;
     }
@@ -78,12 +80,15 @@ void knapsackv( int piedras, int c, double *valor, int s[] ) {
     } else {
       piedras--;
       double valor_sin_piedra;
+     
       #pragma omp task shared(valor_sin_piedra)
       knapsackv( piedras, c, &valor_sin_piedra, s );
       double valor_con_piedra;
       int s1[piedras];
+     
       #pragma omp task shared(valor_con_piedra, s1)
       knapsackv( piedras, c-w[piedras], &valor_con_piedra, s1 );
+     
       #pragma omp taskwait
       valor_con_piedra += p[piedras];
        if( valor_sin_piedra > valor_con_piedra ) {
