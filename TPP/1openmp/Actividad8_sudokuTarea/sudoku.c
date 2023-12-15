@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "sudoku.h"
-
+//gcc -fopenmp -o sudoku sudoku.c init_sudoku.c libsudoku_knights.o ctimer.c
 int main( int argc, char *argv[] ) {
   int mascara[81];
   int sol[81];

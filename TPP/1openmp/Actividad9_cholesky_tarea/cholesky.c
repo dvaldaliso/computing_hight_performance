@@ -2,7 +2,7 @@
 /* 
  * Cholesky por bloques. 
  */
-
+//gcc -o cholesky cholesky.c -llapack -lblas -lm ctimer.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
