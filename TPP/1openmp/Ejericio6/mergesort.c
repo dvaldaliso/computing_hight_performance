@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+int merge(int arr[], int l, int m, int h);
+int merge_sort(int arr[], int low, int high);
 int arr[20];       // array to be sorted
 
 int main()
@@ -13,7 +14,8 @@ int main()
   printf("Introduce los elementos del vector\n");  // input the elements
   for(i=0; i<n; i++)
     scanf("%d",&arr[i]);
-
+  #pragma omp parallel
+  #pragma omp single  
   merge_sort(arr,0,n-1);  // sort the array
 
   printf("Vector ordenado: ");  // print sorted array

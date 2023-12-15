@@ -16,7 +16,9 @@ void main()
     for(i = 0; i < n; ++i)
       printf(" %d ", a[i]);
     printf("\n");
-        
+    
+    #pragma omp parallel
+    #pragma omp single    
     quicksort( a, 0, n-1);
 
     printf("\n\nVector ordenado:  ");
