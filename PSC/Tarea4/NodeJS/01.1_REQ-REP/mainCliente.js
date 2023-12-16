@@ -29,16 +29,19 @@ var cont = 0
 
 // ....................................................
 // cuando reciba respuestas
-socketParaPedir.on("message", function(respuesta) {
+var recibirMensaje = function(){ socketParaPedir.on("message", function(respuesta) {
 
-	cont++
-	console.log("cliente " + MI_NOMBRE + ": recibo respuesta ", cont, ": [", respuesta.toString(), ']')
+		cont++
+		console.log("cliente " + MI_NOMBRE + ": recibo respuesta ", cont, ": [", respuesta.toString(), ']')
 
-	if (cont === N) {
-		socketParaPedir.close()
-		process.exit(0)
-	}
-})
+		if (cont === N) {
+			socketParaPedir.close()
+			process.exit(0)
+		}
+	})
+}
+
+recibirMensaje()
 
 // ....................................................
 // conectar
@@ -73,25 +76,4 @@ process.on('SIGINT', function() {
 	socketParaPedir.close()
 })
 
-function main() {
-	//init socket
-	//const socket= intiSocket();
-	// Leer mensaje
-	const read =  initReadLine();
-	
-	read.setPrompt(`What is your age? `);
-	read.prompt();
-	read.on('line', (userInput)=>{
-		console.log(`Age received by the user: ${userInput}`);
-		read.close();
-	});
-	  
-	  // Evento que se dispara cuando la interfaz de lectura se cierra
-	read.on('close', () => {
-		console.log('¡Hasta luego!');
-	}); 
-	
-	// enviar al servidor
-}
-main()
 

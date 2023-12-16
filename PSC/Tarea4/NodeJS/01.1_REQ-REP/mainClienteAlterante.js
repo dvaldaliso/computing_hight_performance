@@ -3,7 +3,7 @@
 // Envía un mensaje después de recibir la respuesta
 // al anterior (por tanto, espera respuesta antes de seguir)
 // ....................................................
-var zmq = require('zeromq')
+import * as zmq from "zeromq"
 
 // ....................................................
 
@@ -19,18 +19,19 @@ var cont = 0
 
 // ....................................................
 // cuando reciba respuesta
-socketREQ.on("message", function(reply) {
+var recibirRespuesta = function(){socketREQ.on("message", function(reply) {
 	
-	console.log("cliente " + MI_NOMBRE + ": recibo respuesta ", cont, ": [", reply.toString(), ']')
+		console.log("cliente " + MI_NOMBRE + ": recibo respuesta ", cont, ": [", reply.toString(), ']')
 
-	if (cont === N) {
-		socketREQ.close()
-		process.exit(0)
-	} else {
-		enviarMensaje(MI_NOMBRE)
-	}
-})
-
+		if (cont === N) {
+			socketREQ.close()
+			process.exit(0)
+		} else {
+			enviarMensaje(MI_NOMBRE)
+		}
+	})
+}
+recibirRespuesta()
 
 // ....................................................
 function enviarMensaje (origen) {
@@ -40,7 +41,7 @@ function enviarMensaje (origen) {
 }
 
 // ....................................................
-socketREQ.connect("tcp://localhost:5555")
+socketREQ.connect("tcp://localhost:5556")
 
 // ....................................................
 // envía un mensaje, y luego el siguiente, cuando reciba respuesta del

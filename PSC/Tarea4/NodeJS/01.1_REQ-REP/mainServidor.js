@@ -12,9 +12,6 @@ import {Chat} from "./Chat.js"
 // --------------------------------------------------------
 function main() {
 
-    	//
-    	//
-    	//
 	var chat = new Chat("tcp://*:5556")	
 	
 } // main ()

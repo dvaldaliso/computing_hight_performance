@@ -7,8 +7,8 @@ export class Chat{
         this.url = url
         this.cont = 0
         this.socketParaResponder = zmq.socket('rep')
-        this.bind()
-        this.espera()
+        this.connect()
+        this.run()
         this.close()
     }
     
@@ -22,7 +22,7 @@ export class Chat{
 	// efectivamente el bind()  haya ocurrido
 	// se ejecuta la función
 	//
-    bind (){
+    connect (){
         
         this.socketParaResponder.bind(this.url, function(err) {
             if (err) {
@@ -36,7 +36,7 @@ export class Chat{
 	// función que debe ejecutarse cuando
 	// llegue un mensaje al socket
 	//
-    espera() {
+    run() {
         
         this.socketParaResponder.on('message', function(peticionQueRecibo) {
             //
