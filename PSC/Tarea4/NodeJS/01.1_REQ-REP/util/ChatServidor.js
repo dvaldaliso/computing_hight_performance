@@ -1,3 +1,4 @@
+// "importamos biblioteca zeromq"
 import * as zmq from "zeromq"
 export class Chat{
     #socketParaResponder
