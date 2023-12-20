@@ -40,6 +40,9 @@ public:
 
         // Sobrecarga del operador +=
         NumeroR2& operator +=(const NumeroR2&);
+
+        // Sobrecarga del operador -=
+        NumeroR2& operator -=(const NumeroR2&);
          
          // Sobrecarga del operador +
          NumeroR2 operator +(const NumeroR2&);
@@ -81,6 +84,12 @@ ostream& operator <<( ostream& os, const NumeroR2& numeroR2 )  {
 NumeroR2& NumeroR2 :: operator +=( const NumeroR2& numeroR2 ) {
         this->x+=numeroR2.x;
         this->y+=numeroR2.y;
+    return *this;
+}
+// Sobrecarga del operador -=
+NumeroR2& NumeroR2 :: operator -=( const NumeroR2& numeroR2 ) {
+        this->x-=numeroR2.x;
+        this->y-=numeroR2.y;
     return *this;
 }
 
