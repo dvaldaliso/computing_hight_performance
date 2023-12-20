@@ -28,6 +28,7 @@ private:
 public:
         NumeroR2();
         NumeroR2(double x, double y) ;
+        NumeroR2 ( NumeroR2& copy );
         ~NumeroR2();
 
         //Operador para impirmir
@@ -67,6 +68,9 @@ NumeroR2::NumeroR2(): x{0.0}, y{0.0} {}
 //Constructor con valores seteados
 NumeroR2::NumeroR2(double x, double y): x{x}, y{y} {}
 
+// Constructor para Crear una copia
+NumeroR2::NumeroR2(NumeroR2& copy): x{copy.x}, y{copy.y} {}
+
 //Operador para impirmir
 ostream& operator <<( ostream& os, const NumeroR2& numeroR2 )  {
     os << "(" << numeroR2.x << "," << numeroR2.y << ")";
@@ -96,9 +100,10 @@ NumeroR2& NumeroR2 :: operator -(const NumeroR2& numeroR2 ) {
 // Sobrecarga del operador de post-incremento (a++)
 // Se asigna y luego incrementa
 NumeroR2 NumeroR2 :: operator ++(int) {
+        NumeroR2 temp(*this);
         x++;
         y++;                // Incrementa el valor del objeto original
-        return *this;
+        return temp;
 }
 
 // Sobrecarga del operador de pre-incremento (a++)
@@ -113,7 +118,7 @@ NumeroR2& NumeroR2 :: operator ++() {
 // Se asigna y luego incrementa
 NumeroR2 NumeroR2 :: operator --(int) {
         x--;
-        y--;                // Incrementa el valor del objeto original
+        y--;                // disminuye el valor del objeto original
         return *this;
 }
 
