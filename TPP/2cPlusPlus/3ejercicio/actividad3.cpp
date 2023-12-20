@@ -31,7 +31,7 @@ public:
         ~NumeroR2();
 
         //Operador para impirmir
-        friend ostream& operator <<( ostream& , NumeroR2& );
+        friend ostream& operator <<( ostream& ,const NumeroR2& );
         /* function friend: es una funcion que no pertenece a la clase,
          pero que tiene permiso para acceder a sus variables y funciones miembro privadas 
          por medio de los operadores punto (.) y flecha (->)
@@ -46,8 +46,17 @@ public:
          // Sobrecarga del operador -
          NumeroR2& operator -(const NumeroR2&);
 
-         // Sobrecarga del operador ++
-         NumeroR2& operator ++(int);
+         // Sobrecarga del operador de post-incremento (a++)
+         NumeroR2 operator ++(int);
+
+        // Sobrecarga del operador de pre-incremento (++a)
+         NumeroR2& operator ++();
+
+        // Sobrecarga del operador de post-disminucion (a++)
+         NumeroR2 operator --(int);
+
+        // Sobrecarga del operador de pre-disminucion (++a)
+         NumeroR2& operator --();
          
          // Sobrecarga del operador =
          NumeroR2& operator =( const NumeroR2& );
@@ -59,7 +68,7 @@ NumeroR2::NumeroR2(): x{0.0}, y{0.0} {}
 NumeroR2::NumeroR2(double x, double y): x{x}, y{y} {}
 
 //Operador para impirmir
-ostream& operator <<( ostream& os, NumeroR2& numeroR2 ) {
+ostream& operator <<( ostream& os, const NumeroR2& numeroR2 )  {
     os << "(" << numeroR2.x << "," << numeroR2.y << ")";
     return os;
 }
@@ -70,28 +79,55 @@ NumeroR2& NumeroR2 :: operator +=( const NumeroR2& numeroR2 ) {
         y+=numeroR2.y;
     return *this;
 }
+
 // Sobrecarga del operador +
 NumeroR2& NumeroR2 :: operator +(const NumeroR2& numeroR2 ) {
         x+numeroR2.x;
         y+numeroR2.y;
     return *this;
 }
+//Se usan flechas para acceder a la variable porque es una referencia; O podemos usarlo como los dos ejemplos anteriores.
 // Sobrecarga del operador -
 NumeroR2& NumeroR2 :: operator -(const NumeroR2& numeroR2 ) {
-        x-numeroR2.x;
-        y-numeroR2.y;
+        this->x-numeroR2.x;
+        this->y-numeroR2.y;
     return *this;
 }
-// Sobrecarga del operador --
-NumeroR2& NumeroR2 :: operator ++(int) {
+// Sobrecarga del operador de post-incremento (a++)
+// Se asigna y luego incrementa
+NumeroR2 NumeroR2 :: operator ++(int) {
         x++;
-        y++;
+        y++;                // Incrementa el valor del objeto original
+        return *this;
+}
+
+// Sobrecarga del operador de pre-incremento (a++)
+// Se incrementa y luego se asigna
+NumeroR2& NumeroR2 :: operator ++() {
+        this->x ++;
+        this->y ++;
+    return *this;
+}
+
+// Sobrecarga del operador de post-disminucion (a++)
+// Se asigna y luego incrementa
+NumeroR2 NumeroR2 :: operator --(int) {
+        x--;
+        y--;                // Incrementa el valor del objeto original
+        return *this;
+}
+
+// Sobrecarga del operador de pre-disminucion (a++)
+// Se incrementa y luego se asigna
+NumeroR2& NumeroR2 :: operator --() {
+        this->x --;
+        this->y --;
     return *this;
 }
 // Sobrecarga del operador =
 NumeroR2& NumeroR2 :: operator =( const NumeroR2& copy ) {
-        x=copy.x;
-        y=copy.y;
+        this->x=copy.x;
+        this->y=copy.y;
   return *this ;
 }
 
@@ -121,13 +157,13 @@ int main( int argc, char *argv[] ) {
   cout << "c = b - a = " << c << endl;
 
   cout << "c++ es " << c++ << endl;
-  /*cout << "++c es " << ++c << endl;
+  cout << "++c es " << ++c << endl;
   cout << "++a es " << ++a << endl;
   cout << "a++ es " << a++ << endl;
   cout << "--a es " << --a << endl;
   cout << "a-- es " << a-- << endl;
 
   cout << "b = a-- es " << b << endl;
-  cout << "b = --a es " << b << endl;*/
+  cout << "b = --a es " << b << endl;
 
 }
