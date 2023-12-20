@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "tbb/parallel invoke.h".
 
 size_t fib( size_t n ) {
   size_t i, j;
@@ -15,6 +16,13 @@ size_t fib( size_t n ) {
 
 size_t fib1( size_t n ) {
   /* Implementad la version con parallel_invoke  */
+  size_t i, j;
+  if (n<2) m = n;
+  else {
+    parallel_invoke( FibClass( n-1, i ),
+    FibClass( n-2, j ) );
+      m = i+j;
+    }
 }
 
 size_t fib2( size_t n ) {
