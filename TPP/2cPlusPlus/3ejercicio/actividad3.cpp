@@ -1,3 +1,8 @@
+#include <iostream>
+#include <ostream>   
+using namespace std;
+//compilacion -> g++ -o actividad3 actividad3.cpp
+
 /* El código desarrollado en la Actividad 3 debe funcionar con el siguiente programa principal. */
 /* Si el código está correcto mostrará lo siguiente */
 /* a = ( 12, 0 )            */
@@ -15,66 +20,86 @@
 /* a-- es ( 13, -10 )       */
 /* b = a-- es ( 0, -11 )    */
 /* b = --a es ( 0, -11 )    */
-#include <iostream>
-using namespace std;
+class NumeroR2
+{
+private:
+        double x;
+        double y;
+public:
+        NumeroR2();
+        NumeroR2(double x, double y) ;
+        ~NumeroR2();
 
-class NumeroR2(){
-//1.
-	private:
-		double a; // Atributo q representa numero real
-		double b; // Atributo q representa numero real
-	public:
+        //Operador para impirmir
+        friend ostream& operator <<( ostream& , NumeroR2& );
+        /* function friend: es una funcion que no pertenece a la clase,
+         pero que tiene permiso para acceder a sus variables y funciones miembro privadas 
+         por medio de los operadores punto (.) y flecha (->)
+        */
 
-		NumeroR2() : a(0.0),b(0.0){} //Constructor por defecto inicializando valores a 0.
-		NumeroR2(double c, double d) : a(c), b(d){} //El constructor que recibe como argumento
-							//dos números reales que serán las componentes del número.
-		NumeroR2(const NumeroR2 copia); // Constructor de copia
-//2. Implementar el operador << en primer lugar para poder ir comprobando en la salida la implementación de cada método u operador.
-		friend ostream& operator<<(ostream& os, const NumeroR2& numero);
-//3. Implementar las operaciones aritméticas habituales de los números sobrecargando los operadores correspondientes:
-	// Operador +=
-	NumeroR2& operator+=(const NumeroR2& copia) {
-		x += copia.a;
-		y += copia.b;
-		return *this;
-	}
-	// Operador -=
-	NumeroR2& operator-=(const NumeroR2& copia) {
-                x -= copia.a;
-                y -= copia.b;
-                return *this;
-        }
-	// Operador +
-	NumeroR2& operator+(const NumeroR2& copia) {
-		return NumeroR2(x + copia.x, y + copia.y);
-        }
-	// Operador -
-	NumeroR2& operator-(const NumeroR2& copia) {
-		return NumeroR2(x - copia.x, y - copia.y);
-        }
-	// Operador ++
-	NumeroR2& operator++() {
-                ++x;
-                ++y;
-                return *this;
-        }
-	// Operador --
-	NumeroR2& operator--() {
-                --x;
-                --y;
-                return *this;
-        }
-	// Operador =
-/*	NumeroR2& operator=( const NumeroR2& copia) {
-                return (copia.x, copia.y);
-        }*/
+        // Sobrecarga del operador +=
+        NumeroR2& operator +=(const NumeroR2&);
+         
+         // Sobrecarga del operador +
+         NumeroR2& operator +(const NumeroR2&);
+
+         // Sobrecarga del operador -
+         NumeroR2& operator -(const NumeroR2&);
+
+         // Sobrecarga del operador ++
+         NumeroR2& operator ++(int);
+         
+         // Sobrecarga del operador =
+         NumeroR2& operator =( const NumeroR2& );
 };
+//Constructor con valores por default 0,0
+NumeroR2::NumeroR2(): x{0.0}, y{0.0} {} 
 
-NumeroR2 :: NumeroR2 ( const NumeroR2 & copia ) {
-become ( copia.a, copia.b); // NO SE SI ESTARÁ BIEN. Constructor de copia.
+//Constructor con valores seteados
+NumeroR2::NumeroR2(double x, double y): x{x}, y{y} {}
+
+//Operador para impirmir
+ostream& operator <<( ostream& os, NumeroR2& numeroR2 ) {
+    os << "(" << numeroR2.x << "," << numeroR2.y << ")";
+    return os;
+}
+
+// Sobrecarga del operador +=
+NumeroR2& NumeroR2 :: operator +=( const NumeroR2& numeroR2 ) {
+        x+=numeroR2.x;
+        y+=numeroR2.y;
+    return *this;
+}
+// Sobrecarga del operador +
+NumeroR2& NumeroR2 :: operator +(const NumeroR2& numeroR2 ) {
+        x+numeroR2.x;
+        y+numeroR2.y;
+    return *this;
+}
+// Sobrecarga del operador -
+NumeroR2& NumeroR2 :: operator -(const NumeroR2& numeroR2 ) {
+        x-numeroR2.x;
+        y-numeroR2.y;
+    return *this;
+}
+// Sobrecarga del operador --
+NumeroR2& NumeroR2 :: operator ++(int) {
+        x++;
+        y++;
+    return *this;
+}
+// Sobrecarga del operador =
+NumeroR2& NumeroR2 :: operator =( const NumeroR2& copy ) {
+        x=copy.x;
+        y=copy.y;
+  return *this ;
 }
 
 
+
+NumeroR2::~NumeroR2()
+{
+}
 
 int main( int argc, char *argv[] ) {
   
@@ -88,6 +113,7 @@ int main( int argc, char *argv[] ) {
   a += b;
   cout << "a += b es " << a << endl;
 
+ 
   c = a + b;
   cout << "c = a + b = " << c << endl;
 
@@ -95,14 +121,13 @@ int main( int argc, char *argv[] ) {
   cout << "c = b - a = " << c << endl;
 
   cout << "c++ es " << c++ << endl;
-  cout << "++c es " << ++c << endl;
+  /*cout << "++c es " << ++c << endl;
   cout << "++a es " << ++a << endl;
   cout << "a++ es " << a++ << endl;
   cout << "--a es " << --a << endl;
   cout << "a-- es " << a-- << endl;
 
   cout << "b = a-- es " << b << endl;
-  cout << "b = --a es " << b << endl;
+  cout << "b = --a es " << b << endl;*/
 
 }
-

@@ -10,30 +10,38 @@ private:
 public:
     Tabla ();
     Tabla (int n);
+
+    // Constructor para Crear una copia
     Tabla ( Tabla& copy );
+    // Sobrecarga del operador ()
     Tabla& operator =( const Tabla& );
+    // Sobrecarga del operador []
     double& operator[](int i);
     int getN() const {return sz;}
     friend ostream& operator <<( ostream& , Tabla& );
+    /* function friend: es una funcion que no pertenece a la clase,
+         pero que tiene permiso para acceder a sus variables y funciones miembro privadas 
+         por medio de los operadores punto (.) y flecha (->)
+        */
     ~Tabla();
 };
-
+// Constructor por default
 Tabla::Tabla(): elem{new double[10]}, sz{10} {}
 Tabla::Tabla(int s): elem{new double[s]}, sz{s} {}
 
-// Crear una copia
+// Constructor para Crear una copia
 Tabla::Tabla(Tabla& copy): elem{new double[copy.getN()]}, sz{copy.getN()} {
   for (int i=0; i<copy.getN(); i++){
     elem[i] = copy[i];
   }
 }
 
-// Operador de posicion
+// Sobrecarga del operador de posicion
 double& Tabla::operator[](int i){
   if ( i <0 || sz <= i ) throw out_of_range { " Vector :: operator [] " };
     return elem [ i ];
 }
-// Operador de asignacion
+// Sobrecarga del operador de asignacion
 Tabla& Tabla :: operator =( const Tabla& copy ) {
   double * p = new double [ copy.getN()];
   for ( int i =0; i != copy.getN() ; ++ i )
@@ -44,7 +52,7 @@ Tabla& Tabla :: operator =( const Tabla& copy ) {
   return * this ;
 }
 // Ver la diferencia del const en "Operador de asignacion" y "Operador de imprimir"
-// Operador de imprimir
+// Sobrecarga del operador de imprimir
 ostream& operator <<( ostream& os , Tabla& e ) {
    os << "[";
     for (size_t i = 0; i < e.getN(); ++i) {
