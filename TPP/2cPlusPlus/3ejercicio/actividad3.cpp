@@ -31,7 +31,7 @@ public:
         NumeroR2 ( NumeroR2& copy );
         ~NumeroR2();
 
-        //Operador para impirmir
+        //Declaracion de Operador para impirmir
         friend ostream& operator <<( ostream& ,const NumeroR2& );
         /* function friend: es una funcion que no pertenece a la clase,
          pero que tiene permiso para acceder a sus variables y funciones miembro privadas 
@@ -41,28 +41,28 @@ public:
         // Sobrecarga del operador +=
         NumeroR2& operator +=(const NumeroR2&);
 
-        // Sobrecarga del operador -=
+        // Declaracion de Sobrecarga del operador -=
         NumeroR2& operator -=(const NumeroR2&);
          
-         // Sobrecarga del operador +
+         // Declaracion de Sobrecarga del operador +
          NumeroR2 operator +(const NumeroR2&);
 
-         // Sobrecarga del operador -
+         // Declaracion de Sobrecarga del operador -
          NumeroR2 operator -(const NumeroR2&);
 
-         // Sobrecarga del operador de post-incremento (a++)
+         //Declaracion de Sobrecarga del operador de post-incremento (a++)
          NumeroR2 operator ++(int);
 
-        // Sobrecarga del operador de pre-incremento (++a)
+        //Declaracion de Sobrecarga del operador de pre-incremento (++a)
          NumeroR2& operator ++();
 
-        // Sobrecarga del operador de post-disminucion (a++)
+        //Declaracion de Sobrecarga del operador de post-disminucion (a++)
          NumeroR2 operator --(int);
 
-        // Sobrecarga del operador de pre-disminucion (++a)
+        //Declaracion de Sobrecarga del operador de pre-disminucion (++a)
          NumeroR2& operator --();
          
-         // Sobrecarga del operador =
+         //Declaracion de Sobrecarga del operador =
          NumeroR2& operator =( const NumeroR2& );
 };
 //Constructor con valores por default 0,0
@@ -74,39 +74,39 @@ NumeroR2::NumeroR2(double x, double y): x{x}, y{y} {}
 // Constructor para Crear una copia
 NumeroR2::NumeroR2(NumeroR2& copy): x{copy.x}, y{copy.y} {}
 
-//Operador para impirmir
+//Implementacion Sobrecarga del operador para impirmir
 ostream& operator <<( ostream& os, const NumeroR2& numeroR2 )  {
     os << "(" << numeroR2.x << "," << numeroR2.y << ")";
     return os;
 }
 
-// Sobrecarga del operador +=
+//Implementacion Sobrecarga del operador +=
 NumeroR2& NumeroR2 :: operator +=( const NumeroR2& numeroR2 ) {
         this->x+=numeroR2.x;
         this->y+=numeroR2.y;
     return *this;
 }
-// Sobrecarga del operador -=
+//Implementacion Sobrecarga del operador -=
 NumeroR2& NumeroR2 :: operator -=( const NumeroR2& numeroR2 ) {
         this->x-=numeroR2.x;
         this->y-=numeroR2.y;
     return *this;
 }
 
-// Sobrecarga del operador +
+//Implementacion Sobrecarga del operador +
 NumeroR2 NumeroR2 :: operator +(const NumeroR2& numeroR2 ) {
     NumeroR2 n(this->x+numeroR2.x,
                 this->y+numeroR2.y);
     return n;
 }
 //Se usan flechas para acceder a la variable porque es una referencia; O podemos usarlo como los dos ejemplos anteriores.
-// Sobrecarga del operador -
+//Implementacion Sobrecarga del operador -
 NumeroR2 NumeroR2 :: operator -(const NumeroR2& numeroR2 ) {
     NumeroR2 n(this->x-numeroR2.x,
                 this->y-numeroR2.y);
     return n;
 }
-// Sobrecarga del operador de post-incremento (a++)
+//Implementacion Sobrecarga del operador de post-incremento (a++)
 // Se asigna y luego incrementa
 NumeroR2 NumeroR2 :: operator ++(int) {
         NumeroR2 temp = *this;
@@ -115,7 +115,7 @@ NumeroR2 NumeroR2 :: operator ++(int) {
         return temp;
 }
 
-// Sobrecarga del operador de pre-incremento (++a)
+//Implementacion Sobrecarga del operador de pre-incremento (++a)
 // Se incrementa y luego se asigna
 NumeroR2& NumeroR2 :: operator ++() {
         this->x ++;
@@ -123,17 +123,17 @@ NumeroR2& NumeroR2 :: operator ++() {
     return *this;
 }
 
-// Sobrecarga del operador de post-disminucion (a--)
-// Se asigna y luego incrementa
+//Implementacion Sobrecarga del operador de post-disminucion (a--)
+// Se asigna y luego decrementa
 NumeroR2 NumeroR2 :: operator --(int) {
         NumeroR2 temp = *this;
         x--;
-        y--;                // Incrementa el valor del objeto original
+        y--;                // Decrementa el valor del objeto original
         return temp;
 }
 
 // Sobrecarga del operador de pre-disminucion (--a)
-// Se incrementa y luego se asigna
+// Se decrementa y luego se asigna
 NumeroR2& NumeroR2 :: operator --() {
         this->x--;
         this->y--;
