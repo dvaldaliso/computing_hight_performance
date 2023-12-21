@@ -1,0 +1,8 @@
+ 7               how many values for m and n
+  100 200 500 1000 1500 2000 2000    values for m
+  100 200 500 1000 1500 2000 2000    values for n
+   10  20  50  100  150  200    1    values for k
+ 1               number of executions
+ 0              print_data (0=no;1=yes)
+ 1              check_result (0=no;1=yes)
+ 20 21 22 23    seeds (4 integer values; last one must be odd)

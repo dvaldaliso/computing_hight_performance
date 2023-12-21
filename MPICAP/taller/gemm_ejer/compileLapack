@@ -1,0 +1,133 @@
+#!/bin/bash
+# *****************************************************************************
+#
+# Script to compile Fortran codes with LAPACK libraries for many target 
+# machines.
+# A machine is a combination of architecture, compiler and libraries.
+# It calls make in current directory passing the following variables:
+#   PRECISION:      Precision to be used (s:single;d:double precision).
+#   MACHINE:        Type of architecture, compiler, and libraries.
+#   ARCHITECTURE:   Target Archicture. Used to conditional compilation.
+#   FC:             Fortran compiler.
+#   FCFLAGS:        Fortran compiler flags.
+#   LD:             Fortran loader.
+#   LDFLAGS:        Fortran loader flags.
+#   CPP:            C preprocessor.
+#   CPPFLAGS:       C preprocessor flags.
+#   LAPACK:         Lapack library to be used.
+#   BLAS:           Blas library to be used.
+#
+# Usage:
+#   $0 <precision> <machine>
+#     <machine> : tejo-gc-openblas, gquintan-gc-openblas, etc."
+#
+# Date:     2021-12-24
+# Version:  1.32
+versionScript="1.32"
+#
+# *****************************************************************************
+#
+#
+#=============================================================================
+# Function to show the usage of the script.
+#
+function ShowUsage {
+  echo "Usage: $0 <prec> <machine>"
+  echo "          <prec>=s or d"
+  echo "          <machine> = tejo-gc-openblas, gquintan-gc-openblas, etc."
+  exit 1
+}
+#
+#=============================================================================
+# The main code starts here.
+#
+echo "compileLapack" $versionScript
+#
+# Checking input arguments.
+#
+if [[ $# -ne 2 ]] ; then
+  ShowUsage
+  exit -1
+fi
+prec=$1
+machine=$2
+
+#usercppflags="-DBOUNDSCHECK -DERRORCHECK"
+#usercppflags="-DBOUNDSCHECK -DERRORCHECK -DNOSCALING -DSHOWMATRICES"
+#usercppflags="-DBOUNDSCHECK -DERRORCHECK -DNOSCALING"
+usercppflags="-DERRORCHECK"
+
+#
+# Check possible machines.
+#
+MYLIB=${HOME}/mylib
+
+case "$machine" in
+
+  "aster-gc-mkl" )
+    flags="-O3 -fomit-frame-pointer"
+    architecture="LINUX"
+    cpp="/usr/bin/cpp"
+    cppflags="-traditional-cpp -P"
+    fc="gfortran"
+    fcflags="-c -fopenmp $flags"
+    cc="gcc"
+    ccflags="-c -fopenmp $flags"
+    ld="gcc"
+    ldflags="-fopenmp $flags"
+    blas="-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 \
+          -lpthread -lm"
+    lapack=""
+    tmglib=""
+    ;;
+
+
+
+
+  * )
+    echo " "
+    echo "ERROR: Target machine not recognized."
+    echo " "
+    ShowUsage
+    exit 1
+    ;;
+esac
+#
+# Print definitions.
+#
+echo "Target:      " all 
+echo "PRECISION:   " $prec 
+echo "MACHINE:     " $machine
+echo "ARCHITECTURE:" $architecture
+echo "FC:          " $fc
+echo "FCFLAGS:     " $fcflags
+echo "CC:          " $cc
+echo "CCFLAGS:     " $ccflags
+echo "LD:          " $ld
+echo "LDFLAGS:     " $ldflags
+echo "CPP:         " $cpp
+echo "CPPFLAGS:    " $cppflags -D$architecture $usercppflags
+echo "LAPACK:      " $lapack
+echo "BLAS:        " $blas
+echo "TMGLIB:      " $tmglib
+#
+# Call make with target "all".
+#
+make all \
+  PRECISION="$prec" \
+  MACHINE="$machine" \
+  ARCHITECTURE="$architecture" \
+  FC="$fc" \
+  FCFLAGS="$fcflags" \
+  CC="$cc" \
+  CCFLAGS="$ccflags" \
+  LD="$ld" \
+  LDFLAGS="$ldflags" \
+  CPP="$cpp" \
+  CPPFLAGS="$cppflags -D$architecture $usercppflags" \
+  LAPACK="$lapack" \
+  BLAS="$blas" \
+  TMGLIB="$tmglib"
+# End of script.
+exit 0
+

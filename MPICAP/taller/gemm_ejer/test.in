@@ -1,0 +1,8 @@
+ 3              how many values for m and n
+  3 5 3               values for m
+  3 3 5               values for n
+  3 2 2               values for k
+ 1              number of executions
+  1             print_data (0=no;1=yes)
+  1             check_result (0=no;1=yes)
+  20 21 22 23   seeds (4 integer values; last one must be odd)
