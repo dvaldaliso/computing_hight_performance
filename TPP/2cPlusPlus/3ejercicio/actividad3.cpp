@@ -65,6 +65,8 @@ public:
          //Declaracion de Sobrecarga del operador =
          NumeroR2& operator =( const NumeroR2& );
 };
+//Esto se llama inline: implementar los metodos fuera de la clase
+
 //Constructor con valores por default 0,0
 NumeroR2::NumeroR2(): x{0.0}, y{0.0} {} 
 

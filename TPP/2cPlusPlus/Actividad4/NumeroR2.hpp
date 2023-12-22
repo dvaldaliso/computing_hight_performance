@@ -11,7 +11,8 @@ public:
         NumeroR2();//Declaracion Constructor con valores por default 0,0
         NumeroR2(T x, T y);//Declaracion Constructor con valores seteados
         NumeroR2 (NumeroR2<T>& copy); // Constructor para Crear una copia
-
+        T getX();// Obetener la x
+        T getY();//Obtener la y
         //Declaracion de sobrecarga de operador para impirmir
         template<typename m> 
         friend ostream& operator <<( ostream& ,const NumeroR2<m>&);
@@ -51,6 +52,7 @@ public:
 
 
 };
+//Esto se llama inline: implementar los metodos fuera de la clase
 
 //Implementacion de constructor con valores por default 0,0
 template < typename T >
@@ -63,6 +65,18 @@ NumeroR2<T>::NumeroR2(T x, T y): x{x}, y{y} {}
 //Implementacion de constructor para Crear una copia
 template < typename T >
 NumeroR2<T>::NumeroR2(NumeroR2<T>& copy): x{copy.x}, y{copy.y} {}
+
+//Obtener la x
+template < typename T >
+T NumeroR2<T>::getX() {
+    return this->x;
+}
+
+//Obtener la y
+template < typename T >
+T NumeroR2<T>::getY() {
+    return this->y;
+}
 
 //Implementacion de sobrecarga de operador para impirmir
 template <typename m>

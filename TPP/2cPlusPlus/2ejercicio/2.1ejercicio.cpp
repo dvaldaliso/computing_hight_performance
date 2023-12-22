@@ -65,7 +65,7 @@ ostream& operator <<( ostream& os , Tabla& e ) {
     return os;
 }
 
-//Templates: iterators
+// iterators
 double* begin( Tabla& x ) {
 return x.getN() ? &x[0] : nullptr ;
 }
