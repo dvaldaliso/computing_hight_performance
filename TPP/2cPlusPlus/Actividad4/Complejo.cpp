@@ -231,10 +231,15 @@ int main(){
 
     vector<Complejo<double>>::iterator ptr; 
 
-    cout << "The vector elements are : "; 
-    for (ptr = listComplejo.begin(); ptr < listComplejo.end(); ptr++) 
+    cout << "The vector iterator elements are : "; 
+    for (ptr = listComplejo.begin(); ptr != listComplejo.end(); ptr++) 
         cout << *ptr << " "<<endl; 
 
-
+    cout << "The vector foreach elements are : "; 
+     for(Complejo<double> a : listComplejo)
+    {
+    	cout<<a<<" "<< endl;
+    }
+    return 0;
 
 }
