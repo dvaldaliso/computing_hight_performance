@@ -2,6 +2,7 @@
 #include <string>
 #include "NumeroR2.hpp"
 #include <cmath>
+#include <vector>
 using namespace std;
 // g++ -o Complejo Complejo.cpp -lm
 template<typename T>
@@ -13,7 +14,7 @@ private:
 public:
     Complejo();//Declaracion de Contructor
     Complejo(T x, T y);//Declaracion de Contructor
-    Complejo (Complejo<T>& copy); // Constructor para Crear una copia
+    Complejo (const Complejo<T>& copy); // Constructor para Crear una copia
     T getModulo();
     //Declaracion de sobrecarga de Operadores
     //Declaracion de sobrecarga de operador para impirmir
@@ -83,7 +84,7 @@ Complejo<T>::Complejo(T x, T y): NumeroR2<T>(x,y) {
 
 //Implementacion de constructor para Crear una copia
 template < typename T >
-Complejo<T>::Complejo(Complejo<T>& copy) {
+Complejo<T>::Complejo(const Complejo<T>& copy) {
     this->setX(copy.getX());
     this->setY(copy.getY());
     this->modulo();
@@ -197,8 +198,9 @@ int main(){
     e(1.0,3.0);
     f(-11.0);
     g = e + f;
-    cout << "e = " << e << endl;
-    cout << "f = " << f << endl;
+
+    
+
     cout << "g = " << g << endl;
     
     // a
@@ -217,6 +219,22 @@ int main(){
 
     //Modulo c
     cout << "z = " << c.getModulo() << endl;
+
+    
+    vector<Complejo<double>> listComplejo;
+    listComplejo.push_back(e);
+    listComplejo.push_back(a);
+    listComplejo.push_back(b);
+    listComplejo.push_back(d);
+    listComplejo.push_back(c);
+    listComplejo.push_back(f);
+
+    vector<Complejo<double>>::iterator ptr; 
+
+    cout << "The vector elements are : "; 
+    for (ptr = listComplejo.begin(); ptr < listComplejo.end(); ptr++) 
+        cout << *ptr << " "<<endl; 
+
 
 
 }
