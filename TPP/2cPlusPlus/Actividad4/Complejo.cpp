@@ -220,5 +220,3 @@ int main(){
 
 
 }
-
-operator3129*-
