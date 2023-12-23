@@ -2,6 +2,7 @@
 #include <string>
 #include "NumeroR2.hpp"
 #include <cmath>
+#include <algorithm>    // std::for_each
 #include <vector>
 using namespace std;
 // g++ -o Complejo Complejo.cpp -lm
@@ -181,9 +182,16 @@ Complejo<T>& Complejo<T> :: operator =( const Complejo<T>& copy ) {
   return *this;
 }
 
+template <typename T>
+void modulod (Complejo<T> c ) {
+    cout << c.getModulo() << endl;
+}
 
-
-
+template <typename T>
+class functor {
+    public:
+        void operator() (Complejo<T> &c) { cout << c.getModulo() << endl; }
+};
 int main(){
     //Creamos un objeto complejo y lo asignamos a la variable "a"
     Complejo<double> a( 12.0, 0.0 );
@@ -198,27 +206,6 @@ int main(){
     e(1.0,3.0);
     f(-11.0);
     g = e + f;
-
-    
-
-    cout << "g = " << g << endl;
-    
-    // a
-    cout << "a = " << a << endl;
-    // b
-    cout << "b = " << b << endl;
-    // c
-    cout << "c = " << c << endl;
-    // d
-    cout << "d = " << d << endl;
-    //Modulo a
-    cout << "z = " << a.getModulo() << endl;
-
-    //Modulo b
-    cout << "z = " << b.getModulo() << endl;
-
-    //Modulo c
-    cout << "z = " << c.getModulo() << endl;
 
     
     vector<Complejo<double>> listComplejo;
@@ -238,8 +225,19 @@ int main(){
     cout << "The vector foreach elements are : "; 
      for(Complejo<double> a : listComplejo)
     {
-    	cout<<a<<" "<< endl;
+    	cout<<a<<" mod:"<<a.getModulo()<< endl;
     }
-    return 0;
+    //Falta el 9 for_each
+    cout << "The vector foreach elements are : "; 
+    cout << "myvector function contains:"<<endl;
+    for_each (listComplejo.begin(), listComplejo.end(), modulod<double>);
 
+   
+
+    // using object as comp
+    sort (listComplejo.begin(), listComplejo.end(), [=](Complejo<double> i, Complejo<double> j){return i.getModulo()<j.getModulo();});
+
+    cout << "The vector foreach elements are : "; 
+    cout << "myvector object contains:"<<endl;
+    for_each (listComplejo.begin(), listComplejo.end(), functor<double>());
 }
