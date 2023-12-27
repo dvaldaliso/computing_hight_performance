@@ -6,10 +6,11 @@
 	"version": "0.0.1",
 	"repository": "empty",
 	"scripts": {
-		"cliente": "node mainCliente.js",
-		"servidor": "node mainServidor.js"
+		"cliente": "node mainSubscriber.js",
+		"clienteRecursivo": "node mainPublisherRecursivo.js",
+		"servidor": "node mainPublisher.js"
 	},
 	"dependencies": {
-		"zeromq": "^5.2.0"
+		"zeromq": "^5.3.1"
 	}
 }
