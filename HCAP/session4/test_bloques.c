@@ -13,7 +13,7 @@ void matprodbloques(double *A, double *B, double *C, int lda, int tb );
 
 
 int main( int argc, char *argv[] ) {
-
+  // tb-> tamaño del bloque
   int  n=1000,i,k, tb=100;
   clock_t tic,toc;
   int nb=n/tb; //numero de bloques
@@ -151,7 +151,7 @@ void From_blocked(double C[], int n, int b) {
 
 void Blocked_mat_mult(double *A, double *B, double *C,  int n_bar,int tb)
 {
-   int i_bar, j_bar, k_bar;  // index block rows and columns
+   int i_bar, j_bar, k_bar;  // index block, rows and columns
 
    for (j_bar = 0; j_bar < n_bar; j_bar++)
       for (k_bar = 0; k_bar < n_bar; k_bar++) {

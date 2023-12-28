@@ -2,7 +2,7 @@
 ## Makefile (Es usado para agrupar ciertas reglas para la comiplacion)
 ## Todos los ejercicios que tengan este archivo -> ./make 
 
-## CMCP -- programacion paralela
+# CMCP -- programacion paralela
 ##    openMP
 ###     Compilacion -> gcc -fopenmp file.c -o fileprograma
 ###     Ejecucion shedule -> OMP_NUM_THREADS=4 OMP_SCHEDULE=guided ./fileprograma
@@ -18,6 +18,8 @@
 ###       Compilacion -> nvcc -o dquery dquery.cu
 ###       Ejecucion   -> ./dquery
 
+# HCAP Herramientas de computación de altas prestaciones (HCAP)
+## algorimo de matrices  bloquesm descomposicion de matrices LU
 
 # interesante 
 
@@ -29,11 +31,9 @@
 ### gcc -fopenmp -o knapsackBF knapsackBF.c -lm -DCHECK (se pone el -DCHECK PARA QUE EJECUTE UNA PARTE ESPECIFICA DEL CODIGO)
 ## Compilacion c++ -> g++ -o file file.cpp
 
-
-
-# MPICAP
+# MPICAP -> Modelado y resolución de problemas en ingeniería mediante computación de altas prestaciones
 ## Esta asignatura es en Matlab
 
 # PSC -> Programacion Sistemas cloud
-### Chat
+### Chat, microservicios, queue, Faas
 ### golang -> dependencias -> go get    
