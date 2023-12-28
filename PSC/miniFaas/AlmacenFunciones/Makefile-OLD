@@ -1,0 +1,62 @@
+
+help:
+	@echo "----------------------------------------------"
+	@echo " lee Makefile "
+	@echo 
+	@echo  -------- sin docker-compose
+	@echo     programa en linux, redis en contenedor
+	@echo 		
+	@echo 		make runredis
+	@echo 		
+	@echo 		make stopredis
+	@echo 
+	@echo 		make entrarredis // dentro: redis-cli
+	@echo 
+	@echo  ---------limpieza
+	@echo 		make clean
+	@echo 
+	@echo recordar: docker inspect
+	@echo "----------------------------------------------"
+	
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+
+# -------------------------------------------------------------------
+#
+# utilidades sobre el contenedor redis
+#
+# -------------------------------------------------------------------
+old_runredis:
+	docker run --name redisserv --rm -p 6379:6379 redis
+
+runredis:
+	xterm -bg red -e docker run --name redisserv --rm -p 6379:6379 redis  &
+	
+stopredis:
+	docker stop redisserv
+
+entrarredis: 
+	docker exec -it redisserv sh 
+
+# -------------------------------------------------------------------
+#
+# utilidades
+#
+# -------------------------------------------------------------------
+ls:
+	docker images
+
+ps:
+	docker ps -a
+
+
+rmcont:
+	docker rm `docker ps -aq` || true
+#wc -l `ls`
+
+clean: rmcont
+	docker rmi lo_que_sea || true
+	@echo
+	docker ps -a
+	@echo
+	docker images

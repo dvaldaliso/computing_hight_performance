@@ -1,0 +1,8 @@
+{
+	"name": "AlmacenFunciones",
+	"description": "2023-24",
+	"version": "0.0.1",
+	"dependencies": {
+		"redis": "^4.6.11"
+	}
+}
