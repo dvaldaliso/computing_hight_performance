@@ -1,11 +1,12 @@
 import * as zmq from "zeromq"
 export default class ClientController {
     
-    constructor(url, port, nombre) {
-        console.log("Connecting to hello world server...")
+    constructor(url, port, nombre, tiempo) {
+        console.log("Connecting to hello world server... tiempo"+tiempo)
         this.socketParaPedir = zmq.socket('req')
         this.N=10
         this.cont=0
+        this.tiempo=tiempo
         this.nombre=nombre
         this.#connect(url+":"+port)
         this.#recibirRespuesta()

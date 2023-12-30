@@ -6,7 +6,8 @@
 
 import ClientController from "./controller/clientController.js";
 function main(){
-	new ClientController("tcp://localhost","5555","david")
+	let tiempo = process.argv[2] !=null ? process.argv[2]: "12:00"
+	new ClientController("tcp://localhost","5555","david",tiempo)
 }
 main()
 
