@@ -1,0 +1,39 @@
+#    - name: Copy BOTO's credential file to remote location
+#      copy: src=~/.boto dest=~/.boto
+
+#    - name: Retrieving Jinja2 Templates from Amazon S3
+#      s3: bucket=cursocloudaws-public object={{ item }} mode=get dest=/tmp/{{ item }}
+#      with_items:
+#      - boto.j2
+
+    #####################################
+    #  --- User's Accounts --------  #
+    #####################################
+
+    - name: Create user accounts
+      user: name={{ item.name }} password={{ item.pw }} shell=/bin/bash generate_ssh_key=yes
+      with_items: "{{accounts}}"
+
+    - name: Create BOTO credentials file
+      template: src=/opt/cursoaws/ansible/boto.j2 dest=/home/{{ item.name }}/.boto owner={{ item.name }} group={{ item.name }} mode=0600
+      with_items: "{{accounts}}"
+
+
+    ####################################################
+    #  --------- Software  --------------------------  #
+    ####################################################
+    - apt: update_cache=yes
+
+    - name: Install PIP to bootstrap Boto (python-pip)
+      apt: pkg=python3-pip state=latest
+
+    - name: Install boto
+      pip: name=boto state=latest
+
+
+    ####################################################
+    #  --------- Configuration ----------------------  #
+    ####################################################
+
+    - name: Copy motd.tail
+      copy: src=/opt/cursoaws/ansible/motd.tail dest=/etc/motd force=yes owner=root group=root mode=0644

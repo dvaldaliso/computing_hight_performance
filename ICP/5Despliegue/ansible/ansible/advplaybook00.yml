@@ -1,0 +1,6 @@
+---
+- hosts: tag_ansible_alucloud00
+  become: yes
+  tasks:
+    - include_vars: vars-advplaybook.yml
+    - include: tasks-advplaybook.yml

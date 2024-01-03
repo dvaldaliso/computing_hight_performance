@@ -1,0 +1,17 @@
+---
+- hosts: tag_ansible_alucloudXX
+  become: true
+  tasks:
+  - name: Install MySQL (This might take a while. DO NOT INTERRUPT) 
+    apt: pkg=mysql-server state=latest update_cache=yes
+  - name: Install python-mysqldb (to configure MySQL from Ansible)
+    apt: pkg=python3-mysqldb state=latest
+  - name: ensure MySQLd is running
+    service: name=mysql state=started
+  - name: Retrieve DB from Amazon S3
+    get_url: url=https://s3.amazonaws.com/cursocloudaws/world_innodb_small.sql dest=/tmp/world_innodb_small.sql  
+  - name: Create DB
+    mysql_db: name=world state=present login_user=root login_password="" 
+  - name: Import DB
+    mysql_db: name=world state=import login_user=root login_password="" target="/tmp/world_innodb_small.sql"
+

@@ -1,0 +1,13 @@
+---
+- hosts: tag_ansible_alucloudXX
+  become: yes
+  tasks:
+  - user: name=anuser password=$6$mAQYj/gR6wYvd$l0AfD30LdDv0j6IkBtal0VHZxIHjTLWM00iyei2h6AZ97vvfm.OqpEyUfNJwIApU87ATR7nxYuJ2sNGl6Gbuj/ shell=/bin/bash
+  - name: ensure Apache Tomcat is at the latest version
+    apt: pkg=tomcat9 state=latest update_cache=yes
+  - name: ensure Apache Tomcat is running
+    service: name=tomcat9 state=started
+  - name: Retrieve and deploy web app
+    get_url: url=https://tomcat.apache.org/tomcat-9.0-doc/appdev/sample/{{ item }} dest=/var/lib/tomcat9/webapps/{{ item }}
+    with_items:
+     - sample.war

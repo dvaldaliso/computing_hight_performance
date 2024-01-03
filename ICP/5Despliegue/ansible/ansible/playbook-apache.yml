@@ -1,0 +1,10 @@
+---
+- hosts: tag_ansible_alucloudXX
+  become: true
+  tasks:
+  - name: ensure apache is at the latest version
+    apt: pkg=apache2 state=latest update_cache=yes
+  - name: ensure apache is running
+    service: name=apache2 state=started
+  - copy: dest=/var/www/html/index.html content="<h1>Hello world!</h1>"
+

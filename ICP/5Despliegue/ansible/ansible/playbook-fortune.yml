@@ -1,0 +1,5 @@
+---
+- hosts: tag_ansible_alucloudXX
+  become: true
+  tasks:
+    - apt: pkg=fortune state=latest

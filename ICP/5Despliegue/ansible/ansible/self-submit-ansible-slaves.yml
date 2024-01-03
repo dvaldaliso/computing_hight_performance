@@ -1,0 +1,49 @@
+---
+# Curso Online de Cloud Computing con Amazon Web Services
+# German Molto - @gmolto - October 2020
+#
+# Parameters:
+#     total: number of slave nodes to be deployed
+#     keypair: The keypair name in the EC2 region in which the VMs will be deployed.
+#     security_group: The security group of the deployed instances
+#     user_name: The user name on behalf of who the instances are deployed (for tagging)
+#
+
+
+- name: Create VMs
+  hosts: local
+  connection: local
+  #user: ubuntu
+  #gather_facts: false
+
+  vars:
+      instance_type: t3.micro
+      image: ami-0dba2cb6798deb6d8 #Ubuntu 20.04 HVM
+      subnet_id: subnet-2bfb6c4f #subnet-default-1a-public
+
+#subnet-c2f25afd | subnet-default-1b-public
+#subnet-432a9408 | subnet-default-1c-public
+#subnet-13c9384e | subnet-default-1d-public
+#subnet-c0c33fef | subnet-default-1e-public
+#subnet-0e3e0602 | subnet-default-1f-public
+
+  tasks:
+    - name: Provisioning EC2 instances (This might take a while ... DO NOT INTERRUPT.)
+      ec2: keypair={{keypair}}
+           group_id={{security_group}}
+           instance_type={{instance_type}}
+           image={{image}}
+           wait=true
+           count={{total}}
+           vpc_subnet_id={{subnet_id}}
+           region="us-east-1"
+           instance_tags='ansible={{ user_name }}'
+      register: ec2
+
+    - name: Waiting for the new instances to be ready (This might take a while ... DO NOT INTERRUPT.)
+      wait_for: host={{item.public_dns_name}} port=22 delay=30 timeout=450 state=started
+      with_items: "{{ec2.instances}}"
+
+    - name: Showing your instances information
+      debug: msg="Your instance for Ansible is {{ item.id }} --> {{ item.public_dns_name }}"
+      with_items: "{{ec2.instances}}"

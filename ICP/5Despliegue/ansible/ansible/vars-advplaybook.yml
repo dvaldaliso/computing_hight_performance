@@ -1,0 +1,4 @@
+    accounts:        
+        - { name: "user00", pw: "QPeR2gsw4MZEk", ak: "AKIAJAIQMN42O7AGSC6A", sk: "ft0ftS7FD0H5L5Tu3m/Dg2DJoIb/GZ6niIWZbFeW" }
+        - { name: "user01", pw: "V22YKgEokQv6o", ak: "AKIAIQZICAOA3T7AXXQP", sk: "ssPvGujteBv0V/KRsJiY98RijNVo/Mg221VlLSBn" }
+        - { name: "user02", pw: "z0iVK2EJ1JOCZ", ak: "AKIAI25CX6A55PKILAPQ", sk: "wOPwD1UeEBgaKvBf3wn5x9kh/6RTVB7amKGkm3ZQ" }

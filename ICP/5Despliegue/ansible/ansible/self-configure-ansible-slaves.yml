@@ -1,0 +1,15 @@
+---
+# Curso Online de Cloud Computing con Amazon Web Services 
+# German Molto - @gmolto - July 2014
+
+- name: Configure VMs 
+  user: ubuntu
+  hosts: '{{ target }}'
+
+  vars:
+
+  tasks:
+    - name: Authorizing user's SSH key for remote user
+      authorized_key: user=ubuntu key="{{ lookup('file', pub_key_file ) }}"
+      
+
