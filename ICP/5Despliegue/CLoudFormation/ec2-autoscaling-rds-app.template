@@ -1,0 +1,288 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "AWS CloudFormation Template. Using Amazon Linux AMI (64-bit) v. 2013.09.02 and Amazon Linux AMI (32-bit) from AWS Marketplace - Created by German Molto - http://www.grycap.upv.es/gmolto",
+  
+  "Parameters" : {   
+    "KeyPairName" : {
+      "Description" : "The EC2 Key Pair name",
+      "Type" : "String"
+    },
+    "UserID" : {
+      "Description" : "If you are alucloud07 this means that UserID should be 07",
+      "Type" : "String"
+    }
+  },
+
+  "Mappings" : {
+    "AWSInstanceType2Arch" : {    
+      "t1.micro"    : { "Arch" : "PV64"   },  
+      "t2.micro"    : { "Arch" : "HVM64" }      
+    },
+
+    "AWSRegionArch2AMI" : {
+      "us-east-1" : {"PV64" : "ami-2a69aa47", "HVM64" : "ami-14c5486b"}      
+    }
+  },
+
+
+  "Resources" : {
+
+    "MyEC2SecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Open ports 80 and 22",
+        "SecurityGroupIngress" : [
+           {
+             "IpProtocol" : "tcp",
+             "FromPort" : "80",
+             "ToPort" : "80",
+             "CidrIp" : "0.0.0.0/0"
+           },{
+             "IpProtocol" : "tcp",
+             "FromPort" : "22",
+             "ToPort" : "22",
+             "CidrIp" : "0.0.0.0/0"
+           }
+        ],
+        "VpcId": "vpc-83a213fb"
+     }
+   },
+
+    "RDSDBInstance" : {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {              
+        "Engine"            : "MySQL",
+        "MasterUsername"    : "awsuser",
+        "DBInstanceClass"   : "db.t2.small",
+        "VPCSecurityGroups" : ["sg-43524731"],
+        "AllocatedStorage"  : "20",
+        "MasterUserPassword": "cloudvlc",
+        "DBSnapshotIdentifier" : "cursocloudaws-cellar-5-6-39-vpc",
+        "DBSubnetGroupName" : "db-subnet-group-default-public",
+        "StorageType"       : "gp2",
+        "PubliclyAccessible": true
+      }
+    },
+
+    "MyAutoScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "VPCZoneIdentifier" :  ["subnet-2bfb6c4f","subnet-c2f25afd","subnet-432a9408"] ,
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : "1",
+        "MaxSize" : "2",
+        "DesiredCapacity" : "1",
+        "TargetGroupARNs" : [ { "Ref" : "ALBTargetGroup" } ]
+      },
+      "CreationPolicy" : {
+        "ResourceSignal" : {
+          "Timeout" : "PT45M"
+        }
+      },
+      "UpdatePolicy": {
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "1",
+          "MaxBatchSize": "1",
+          "PauseTime" : "PT15M",
+          "WaitOnResourceSignals": "true"
+        }
+      }
+    },
+    "ScaleOutPolicy" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "MyAutoScalingGroup" },
+        "Cooldown" : "120",
+        "ScalingAdjustment" : "1"
+      }  
+    },
+
+    "CPUAlarmHigh": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "EvaluationPeriods": "1",
+        "Statistic": "Average",
+        "Threshold": "70",
+        "AlarmDescription": "Alarm if average CPU > 70% for 1 period of 60 seconds",
+        "Period": "60",
+        "AlarmActions": [ { "Ref": "ScaleOutPolicy" } ],
+        "Namespace": "AWS/EC2",
+        "Dimensions": [ {
+          "Name": "AutoScalingGroupName",
+          "Value": { "Ref": "MyAutoScalingGroup" }
+          } ],
+        "ComparisonOperator": "GreaterThanThreshold",
+        "MetricName": "CPUUtilization"
+      }
+    },  
+
+    "ScaleInPolicy" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "MyAutoScalingGroup" },
+        "Cooldown" : "120",
+        "ScalingAdjustment" : "-1"
+      }  
+    },
+
+    "CPUAlarmLow": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "EvaluationPeriods": "2",
+        "Statistic": "Average",
+        "Threshold": "20",
+        "AlarmDescription": "Alarm if average CPU < 20% for 2 periods of 60 seconds",
+        "Period": "60",
+        "AlarmActions": [ { "Ref": "ScaleInPolicy" } ],
+        "Namespace": "AWS/EC2",
+        "Dimensions": [ {
+          "Name": "AutoScalingGroupName",
+          "Value": { "Ref": "MyAutoScalingGroup" }
+          } ],
+        "ComparisonOperator": "LessThanThreshold",
+        "MetricName": "CPUUtilization"
+      }
+    },
+    "LaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata" : {
+        "Comment" : "Install the Cellar Web App",
+        "AWS::CloudFormation::Init" : {
+          "config" : {
+            "packages" : {
+              "yum" : {
+                "httpd"             : []
+              }
+            },
+      
+              "/etc/cfn/cfn-hup.conf" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[main]\n",
+                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                ]]},
+                "mode"    : "000400",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+                "content": { "Fn::Join" : ["", [
+                  "[cfn-auto-reloader-hook]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
+                  "action=/opt/aws/bin/cfn-init -v ",
+                  "         --stack ", { "Ref" : "AWS::StackName" },
+                  "         --resource LaunchConfig ",
+                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
+                  "runas=root\n"
+                ]]},
+                "mode"    : "000400",
+                "owner"   : "root",
+                "group"   : "root"
+              }
+            },
+
+            "services" : {
+              "sysvinit" : {
+                "httpd"    : { "enabled" : "true", "ensureRunning" : "true" },
+                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+                              "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+              }
+            }
+          }
+        },
+      "Properties" : {
+        "AssociatePublicIpAddress" : "true",
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+                         { "Fn::FindInMap" : [ "AWSInstanceType2Arch", "t2.micro", "Arch" ] } ] },
+        "SecurityGroups" : [ { "Ref" : "MyEC2SecurityGroup" } ],
+        "KeyName"        : { "Ref" : "KeyPairName" },
+        "InstanceType" : "t2.micro",
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+            "#!/bin/bash -xe\n",
+            "yum -y install mysql httpd php php-mysql\n",
+            "cd /var/www/html\n",
+            "wget https://s3.amazonaws.com/cursocloudaws/cloudformation/cellar-webapp-sql.tgz \n",
+            "tar zxvf cellar-webapp-sql.tgz\n",          
+            "sed -i s/CELLAR_RDS_HOST/",{ "Fn::GetAtt" : [ "RDSDBInstance", "Endpoint.Address" ]},"/g /var/www/html/cellar-webapp-sql/api/index.php\n",          
+            "sed -i s/None/All/g /etc/httpd/conf/httpd.conf\n",
+            "sleep 5\n",
+            "service httpd restart\n",
+
+             "/opt/aws/bin/cfn-init -v ",
+             "         --stack ", { "Ref" : "AWS::StackName" },
+             "         --resource LaunchConfig ",
+             "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+             "/opt/aws/bin/cfn-signal -e $? ",
+             "         --stack ", { "Ref" : "AWS::StackName" },
+             "         --resource MyAutoScalingGroup ",
+             "         --region ", { "Ref" : "AWS::Region" }, "\n"
+        ]]}}
+      }},    
+
+    "ApplicationLoadBalancer" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties" : {
+        "Subnets" : ["subnet-2bfb6c4f","subnet-c2f25afd","subnet-432a9408"],
+        "SecurityGroups" : [ { "Ref" : "LoadBalancerSecurityGroup" } ]
+      }
+    },
+
+    "ALBListener" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties" : {
+        "DefaultActions" : [{
+          "Type" : "forward",
+          "TargetGroupArn" : { "Ref" : "ALBTargetGroup" }
+        }],
+        "LoadBalancerArn" : { "Ref" : "ApplicationLoadBalancer" },
+        "Port" : "80",
+        "Protocol" : "HTTP"
+      }
+    },
+
+    "ALBTargetGroup" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties" : {
+        "HealthCheckIntervalSeconds" : 30,
+        "HealthCheckTimeoutSeconds" : 25,
+        "HealthyThresholdCount" : 3,
+        "Port" : 80,
+        "Protocol" : "HTTP",
+        "UnhealthyThresholdCount" : 5,
+        "VpcId" : "vpc-83a213fb"
+      }
+    },
+
+    "LoadBalancerSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable HTTP access on port 80",
+        "VpcId" : "vpc-83a213fb",
+        "SecurityGroupIngress" : [ {
+          "IpProtocol" : "tcp",
+          "FromPort" : "80",
+          "ToPort" : "80",
+          "CidrIp" : "0.0.0.0/0"
+        } ],
+        "SecurityGroupEgress" : [ {
+          "IpProtocol" : "tcp",
+          "FromPort" : "80",
+          "ToPort" : "80",
+          "CidrIp" : "0.0.0.0/0"
+        } ]
+      }
+    }
+  },
+  
+  "Outputs" : {
+    "EC2InstanceDNS" : {
+      "Description" : "Returns the public DNS of the Load Balancer",
+      "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "ApplicationLoadBalancer", "DNSName" ]},"/cellar-webapp-sql"]]}
+    }
+  }
+ }

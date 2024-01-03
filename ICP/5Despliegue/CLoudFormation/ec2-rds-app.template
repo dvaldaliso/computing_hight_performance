@@ -1,0 +1,138 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "AWS CloudFormation Template. Using Amazon Linux AMI (64-bit) v. 2013.09.02 and Amazon Linux AMI (32-bit) from AWS Marketplace - Created by German Molto - http://www.grycap.upv.es/gmolto",
+  
+  "Parameters" : {   
+    "KeyPairName" : {
+      "Description" : "The EC2 Key Pair name",
+      "Type" : "String"
+    },
+    "UserID" : {
+      "Description" : "If you are alucloud07 this means that UserID should be 07",
+      "Type" : "String"
+    }
+  },
+
+  "Mappings" : {
+    "AWSInstanceType2Arch" : {
+      "t1.micro"    : { "Arch" : "64" },
+      "t2.micro"    : { "Arch" : "64" },
+      "m1.small"    : { "Arch" : "64" },
+      "m1.large"    : { "Arch" : "32" }
+    },
+
+    "AWSRegionArch2AMI" : {
+      "us-east-1" : { "32" : "ami-d7a18dbe", "64" : "ami-14c5486b" },
+      "us-west-1" : { "32" : "ami-def297ee", "64" : "ami-ccf297fc" },
+      "us-west-2" : { "32" : "ami-923909d7", "64" : "ami-a43909e1" },          
+      "eu-west-1" : { "32" : "ami-6a56b81d", "64" : "ami-5256b825" },
+      "ap-southeast-1" : { "32" : "ami-b6baeee4", "64" : "ami-b4baeee6" },
+      "ap-southeast-2" : { "32" : "ami-65a8375f", "64" : "ami-5ba83761" },
+      "ap-northeast-1" : { "32" : "ami-0b13700a", "64" : "ami-0d13700c" },
+      "sa-east-1" : { "32" : "ami-bf9130a2", "64" : "ami-c99130d4" }  
+    }
+  },
+
+
+  "Resources" : {
+
+    "MyEC2SecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Open ports 80 and 22",
+        "SecurityGroupIngress" : [
+           {
+             "IpProtocol" : "tcp",
+             "FromPort" : "80",
+             "ToPort" : "80",
+             "CidrIp" : "0.0.0.0/0"
+           },{
+             "IpProtocol" : "tcp",
+             "FromPort" : "22",
+             "ToPort" : "22",
+             "CidrIp" : "0.0.0.0/0"
+           }
+        ],
+        "VpcId": "vpc-83a213fb"
+     }
+   },
+
+   
+   "RDSDBInstance" : {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {      	        
+        "Engine"            : "MySQL",
+        "MasterUsername"    : "awsuser",
+        "DBInstanceClass"   : "db.t2.small",
+        "VPCSecurityGroups" : ["sg-43524731"],
+        "AllocatedStorage"  : "20",
+        "MasterUserPassword": "cloudvlc",
+        "DBSnapshotIdentifier" : "cursocloudaws-cellar-5-6-39-vpc",
+        "DBSubnetGroupName" : "db-subnet-group-default-public",
+        "StorageType"       : "gp2"
+      }
+    },
+
+    
+
+    "ApacheWebServer": {
+      "Type": "AWS::EC2::Instance",
+      "Metadata" : {
+        "Comment1" : "Configure the bootstrap helpers to install the Apache Web Server and PHP",
+        "Comment2" : "The web app will be downloaded from an Amazon S3 bucket",
+
+        "AWS::CloudFormation::Init" : {
+          "config" : {
+            "packages" : {
+              "yum" : {
+                "mysql"        : [],                
+                "httpd"        : [],
+                "php"          : [],
+                "php-mysql"    : []
+              }
+            },
+
+            "sources" : {
+              "/var/www/html" : "https://s3.amazonaws.com/cursocloudaws/cloudformation/cellar-webapp-sql.tgz"            
+            },
+            "services" : {
+              "sysvinit": {
+                 "httpd" : {
+                    "enabled"       : "true",
+                    "ensureRunning" : "true"                    
+                 }
+               }
+            }
+          }
+        }},
+      "Properties": {
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+                          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", "t2.micro", "Arch" ] } ] },
+        "InstanceType"   : "t2.micro",
+        "SubnetId": "subnet-2bfb6c4f",
+        "SecurityGroupIds" : [ {"Ref" : "MyEC2SecurityGroup"} ],
+        "KeyName"        : { "Ref" : "KeyPairName" },
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -v\n",
+          "yum update -y aws-cfn-bootstrap\n",
+
+          "# Install LAMP packages\n",
+          "/opt/aws/bin/cfn-init -s ", { "Ref" : "AWS::StackName" }, " -r ApacheWebServer ",
+          "    --region ", "us-east-1", " || error_exit 'Failed to run cfn-init'\n",
+          "# Configure the PHP application - in this case, fix up the page with the right references to the database\n",
+          "sed -i s/CELLAR_RDS_HOST/",{ "Fn::GetAtt" : [ "RDSDBInstance", "Endpoint.Address" ]},"/g /var/www/html/cellar-webapp-sql/api/index.php\n",
+          "sed -i s/None/All/g /etc/httpd/conf/httpd.conf\n",
+          "sleep 5\n",
+          "service httpd restart\n"          
+          ]]}}
+    }}},
+        
+    
+  
+  "Outputs" : {
+    "EC2InstanceDNS" : {
+      "Description" : "Returns the public DNS of the EC2 Instance",
+      "Value" : { "Fn::GetAtt" : [ "ApacheWebServer", "PublicDnsName" ] }
+    }
+  }
+}
