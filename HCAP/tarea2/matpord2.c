@@ -25,7 +25,7 @@ void milu(double *A,double *B, double *C, mwSize n, mwSize m, mwSize p)
          for(k=0;k<m; k++)
              for(i=0;i<n; i++)
        {
-        C[i+j*n]= C[i+n*j] + A[i*m+k]* B[k*p+j];
+        C[i+j*n]= C[i+n*j] + A[i+k*n]* B[k+j*m];
     }
 }
 
