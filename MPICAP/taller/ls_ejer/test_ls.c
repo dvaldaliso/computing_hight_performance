@@ -117,9 +117,19 @@ int main( int argc, char *argv[] ) {
       mn = min( m, n );
       len_wk = max( 1, mn + max( mn, k ) );
       //// printf( "Using workspace length: %d\n", len_wk );
+      
+      // Initial call to obtain workspace size
+      int len_wk_opt=-1;
+      double wkopt;
+      int len_opt;
+        // Allocate the workspace.
+      //Initial call to obtain workspace size
+      dgels_( "No transpose", & m, & n, & k, a, & ldim_a, b, & ldim_b, &wkopt, &len_wk_opt, & info );
+      printf( "optimal value %d .\n", wkopt);
+      len_opt= (int) wkopt;
 
       // Allocate the workspace.
-      wk  = ( double * ) malloc( ( ( size_t ) len_wk ) * sizeof( double ) ); 
+      wk  = ( double * ) malloc( ( ( size_t ) len_opt ) * sizeof( double ) ); 
       if( wk == NULL ) {
         printf( "ERROR: Not enough memory.\n" );
         exit( -1 );
@@ -127,12 +137,13 @@ int main( int argc, char *argv[] ) {
 
       // Perform the computation.
       t1 = omp_get_wtime();
-      dgels_( "No transpose", & m, & n, & k, a, & ldim_a, b, & ldim_b,
-              wk, & len_wk, & info );
+      dgels_( "No transpose", & m, & n, & k, a, & ldim_a, b, & ldim_b, wk, & len_opt, & info );
       t2 = omp_get_wtime();
   
       // Free workspace.
       free( wk );
+
+
     }
     ttotal += t2 - t1;
     texec = ttotal / ( ( double ) nexecs );
