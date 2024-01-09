@@ -8,13 +8,6 @@ B2 = data2.Vectores(1,2)
 
 A13 = A1{1}
 
-
-%disp(matrize11)
-%x = matrize11 / matrize12
-%load west0479
-%A = west0479;
-%b = transpose(ones(1,length(A))) ;
-
 %AT*AX = AT*B
 
 xX = (A.' * A) \ (A.' * b);

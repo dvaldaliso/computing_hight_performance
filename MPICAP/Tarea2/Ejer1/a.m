@@ -10,14 +10,6 @@ B2 = data2.Vectores(1,2)
 A11=A1{1}
 B11= B1{1}
 
-
-%disp(matrize11)
-%x = matrize11 / matrize12
-%load west0479
-%A = west0479;
-%b = transpose(ones(1,length(A))) ;
-%B = A * b;
-
 %AX = B
 %X = A / B
 TA=size(A11)
