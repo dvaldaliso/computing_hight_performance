@@ -168,10 +168,9 @@ int cholesky_bloques( int n, int b, double *C ) {
       m = min( n-i, b );
       dtrsm_( "R", "L", "T", "N", &m, &b, &one, &C(k,k), &n, &C(i,k), &n );
     }
-    #pragma omp parallel for
+    #pragma omp parallel for private(i,j,m)
     for ( i = k + b; i < n; i += b ) {
       m = min( n-i, b );
-      #pragma omp parallel for
       for ( j = k + b; j < i ; j += b ) {
         dgemm_( "N", "T", &m, &b, &b, &minusone, &C(i,k), &n, &C(j,k), &n, &one, &C(i,j), &n );
       }

@@ -40,21 +40,21 @@ int main( int argc, char *argv[] ) {
   /* PRINCIPIO DEL CODIGO A INCLUIR                        */
 
   // Bucle a paralelizar
-  #pragma omp parallel for private(v)
+  #pragma omp parallel
+  #pragma omp single
+
   for( int v=0; v<n_vectores; v++ ) {
     /* Cálculo de la media */
-    #pragma omp task
+    #pragma omp task firstprivate(v)
     {
       double sum = 0.0;
       for( int i=0; i<tam[v]; i++ ) {
         sum += M[v][i];
       }
       media[v] = sum/tam[v];
-    }
-    /* Cálculo de la desviación típica */
-    #pragma omp task
-    {
-      double sum = 0.0;
+    
+       /* Cálculo de la desviación típica */
+      sum = 0.0;
       for( int i=0; i<tam[v]; i++ ) {
         sum += ( M[v][i] - media[v] ) * ( M[v][i] - media[v] );
       }

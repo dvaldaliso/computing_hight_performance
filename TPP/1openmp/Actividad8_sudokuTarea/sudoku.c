@@ -22,8 +22,10 @@ int main( int argc, char *argv[] ) {
   return 0;
 }
 
-void sudoku_sol( int i, int j, int sol[81], int mascara[81] ) {
+void sudoku_sol( int i, int j, int sol1[81], int mascara[81] ) {
    int k;
+   int sol[81];//Creando Copia
+   for(int k=0;k<81;k++) sol[k]=sol1[k];
    if( mascara(i, j) == 0 ) {
       for( k = 1; k <= 9; k++ ) {
          sol( i, j ) = k;                                
@@ -49,9 +51,11 @@ void sudoku_sol( int i, int j, int sol[81], int mascara[81] ) {
          prin_sudoku(sol);
       }
       if( i < 9 && j == 9 ) {
+         #pragma omp task
          sudoku_sol ( i+1, 1, sol, mascara );
       }
       if( i <= 9 && j < 9 ) {
+         #pragma omp task
          sudoku_sol( i , j+1, sol, mascara );
       }
    }

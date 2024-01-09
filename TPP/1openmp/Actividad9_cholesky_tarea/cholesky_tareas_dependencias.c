@@ -144,27 +144,25 @@ int cholesky_bloques( int n, int b, double *C ) {
 
   for ( k = 0; k < n ; k+=b ) {
     m = min( n-k, b );
+    #pragma omp task depend(inout:C(k,k))
     dpotrf_( "L", &m, &C(k,k), &n, &info );
     if( info != 0 ) {
       fprintf(stderr,"Error = %d en la descomposición de Cholesky de la matriz C\n",info);
-      //return info;
+      return info;
     }
     for ( i = k + b; i < n; i += b ) {
-      #pragma omp task depend(inout:C[0:n*n])
-      {
       m = min( n-i, b );
+      #pragma omp task depend(in:C(k,k)) depend(inout:C(i,k))
       dtrsm_( "R", "L", "T", "N", &m, &b, &one, &C(k,k), &n, &C(i,k), &n );
-      }
     }
-    #pragma omp taskwait
 
-    #pragma omp task depend(inout:C[0:n*n])
     for ( i = k + b; i < n; i += b ) {
       m = min( n-i, b );
       for ( j = k + b; j < i ; j += b ) {
+        #pragma omp task depend(in:C(i,k), C(j,k)) depend(inout:C(i,j))
         dgemm_( "N", "T", &m, &b, &b, &minusone, &C(i,k), &n, &C(j,k), &n, &one, &C(i,j), &n );
       }
-      //#pragma omp task depend(in:i,m)
+      #pragma omp task depend(in:C(i,k)) depend(inout:C(i,i))
       dsyrk_( "L", "N", &m, &b, &minusone, &C(i,k), &n, &one, &C(i,i), &n );
     }
   #pragma omp taskwait
