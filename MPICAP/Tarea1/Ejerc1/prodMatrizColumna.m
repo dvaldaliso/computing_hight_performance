@@ -9,8 +9,9 @@ function C = prodMatrizColumna(A,B)
     assert(n == p, 'Las matrices no son compatibles');
     C = zeros(m, q);
     for j=1:q
+        aux = B(:,j);
         for i=1:m
-            C(i,j) = A(i,:) * B(:,j);
+            C(i,j) = A(i,:) * aux;
         end
     end
 end

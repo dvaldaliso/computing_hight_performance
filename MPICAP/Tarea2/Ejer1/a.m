@@ -12,6 +12,12 @@ B11= B1{1}
 
 %AX = B
 %X = A / B
+
 TA=size(A11)
 TB=size(B11)
+
 x = A11\B11;
+
+dim=sqrt(length(x));  % Consideramos un CT de dimensiones cuadradas
+IM=reshape(x, dim, dim);%Colocamos los datos en forma de matriz de píxeles (imagen)
+figure, imcontrast(imshow(IM)) % Mostramos la imagen con posibilidad de modificar el contraste.

@@ -13,6 +13,7 @@ function [y] = productMethond(x,L21,L22,L11,M11,M12)
 	%y=gmres(L11,val1,10,1.e-7,1000); %Resolucion de sistema no simetrico
 	y=cgs(L11,val1,1.e-7,1000); %Resolucion de sistema simetrico y del +
 end
+% extraer diagona; L21, M12
 
 
 

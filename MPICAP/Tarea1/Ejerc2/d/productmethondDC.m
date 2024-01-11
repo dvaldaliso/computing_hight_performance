@@ -2,7 +2,7 @@
 
 
 
-function [y] = prodMethondDC(x,L21,L22,L11,M11,M12)
+function [y] = prodMethondDC(x,-L21,L22,L11,M11,M12)
 % [y] = prodNucle(L21,L22,L11,M11,M12,x)
 % Esta función realiza el producto matriz por vector ( y=A*x), donde A es la matriz que se obtiene de la discretizacin de la ecuacin de la difusin neurtica en dos grupos de energa.
 %  No se dispone de la matriz explicita ,  A= inv(L11)(M11+M12*inv(L22)*L21)), por tanto cuando se tiene que realizar el producto de A*y tenemos que realizar las operaciones siguientes:
