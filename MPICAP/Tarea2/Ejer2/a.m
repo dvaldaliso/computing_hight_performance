@@ -9,8 +9,10 @@ A11=A1{1}
 
 [m,n] = size(A11);
 
-for j = 1:m
-        norm( j )
+for j = 1:n
+          
+        v=A11(1:) 
+        norm(v)     
         for k=j:n+1
             fact( j, k)
             cmod( j,j k)

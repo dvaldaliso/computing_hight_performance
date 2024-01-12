@@ -12,6 +12,7 @@ spy(B);
 %[V,D] = eigs(A,B,5)
 % Si lo ponemos asi estaria mal ya que, B mal posicionada y por eso no 
 % se puede resolver el problema
+%eigs calculo de autovalores
 [V,D] = eigs (B,A,5);
 inv(D)
 % El problema hay que resolverlo por bloques, no se puede resolver todo de
