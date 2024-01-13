@@ -1,20 +1,23 @@
-data = load("SistemasResolucin32/mat_rango_32.mat")
-data2 = load("SistemasResolucin32/vectore_32.mat")
-data3 = load("SistemasResolucin32/IMref32.mat")
-A1 = data.Matrices(1,1) 
-A2 = data.Matrices(1,2)
-B1 = data2.Vectores(1,1)
-B2 = data2.Vectores(1,2)
-A11=A1{1}
-
-[m,n] = size(A11);
+A=[3,1,2,6;4,5,6,3;1,8,1,2;5,9,5,5]
+[m,n] = size(A);
 
 for j = 1:n
-          
-        v=A11(1:) 
-        norm(v)     
-        for k=j:n+1
-            fact( j, k)
-            cmod( j,j k)
-        end
+    ro = norm(A(:,j))
+    for k = j:n
+        yij = fact(j,k,A,ro,m)
+    end    
+end
+
+function fact(j, k, A, ro,m)
+    % Factor
+    v = A(:,j)
+    v(j,1)=ro+A(j,k)
+    t=v'
+    Bj = (v' * v)/2
+    yij=0
+    for i=j:m
+        tem = v(i) * A(i,k)
+        yij=yij + tem
+    end
+    %return yij/Bj
 end
