@@ -22,14 +22,13 @@ end
 
 % Resolver el sistema triangular superior
 
-b = A(:, end)
-A = A(:, 1:end-1)
-A = A(1:end-1, :);
-resolverTriangularSuperior(A, b)
-  
+b = A(:, end) % extraer el vector b
+A = A(:, 1:end-1) % dejar solo el lado izquierdo del sistma de ecuaciones
+A = A(1:end-1, :); % remover la ulima fila que nos da el residuo
+x = resolveUpperTriangular(A, b)
 
 
-
+%Utils
 function [yjk] = fact(j, k, A, v, m, Bj)
     % Factor
     sum = 0;
@@ -46,7 +45,7 @@ function [A] = cmod(j, k, yjk, A, v, m)
     end
 end
 
-function x = resolverTriangularSuperior(A, b)
+function x = resolveUpperTriangular(A, b)
     [filas, columnas] = size(A);
     
     if filas ~= columnas
