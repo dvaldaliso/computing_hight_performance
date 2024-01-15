@@ -21,15 +21,15 @@ for j = 1:n
 end
 
 % Resolver el sistema triangular superior
-C = A
-for j = n:-1:1
-    xj = C(:, j)/A(j, j)
-    for i = 1:j-1
-        C(i,:) = C(i,:) - A(i,j)*xj(j)
-    end    
-end    
 
-% Factor
+b = A(:, end)
+A = A(:, 1:end-1)
+A = A(1:end-1, :);
+resolverTriangularSuperior(A, b)
+  
+
+
+
 function [yjk] = fact(j, k, A, v, m, Bj)
     % Factor
     sum = 0;
@@ -40,9 +40,22 @@ function [yjk] = fact(j, k, A, v, m, Bj)
    yjk = sum/Bj;
 end
 
-%Cmod
 function [A] = cmod(j, k, yjk, A, v, m)
     for i = j:m
         A(i, k) = A(i, k) - yjk * v(i) 
+    end
+end
+
+function x = resolverTriangularSuperior(A, b)
+    [filas, columnas] = size(A);
+    
+    if filas ~= columnas
+        error('La matriz A no es cuadrada.');
+    end
+    
+    x = zeros(filas, 1);
+    
+    for i = filas:-1:1
+        x(i) = (b(i) - A(i, i+1:end) * x(i+1:end)) / A(i, i);
     end
 end
