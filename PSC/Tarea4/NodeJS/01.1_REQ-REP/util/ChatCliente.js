@@ -1,6 +1,6 @@
 // "importamos biblioteca zeromq"
 import * as zmq from "zeromq"
-export class Chat{
+export class Cliente{
     #socketParaPedir
     #cont
     #N
@@ -13,7 +13,7 @@ export class Chat{
         this.MI_NOMBRE=nombre
         this.connect()
         this.recibirMensaje()
-        this.enviarMensaje(1, this.MI_NOMBRE)
+        this.enviarMensaje(0, this.MI_NOMBRE)
         this.close()
     }
     
@@ -32,7 +32,6 @@ export class Chat{
         this.socketParaPedir.on("message", function(respuesta) {
             this.cont++
             console.log("cliente ", this.MI_NOMBRE + ": recibo respuesta " , this.cont, ": [", respuesta.toString(), ']')
-            
             // Check if all responses have been received
             if (this.cont === this.N) {
                 // Close the socket
@@ -40,6 +39,9 @@ export class Chat{
                 // Exit the process
                 process.exit(0)
             }
+
+            this.enviarMensaje (this.cont, this.MI_NOMBRE)
+            
         }.bind(this))
     }
     
@@ -52,12 +54,10 @@ export class Chat{
     //
     enviarMensaje (n,origen){
         if (n <= this.N) {
-            setTimeout(function() {
                 console.log("enviando petición ", n, '...')
                 this.socketParaPedir.send("Hello " + n + " desde " + origen)
                 
-                this.enviarMensaje (n+1, this.MI_NOMBRE)
-            }.bind(this), 800)
+                
         }
     }
     close(){

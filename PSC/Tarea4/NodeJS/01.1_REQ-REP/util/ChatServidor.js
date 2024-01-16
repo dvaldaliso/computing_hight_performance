@@ -1,6 +1,6 @@
 // "importamos biblioteca zeromq"
 import * as zmq from "zeromq"
-export class Chat{
+export class Servidor{
     #socketParaResponder
     #cont
     constructor(url)
@@ -9,7 +9,7 @@ export class Chat{
         this.cont = 0
         this.socketParaResponder = zmq.socket('rep')
         this.connect()
-        this.run()
+        this.recibirMensaje()
         this.close()
     }
     
@@ -37,7 +37,7 @@ export class Chat{
 	// función que debe ejecutarse cuando
 	// llegue un mensaje al socket
 	//
-    run() {
+    recibirMensaje() {
         
         this.socketParaResponder.on('message', function(peticionQueRecibo) {
             //
@@ -58,7 +58,7 @@ export class Chat{
                 console.log("servidor respondo petición: " )
                 this.distribuir(peticionQueRecibo)
                 
-              }, 1000);
+              }, 4000);
         }.bind(this)) // socketParaResponder.on()
     }
     

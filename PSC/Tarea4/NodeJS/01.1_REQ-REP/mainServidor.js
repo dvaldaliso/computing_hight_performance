@@ -2,12 +2,12 @@
 // mainServidor.js
 // --------------------------------------------------------
 
-import {Chat} from "./util/ChatServidor.js"
+import {Servidor} from "./util/ChatServidor.js"
 
 // --------------------------------------------------------
 function main() {
 
-	var chat = new Chat("tcp://*:5556")	
+	var servidor = new Servidor("tcp://*:5556")	
 	
 } // main ()
 
