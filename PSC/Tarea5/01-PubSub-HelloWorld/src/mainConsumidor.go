@@ -20,26 +20,25 @@ import (
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 func readMessage(lector *kafka.Reader, w *kafka.Writer) {
-	msg, err := lector.ReadMessage(context.Background())
-	if err != nil {
-		fmt.Println(" *** ERROR *** ")
-		fmt.Println(err)
-	}
+	for {
 
-	fmt.Println(" --> recibo: ")
-	fmt.Println(msg.Topic)
-	fmt.Println(string(msg.Key))
-	fmt.Println(string(msg.Value))
+		msg, err := lector.ReadMessage(context.Background())
+		if err != nil {
+			fmt.Println(" *** ERROR *** ")
+			fmt.Println(err)
+		}
 
-	rt := reflect.TypeOf(msg.Key)
-	switch rt.Kind() {
-	case reflect.Slice:
-		fmt.Println("is a slice with element type", rt.Elem())
-	case reflect.Array:
+		fmt.Println(" --> recibo: ")
+		fmt.Println(msg.Topic)
+		fmt.Println(string(msg.Key))
+		fmt.Println(string(msg.Value))
+
+		rt := reflect.TypeOf(msg.Key)
+		if rt.Kind() != reflect.Array {
+			continue
+		}
 		responder(w, msg)
-		fmt.Println("is an array with element type", rt.Elem())
-	default:
-		fmt.Println("is something else entirely")
+
 	}
 }
 
@@ -71,10 +70,8 @@ func main() {
 	defer lector.Close()
 
 	fmt.Println(" espero mensajes ... ")
-	for {
-		readMessage(lector, w)
 
-	} // for
+	readMessage(lector, w)
 
 	fmt.Println(" FIN ")
 
