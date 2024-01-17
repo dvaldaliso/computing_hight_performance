@@ -30,6 +30,7 @@
 ### Para correr con tareas OMP_NUM_THREADS=4 OMP_SCHEDULE=guided ./prog
 ### gcc -fopenmp -o knapsackBF knapsackBF.c -lm -DCHECK (se pone el -DCHECK PARA QUE EJECUTE UNA PARTE ESPECIFICA DEL CODIGO)
 ## Compilacion c++ -> g++ -o file file.cpp
+## Google Colab
 
 # MPICAP -> Modelado y resolución de problemas en ingeniería mediante computación de altas prestaciones
 ## Esta asignatura es en Matlab

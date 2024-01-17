@@ -1,5 +1,26 @@
-A=[3,1,2,6;4,5,6,3;1,8,1,2;5,9,5,5]
-[m,n] = size(A);
+% 
+% data = load("Documentos/SistemasResolucin32/mat_rango_32.mat")
+% data2 = load("Documentos/SistemasResolucin32/vectore_32.mat")
+% data3 = load("Documentos/SistemasResolucin32/IMref32.mat")
+% A1 = data.Matrices(1,1) 
+% A2 = data.Matrices(1,2)
+% B1 = data2.Vectores(1,1)
+% B2 = data2.Vectores(1,2)
+% 
+% A11=A1{1}
+% b11= B1{1}
+% A = [A11 b11
+% 
+% A=[3,1,2;4,5,6,;1,8,1;5,9,5]
+% b=[6;3;2;5]
+% [m,n] = size(A); 
+% A=[A,b]
+% 
+load west0479
+A = west0479;
+b= A* ones(length(A),1);
+[m,n] = size(A);  
+A = [A, b];
 
 for j = 1:n
      col=A(:, j);
@@ -12,7 +33,7 @@ for j = 1:n
      v(j,1) = pj + A(j, j);
      t = transpose(v);
      Bj = (t * v)/2;
-    for k = j:n
+    for k = j:n+1
        [yjk] = fact(j, k, A, v, m, Bj);
        [a]=cmod(j, k, yjk, A, v, m);
        A=a;
@@ -22,13 +43,12 @@ end
 
 % Resolver el sistema triangular superior
 
-b = A(:, end) % extraer el vector b
-A = A(:, 1:end-1) % dejar solo el lado izquierdo del sistma de ecuaciones
-A = A(1:end-1, :); % remover la ulima fila que nos da el residuo
-x = resolveUpperTriangular(A, b)
+C=A(:,n+1);
+x = resolverTriangularSuperior(A, C,m,n)
 
 
-%Utils
+
+
 function [yjk] = fact(j, k, A, v, m, Bj)
     % Factor
     sum = 0;
@@ -41,20 +61,17 @@ end
 
 function [A] = cmod(j, k, yjk, A, v, m)
     for i = j:m
-        A(i, k) = A(i, k) - yjk * v(i) 
+        A(i, k) = A(i, k) - yjk * v(i); 
     end
 end
 
-function x = resolveUpperTriangular(A, b)
-    [filas, columnas] = size(A);
-    
-    if filas ~= columnas
-        error('La matriz A no es cuadrada.');
+function x = resolverTriangularSuperior(A, C,m,n)
+   x = zeros(n, 1);
+   for j=n:-1:1
+    x(j) = C(j)/A(j,j);
+    for i=1:j-1
+        C(i,:) = C(i,:)-A(i,j)*x(j);
     end
-    
-    x = zeros(filas, 1);
-    
-    for i = filas:-1:1
-        x(i) = (b(i) - A(i, i+1:end) * x(i+1:end)) / A(i, i);
-    end
+   end    
+   
 end
