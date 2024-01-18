@@ -9,7 +9,7 @@
 % 
 % A11=A1{1}
 % b11= B1{1}
-% A = [A11 b11
+% A = [A11 b11]
 % 
 % A=[3,1,2;4,5,6,;1,8,1;5,9,5]
 % b=[6;3;2;5]
@@ -72,6 +72,46 @@ function x = resolverTriangularSuperior(A, C,m,n)
     for i=1:j-1
         C(i,:) = C(i,:)-A(i,j)*x(j);
     end
+   end    
+   
+end
+
+function [yjk] = fact(j, k, A, v, m, Bj)
+    % Factor
+    sum = 0;
+    for i=j:m
+        tem = v(i) * A(i,k);
+        sum = sum + tem;
+    end
+   yjk = sum/Bj;
+end
+
+function [A] = cmod(j, k, yjk, A, v, m)
+    for i = j:m
+        A(i, k) = A(i, k) - yjk * v(i); 
+    end
+end
+
+function x = resolverTriangularSuperior(A, C,m,n)
+   x = zeros(n, 1);
+   for j=n:-1:1
+    x(j) = C(j)/A(j,j);
+    for i=1:j-1
+        C(i,:) = C(i,:)-A(i,j)*x(j);
+    end
+   end    
+   
+end
+
+function x = resolverTriangularSuperiorFila(A, b,m,n)
+ x = zeros(n, 1);  
+ x(n) = b(n)/A(n,n);
+   for j=n-1:-1:1
+    x(j) = b(j);
+    for i=j+1:n
+        x(j) = x(j) - A(j,i)*x(i);
+    end
+    x(j) = x(j)/A(j,j);
    end    
    
 end

@@ -1,9 +1,7 @@
 // "importamos biblioteca zeromq"
 import * as zmq from "zeromq"
 export class Cliente{
-    #socketParaPedir
-    #cont
-    #N
+    
     constructor(url, nombre)
     {
         this.url = url
