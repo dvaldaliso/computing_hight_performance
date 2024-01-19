@@ -1,0 +1,14 @@
+{
+  "name": "03.1req-router",
+  "version": "1.0.0",
+  "description": "Request y Router",
+  "main": "index.js",
+  "scripts": {
+    "test": "node"
+  },
+  "author": "david v l",
+  "license": "ISC",
+  "dependencies": {
+    "zeromq": "^5.3.1"
+  }
+}
