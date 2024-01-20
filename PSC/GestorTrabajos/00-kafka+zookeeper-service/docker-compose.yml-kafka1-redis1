@@ -1,0 +1,60 @@
+# WARNING: This docker-compose.yml is only for testing purpose.
+# Parameters:
+# - name: CONFLUENT_PLATFORM_VERSION
+#   default: 3.0.0
+#   reference: https://hub.docker.com/u/confluentinc/
+# Ports:
+# - description: Major ports are exposed to host computer
+# - zookeeper: 2181
+#      kafka1: 9091
+#      kafka2: 9092
+#      kafka3: 9093
+#      kafka4: 9094
+#      kafka5: 9095
+# Tips:>
+#   - You can up part of the cluster with below command.
+#     $ docker-compose up -d kafka1 kafka2 kafka3
+#
+# COMPRUEBA QUE /etc/hosts
+# tiene
+# 127.0.1.1 kafka1
+# 127.0.1.1 kafka2
+# 127.0.1.1 kafka3
+#
+# PORQUE aquie hemos usado esos nombres como nombres de servicio
+
+version: '3.3'
+services:
+  redisserv: 
+    image: redis # directamente es un contenedor a partir de la imagen oficial redis
+    ports:
+     - '6379:6379'
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    ports:
+    - "2181:2181"
+    #- "2888:2888"
+    #- "3888:3888"
+    environment:
+    - ZOOKEEPER_SERVER_ID=1
+    - ZOOKEEPER_CLIENT_PORT=2181
+    - ZOOKEEPER_TICK_TIME=2000
+    - ZOOKEEPER_INIT_LIMIT=5
+    - ZOOKEEPER_SYNC_LIMIT=2
+    - ZOOKEEPER_SERVERS=zookeeper:2888:3888
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.3.0
+    depends_on:
+    - zookeeper
+    ports:
+    - "9091:9091"
+    environment:
+    - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 # debe de estar: porque es 3 por defecto y si solo tenemoso un kafka-broker no va bien!!
+    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka1:9091
+    - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9091
+    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    - KAFKA_BROKER_ID=1
+    - BOOTSTRAP_SERVERS=kafka1:9091,kafka2:9092,kafka3:9093,kafka4:9094,kafka5:9095
+    - ZOOKEEPER=zookeeper:2181

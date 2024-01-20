@@ -1,0 +1,2 @@
+
+https://stackoverflow.com/questions/52438822/docker-kafka-w-python-consumer/52440056#52440056
