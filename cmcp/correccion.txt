@@ -1,4 +1,4 @@
-Corrección del profesor:
+Corrección del profesor Practiaca:
 E2: Falta imprimir el número de hilos
 E2: El valor de la integral que muestra el programa es incorrecto, sin embargo dices que muestra el mismo resultado sin paralelizar??? Debería dar aproximadamente 1.
 E5: Había que modificar el programa para imprimir otro parámetro, como la anchura del bus de memoria.

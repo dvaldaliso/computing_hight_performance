@@ -1,6 +1,6 @@
 # Cloud_computing
-## Makefile (Es usado para agrupar ciertas reglas para la comiplacion)
-## Todos los ejercicios que tengan este archivo -> ./make 
+## Makefile (Es usado para agrupar ciertas reglas para la compilacion)
+## Todos los ejercicios que tengan este archivo -> make 
 
 # CMCP -- programacion paralela
 ##    openMP
@@ -31,6 +31,7 @@
 ### gcc -fopenmp -o knapsackBF knapsackBF.c -lm -DCHECK (se pone el -DCHECK PARA QUE EJECUTE UNA PARTE ESPECIFICA DEL CODIGO)
 ## Compilacion c++ -> g++ -o file file.cpp
 ## Google Colab
+## OPencl -> permite programar en cpu y gpu(programacion heterogenea)
 
 # MPICAP -> Modelado y resolución de problemas en ingeniería mediante computación de altas prestaciones
 ## Esta asignatura es en Matlab
