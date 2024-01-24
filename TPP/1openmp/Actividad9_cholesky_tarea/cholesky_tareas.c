@@ -147,21 +147,23 @@ int cholesky_bloques( int n, int b, double *C ) {
     dpotrf_( "L", &m, &C(k,k), &n, &info );
     if( info != 0 ) {
       fprintf(stderr,"Error = %d en la descomposición de Cholesky de la matriz C\n",info);
-      return info;
+      //return info;
     }
     for ( i = k + b; i < n; i += b ) {
+      #pragma omp task firstprivate(i) private(m)
+      {
       m = min( n-i, b );
-      #pragma omp task
       dtrsm_( "R", "L", "T", "N", &m, &b, &one, &C(k,k), &n, &C(i,k), &n );
+      }
     }
     #pragma omp taskwait
     for ( i = k + b; i < n; i += b ) {
       m = min( n-i, b );
       for ( j = k + b; j < i ; j += b ) {
-       #pragma omp task
+       #pragma omp task firstprivate(i,j,m)
         dgemm_( "N", "T", &m, &b, &b, &minusone, &C(i,k), &n, &C(j,k), &n, &one, &C(i,j), &n );
       }
-      #pragma omp task
+      #pragma omp task firstprivate(i,m)
       dsyrk_( "L", "N", &m, &b, &minusone, &C(i,k), &n, &one, &C(i,i), &n );
     }
    #pragma omp taskwait
