@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #ifdef __APPLE__
-#include <OpenCL/opencl.h>
+#include <OpenCL/opencl.h> //Para tipos de datos de opencl que se utilizan
 #include <unistd.h>
 #else
 #include <CL/cl.h>
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 
     // Obten la primera plataforma disponible
     err = clGetPlatformIDs(1, &platform, &numPlatforms);
-    checkError(err, "Getting platforms");
+    checkError(err, "Getting platforms");// funcion que esta en ccommun, chequea si hay error
 
     // Usa el primer dispositivo de tipo DEVICE_TYPE de la plataforma
     err = clGetDeviceIDs(platform, DEVICE_TYPE, 1, &device, NULL);
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 
 
     // Crea los objetos de memoria
-    d_a  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  LENGTH * sizeof(float), NULL, &err);
+    d_a  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  LENGTH * sizeof(float), NULL, &err);//Reserva memoria en el dispositivo
     checkError(err, "Creating buffer d_a");
     d_b  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  LENGTH * sizeof(float), NULL, &err);
     checkError(err, "Creating buffer d_b");
@@ -105,11 +105,11 @@ int main(int argc, char** argv)
     checkError(err, "Creating buffer d_c");
 
     // Crea el kernel a partir del programa
-    kernel = clCreateKernel(program, "vadd", &err);
+    kernel = clCreateKernel(program, "vadd", &err);// coje un kernel vadd -> es el nombre del fichero vadd.cl
     checkError(err, "Creating kernel with vadd.cl");
 
     // Asocia objetos de memoria con los argumentos de la funcion kernel
-    err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_a);
+    err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_a);//Asigna a 0 el vector d_a, objetos de memorias a los parametros del kernel
     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_b);
     err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_c);
     err |= clSetKernelArg(kernel, 3, sizeof(unsigned int), &count);
@@ -124,11 +124,13 @@ int main(int argc, char** argv)
     double rtime = wtime();
 
     // Ejecuta el kernel
-    err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &count, NULL, 0, NULL, NULL);
+    // count -> longitud del vector
+    // 6to parametros-> numero de work-group
+    err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &count, NULL, 0, NULL, NULL);//comands ->cola que se quiere ejecutar, 1-> una dimension
     checkError(err, "Enqueueing kernel");
 
     // Lee los resultados del dispositivo al host
-    err = clEnqueueReadBuffer( commands, d_c, CL_TRUE, 0, LENGTH * sizeof(float), h_c, 0, NULL, NULL );  
+    err = clEnqueueReadBuffer( commands, d_c, CL_TRUE, 0, LENGTH * sizeof(float), h_c, 0, NULL, NULL );// d_c->h_c  
     checkError(err, "Error: Failed to read output array");
 
     // Espera a que finalicen todas las tareas antes de parar el temporizador

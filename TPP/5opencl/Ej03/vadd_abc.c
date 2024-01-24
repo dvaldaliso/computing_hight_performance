@@ -61,13 +61,15 @@ int main(int argc, char** argv)
     cl_mem d_a;                     // device memory used for the input  a vector
     cl_mem d_b;                     // device memory used for the input  b vector
     cl_mem d_c;                     // device memory used for the output c vector
+    cl_mem d_d;                     // device memory used for the output d vector
+
 
     char * filename="vadd.cl";      // name of the file containing the kernel
 
     float*       h_a = (float*) calloc(LENGTH, sizeof(float));       // a vector
     float*       h_b = (float*) calloc(LENGTH, sizeof(float));       // b vector
     float*       h_c = (float*) calloc(LENGTH, sizeof(float));       // c vector (a+b) returned from the compute device
-
+    float*       h_d = (float*) calloc(LENGTH, sizeof(float));       // d vector (a+b+c)
     unsigned int correct;           // number of correct results
 
     // Fill vectors a and b with random float values
@@ -76,6 +78,7 @@ int main(int argc, char** argv)
     for(i = 0; i < LENGTH; i++){
         h_a[i] = rand() / (float)RAND_MAX;
         h_b[i] = rand() / (float)RAND_MAX;
+        h_c[i] = rand() / (float)RAND_MAX;
     }
 
     // Obten la primera plataforma disponible
@@ -116,8 +119,11 @@ int main(int argc, char** argv)
     checkError(err, "Creating buffer d_a");
     d_b  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  LENGTH * sizeof(float), NULL, &err);
     checkError(err, "Creating buffer d_b");
-    d_c  = clCreateBuffer(context,  CL_MEM_WRITE_ONLY, LENGTH * sizeof(float), NULL, &err);
+    d_c  = clCreateBuffer(context,  CL_MEM_READ_ONLY, LENGTH * sizeof(float), NULL, &err);
     checkError(err, "Creating buffer d_c");
+    d_d  = clCreateBuffer(context,  CL_MEM_WRITE_ONLY, LENGTH * sizeof(float), NULL, &err);
+    checkError(err, "Creating buffer d_d");
+
 
     // Crea el kernel a partir del programa
     kernel = clCreateKernel(program, "vadd", &err);
@@ -127,7 +133,8 @@ int main(int argc, char** argv)
     err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_a);
     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_b);
     err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_c);
-    err |= clSetKernelArg(kernel, 3, sizeof(unsigned int), &count);
+    err |= clSetKernelArg(kernel, 3, sizeof(cl_mem), &d_d);
+    err |= clSetKernelArg(kernel, 4, sizeof(unsigned int), &count);
     checkError(err, "Setting kernel arguments");
 
     // Escribe los datos de entrada del host al dispositivo
@@ -135,6 +142,9 @@ int main(int argc, char** argv)
     checkError(err, "Copying h_a to device at d_a");
     err = clEnqueueWriteBuffer(commands, d_b, CL_FALSE, 0, LENGTH * sizeof(float), h_b, 0, NULL, NULL);
     checkError(err, "Copying h_b to device at d_b");
+    err = clEnqueueWriteBuffer(commands, d_c, CL_FALSE, 0, LENGTH * sizeof(float), h_c, 0, NULL, NULL);
+    checkError(err, "Copying h_b to device at d_b");
+
 
     double rtime = wtime();
 
@@ -143,7 +153,7 @@ int main(int argc, char** argv)
     checkError(err, "Enqueueing kernel");
 
     // Lee los resultados del dispositivo al host
-    err = clEnqueueReadBuffer( commands, d_c, CL_TRUE, 0, LENGTH * sizeof(float), h_c, 0, NULL, NULL );  
+    err = clEnqueueReadBuffer( commands, d_d, CL_TRUE, 0, LENGTH * sizeof(float), h_d, 0, NULL, NULL );  
     checkError(err, "Error: Failed to read output array");
 
     // Espera a que finalicen todas las tareas antes de parar el temporizador
@@ -159,22 +169,23 @@ int main(int argc, char** argv)
 
     for(i = 0; i < LENGTH; i++)
     {
-        tmp = h_a[i] + h_b[i];     // assign element i of a+b to tmp
-        tmp -= h_c[i];             // compute deviation of expected and output result
+        tmp = h_a[i] + h_b[i]+ h_c[i];     // assign element i of a+b to tmp
+        tmp -= h_d[i];             // compute deviation of expected and output result
         if(tmp*tmp < TOL*TOL)      // correct if square deviation is less than tolerance squared
             correct++;
         else {
-            printf(" tmp %f h_a %f h_b %f h_c %f \n",tmp, h_a[i], h_b[i], h_c[i]);
+            printf(" tmp %f h_a %f h_b %f h_c %f h_d %f \n",tmp, h_a[i], h_b[i], h_c[i], h_d[i]);
         }
     }
 
     // Resume los resultados
-    printf("C = A+B:  %d out of %d results were correct.\n", correct, LENGTH);
+    printf("C = A+B+c:  %d out of %d results were correct.\n", correct, LENGTH);
 
     // Libera los recursos y finaliza
     clReleaseMemObject(d_a);
     clReleaseMemObject(d_b);
     clReleaseMemObject(d_c);
+    clReleaseMemObject(d_d);
     clReleaseProgram(program);
     clReleaseKernel(kernel);
     clReleaseCommandQueue(commands);
@@ -183,6 +194,7 @@ int main(int argc, char** argv)
     free(h_a);
     free(h_b);
     free(h_c);
+    free(h_d);
 
     return 0;
 }
