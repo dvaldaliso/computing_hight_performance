@@ -1,9 +1,9 @@
-// kernel:  vadd
-// Purpose: Compute the elementwise sum c = a+b
-// input: a float vectors of length count
-// output: 
+// kernel:  vmax
+// Purpose: Compute the max
+// input: v float vectors of length count
+// output: vector of msx 
 //
-__kernel void vadd(                                           
+__kernel void vmax(                                           
    __global float* v 
    __global float* vmax                                           
    const unsigned int count)                                      
