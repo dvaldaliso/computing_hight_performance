@@ -12,7 +12,7 @@
    exit(err);                                                            \
  } }
 
-#define	A(i,j)		A[ (j) + ((i)*(n)) ]
+#define	A(i,j)		A[ (j) + ((i)*(n)) ]// j va por fila pq incrementa de j
 #define	B(i,j) 		B[ (j) + ((i)*(n)) ]
 #define	C(i,j) 		C[ (j) + ((i)*(n)) ]
 #define	C_gpu(i,j) 	C_gpu[ (j) + ((i)*(n)) ]
@@ -23,10 +23,12 @@
 
 /* This kernel computes a matrix addition. Each thread executing this kernel performs a matrix element sum */
 __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, float *d_B, float *d_C ) {
-
+  int x = threadIdx.x //index of thread in x dimension
+  int y =threadIdx.y;//index of thread in y dimension
   /* Obtain the global matrix index accessed by the thread executing this kernel */
-  int i = blockDim.x * blockIdx.x + threadIdx.x;
-  int j = blockDim.y * blockIdx.y + threadIdx.y; 
+  //Para la optimizacion con la memoria hay q intercambiar la x con la y, porque este codigo va accediendo por columna
+  int i = blockDim.x * blockIdx.x + y;//Global index to a matrix row
+  int j = blockDim.y * blockIdx.y + x;//Global index to a matrix col
   /* Perform the addition. Pay attention because probably not all the threads should perform the addition */ 
   if(j<n && j<m){
     d_C(i, j) = d_A(i, j) + d_B(i, j);

@@ -38,9 +38,9 @@ int i = blockDim.x * blockIdx.x + y;
 __shared__ float piece[BLOCKSIZE];
   /* Declare share memory space of a square block of order BLOCKSIZE */
 __shared__ float square[BLOCKSIZE][BLOCKSIZE];
- float res=0.0;
-  if( i < m ) { /* Prevent work on positions beyond m */
  
+  if( i < m ) { /* Prevent work on positions beyond m */
+ float res_y=0.0;
      /* Implement Part 1 here */
      /* Loop (threadIdx.x:BLOCKSIZE:n-1) */
         /* Copy subvector x in shared memory */
@@ -51,10 +51,10 @@ __shared__ float square[BLOCKSIZE][BLOCKSIZE];
         }
         __syncthreads();
 
-        res += piece[j]*d_A(i,j);
+        res_y += piece[j]*d_A(i,j);
       }
      /* Save local variable in shared memory */
-     square[y][x] = res;
+     square[y][x] = res_y;
       __syncthreads();
      /* Implement Part 2 here */
      /* Only if threadIdx.x==0 */

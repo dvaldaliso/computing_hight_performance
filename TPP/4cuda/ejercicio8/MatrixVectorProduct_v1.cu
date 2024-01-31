@@ -27,14 +27,19 @@
 __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, float *d_x, float *d_y ) {
 
     /* Figure out the global index to a matrix row */
- int i = blockDim.x*blockIdx.x + threadIdx.x;
+ int i = blockIdx.x * blockDim.x + threadIdx.x; //Global index to a matrix row
     /* Each thread computes the ith component of array d_y by multiplying the ith row of d_A by array d_x */
     /* Pay attention again to if the component accessed by the thread falls within the bound */
+ 
+ // Como es multiplicacion de matrix X vector un hilo multiplica fila por comlumna
+ int j; //Global index to a matrix col
+ float a = 0.0f
  if(i < m ){
       d_y( i ) = 0.0f;
-      for( unsigned int j=0; j<n; j++ ) {
-        d_y( i ) += d_A( i, j ) * d_x( j );
+      for( j=0; j<n; j++ ) {
+        a += d_A( i, j ) * d_x( j );
       }
+      d_y( i ) = a;
     }
 }
 

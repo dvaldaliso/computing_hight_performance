@@ -22,12 +22,12 @@
 __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, float *d_B ) {
     /* Index of thread in x dimension */
     /* Index of thread in y dimension */
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
+    int x = threadIdx.x;
+    int y = threadIdx.y;
     /* Global index to a matrix row (i) */
     /* Global index to a matrix col (j) */
-    int i = threadIdx.x + blockIdx.x + blockDim.x;
-    int j = threadIdx.y + blockIdx.y + blockDim.y;
+    int i = x + blockIdx.x + blockDim.x;
+    int j = y + blockIdx.y + blockDim.y;
     /* Copy element A(i,j) into B(j,i) to form the transposed matrix */
     d_B( j, i ) = d_A( i, j );
 }
