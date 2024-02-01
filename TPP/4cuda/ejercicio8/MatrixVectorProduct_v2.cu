@@ -33,28 +33,30 @@ __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, floa
   int y = threadIdx.y;
   /* Obtain the global index to a matrix row (variable i). Note that there is only one dimension in the grid
      so blockIdx.x and blockDim.x are the only existing variables */
-int i = blockDim.x * blockIdx.x + y;
+  int i = blockDim.x * blockIdx.x + y;
   /* Declare share memory space of a piece of array d_x of size BLOCKSIZE */
-__shared__ float piece[BLOCKSIZE];
+  __shared__ float piece[BLOCKSIZE];
   /* Declare share memory space of a square block of order BLOCKSIZE */
-__shared__ float square[BLOCKSIZE][BLOCKSIZE];
+  __shared__ float square[BLOCKSIZE][BLOCKSIZE];
  
   if( i < m ) { /* Prevent work on positions beyond m */
- float res_y=0.0;
+     float res_y=0.0;
      /* Implement Part 1 here */
      /* Loop (threadIdx.x:BLOCKSIZE:n-1) */
         /* Copy subvector x in shared memory */
         /* Perform the add+product on a local variable */
-    for(int j = x; j<n; j+=BLOCKSIZE){
-        if(y==0){
-          piece[j]=d_x(j);
-        }
-        __syncthreads();
+        for(int j = x; j<n; j+=BLOCKSIZE){
+          if(y==0){
+            //piece[j]=d_x(j); Línea corregida 
+            piece[x]=d_x(j);
+          }
+          __syncthreads();
 
-        res_y += piece[j]*d_A(i,j);
+          //res_y += piece[j]*d_A(i,j); Línea corregida 
+          res_y += piece[x]*d_A(i,j);
       }
-     /* Save local variable in shared memory */
-     square[y][x] = res_y;
+      /* Save local variable in shared memory */
+      square[y][x] = res_y;
       __syncthreads();
      /* Implement Part 2 here */
      /* Only if threadIdx.x==0 */
@@ -184,4 +186,3 @@ int main( int argc, char *argv[] ) {
   free(y_gpu);
   
 }
-

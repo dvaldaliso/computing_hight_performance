@@ -33,7 +33,7 @@ __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, floa
  
  // Como es multiplicacion de matrix X vector un hilo multiplica fila por comlumna
  int j; //Global index to a matrix col
- float a = 0.0f
+ float a = 0.0f;
  if(i < m ){
       d_y( i ) = 0.0f;
       for( j=0; j<n; j++ ) {
