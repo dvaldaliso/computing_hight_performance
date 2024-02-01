@@ -1,7 +1,8 @@
 
 /*************************************
  * Matrix-Vector product CUDA kernel *
- * V1: Without Shared memory         *
+ * V1: Without Shared memory   
+ * Puede dar error en la version de gpu, revisar el Makefile la siguiente linea ARCH=-arch sm_20, puede ser sm_35      *
  *************************************/
 
 #include <stdio.h>

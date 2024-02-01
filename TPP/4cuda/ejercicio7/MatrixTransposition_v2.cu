@@ -2,6 +2,7 @@
 /****************************************
  * CUDA kernel for transposing matrices *
  * Version with Shared Memory           *
+ *  * Puede dar error en la version de gpu, revisar el Makefile la siguiente linea ARCH=-arch sm_20, puede ser sm_35      *
  ****************************************/
 
 #include <stdio.h>
