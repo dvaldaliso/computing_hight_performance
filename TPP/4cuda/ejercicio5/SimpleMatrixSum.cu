@@ -24,7 +24,7 @@
 /* This kernel computes a matrix addition. Each thread executing this kernel performs a matrix element sum */
 __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, float *d_B, float *d_C ) {
   int x = threadIdx.x //index of thread in x dimension
-  int y =threadIdx.y;//index of thread in y dimension
+  int y = threadIdx.y;//index of thread in y dimension
   /* Obtain the global matrix index accessed by the thread executing this kernel */
   //Para la optimizacion con la memoria hay q intercambiar la x con la y, porque este codigo va accediendo por columna
   int i = blockDim.x * blockIdx.x + y;//Global index to a matrix row
