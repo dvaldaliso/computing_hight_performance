@@ -30,8 +30,8 @@
 __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, float *d_x, float *d_y ) {
   
   /* Obtain (x,y) coordinates of the thread within the block */
-  int x = threadIdx.x;
-  int y = threadIdx.y;
+  int x = threadIdx.x; //index of thread in x dimension
+  int y = threadIdx.y; //index of thread in y dimension
   /* Obtain the global index to a matrix row (variable i). Note that there is only one dimension in the grid
      so blockIdx.x and blockDim.x are the only existing variables */
   int i = blockDim.x * blockIdx.x + y;

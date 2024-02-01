@@ -26,7 +26,7 @@ __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, floa
   int x = threadIdx.x //index of thread in x dimension
   int y = threadIdx.y;//index of thread in y dimension
   /* Obtain the global matrix index accessed by the thread executing this kernel */
-  //Para la optimizacion con la memoria hay q intercambiar la x con la y, porque este codigo va accediendo por columna
+  //Para la optimizacion con la memoria hay q intercambiar la x con la y, porque este codigo va accediendo por columna y debe ir por filas para que sea lineal con los hilos
   int i = blockDim.x * blockIdx.x + y;//Global index to a matrix row
   int j = blockDim.y * blockIdx.y + x;//Global index to a matrix col
   /* Perform the addition. Pay attention because probably not all the threads should perform the addition */ 

@@ -76,7 +76,8 @@ int main( int argc, char *argv[] ) {
   /* In this place transfer matrices A and B from Host to matrices d_A and d_B, respectively, on Device */
   CUDA_SAFE_CALL( cudaMemcpy( d_A, A, n*n*sizeof(float), cudaMemcpyHostToDevice ) );/* A -> d_A */
   CUDA_SAFE_CALL( cudaMemcpy( d_B, B, n*n*sizeof(float), cudaMemcpyHostToDevice ) );/* B -> d_B */
-  CUBLAS_SAFE_CALL( cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, n, &ONE, d_A, n, d_B, n, &ONE, d_C, n) ); /* In this place write a call to routine cublasDgemm that performs the matrix-matrix product on GPU */
+   /* In this place write a call to routine cublasDgemm that performs the matrix-matrix product on GPU */
+  CUBLAS_SAFE_CALL( cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, n, &ONE, d_A, n, d_B, n, &ONE, d_C, n) );
   /* In this place transfer matrix d_C from Device to matrix gpu_C on the Host */
   CUDA_SAFE_CALL( cudaMemcpy( gpu_C, d_C, n*n*sizeof(float), cudaMemcpyDeviceToHost ) ); /* d_C -> gpu_C */
   CUDA_SAFE_CALL( cudaEventRecord(stop, NULL) );  // Record the stop event
