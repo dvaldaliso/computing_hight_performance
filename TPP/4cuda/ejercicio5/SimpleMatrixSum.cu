@@ -12,7 +12,7 @@
    exit(err);                                                            \
  } }
 
-#define	A(i,j)		A[ (j) + ((i)*(n)) ]// j va por fila pq incrementa de j
+#define	A(i,j)		A[ (j) + ((i)*(n)) ]// j va lineal pq incrementa de j
 #define	B(i,j) 		B[ (j) + ((i)*(n)) ]
 #define	C(i,j) 		C[ (j) + ((i)*(n)) ]
 #define	C_gpu(i,j) 	C_gpu[ (j) + ((i)*(n)) ]
@@ -30,6 +30,7 @@ __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, floa
   int i = blockDim.x * blockIdx.x + y;//Global index to a matrix row
   int j = blockDim.y * blockIdx.y + x;//Global index to a matrix col
   /* Perform the addition. Pay attention because probably not all the threads should perform the addition */ 
+  /*Ensure that the kernel does not execute more thread than the number of elements in the matrix*/
   if(j<n && j<m){
     d_C(i, j) = d_A(i, j) + d_B(i, j);
   }

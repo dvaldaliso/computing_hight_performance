@@ -85,6 +85,14 @@ int main( int argc, char *argv[] ) {
   CUDA_SAFE_CALL( cudaEventRecord(start, NULL) ); // Record the start event
   CUDA_SAFE_CALL( cudaMemcpy( d_A, A, m*p*sizeof(float), cudaMemcpyHostToDevice ) );
   CUDA_SAFE_CALL( cudaMemcpy( d_B, B, p*n*sizeof(float), cudaMemcpyHostToDevice ) );
+  /* CublasSgemm cublasStatus_t cublasSgemm(cublasHandle_t handle,
+                           cublasOperation_t transa, cublasOperation_t transb,
+                           int m, int n, int k,
+                           const float           *alpha,
+                           const float           *A, int lda,
+                           const float           *B, int ldb,
+                           const float           *beta,
+                           float           *C, int ldc)*/
   CUBLAS_SAFE_CALL( cublasSgemm( handle, CUBLAS_OP_N, CUBLAS_OP_N, m, n, p, &alpha, d_A, m, d_B, p, &beta, d_C, m ) );
   CUDA_SAFE_CALL( cudaMemcpy( C, d_C, m*n*sizeof(float), cudaMemcpyDeviceToHost ) );
   CUDA_SAFE_CALL( cudaEventRecord(stop, NULL) );  // Record the stop event

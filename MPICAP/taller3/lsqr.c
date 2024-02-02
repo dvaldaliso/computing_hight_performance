@@ -83,6 +83,7 @@ int main(int argc, char **argv)
 		FUNCIONES:
 		*/
 		PC pc;
+		KSPCreate(PETSC_COMM_WORLD, &ksp);
 		KSPSetOperators(ksp, A, NULL);
 		KSPGetPC(ksp, &pc);
 		PCSetType(pc, PCNONE);
@@ -99,11 +100,11 @@ int main(int argc, char **argv)
 		FUNCIONES:
 		Buscar las funciones para extraer el motivo de parada y numero de iteraciones realizadas*/
 		KSPConvergedReason reason;
-		KSPGetConvergedReason(ksp, &reason); // Get the reason for convergence
+		KSPGetConvergedReason(ksp, &reason);
 		PetscPrintf(PETSC_COMM_WORLD, "Convergence reason: %s\n", KSPConvergedReasons[reason]);
 
 		PetscInt iterations;
-		KSPGetIterationNumber(ksp, &iterations); // Get the number of iterations
+		KSPGetIterationNumber(ksp, &iterations); 
 		PetscPrintf(PETSC_COMM_WORLD, "Number of iterations: %D\n", iterations);	
 		/*	A COMPLETAR: Almacenar la solucion en formato MATLAB
 		FUNCIONES:
@@ -118,10 +119,6 @@ int main(int argc, char **argv)
 
 		/*A COMPLETAR: Destruir matrices, vectores y finalizar entorno
 		FUNCIONES:
-		MatDestroy
-		VecDestroy
-		KSPDestroy
-		PetscFinalize
 		*/
 		MatDestroy(&A); // Destroy matrix A
 		VecDestroy(&b); // Destroy vector b

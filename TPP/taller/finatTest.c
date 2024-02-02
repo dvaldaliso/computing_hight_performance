@@ -16,14 +16,17 @@ void randomizeBodies(float *data, int n)
 
 }
 
-void bodyForce(Body *p, float dt, int n)
+__global__ void bodyForce(Body *p, float dt, int n)
 {
-  float Fx;
-  #pragma omp parallel for private(i,j) reduction(+:Fx)
-  for (int i = 0; i < n; ++i) {
-    Fx = 0.0f; float Fy = 0.0f; float Fz = 0.0f;
+  int x = threadIdx.x //index of thread in x dimension
 
-    for (int j = 0; j < n; j++) {
+  int i = blockDim.x * blockIdx.x + x;//Global index to a matrix row
+  float Fx;
+  if(i < n){
+    // fx put in shared, Allow that all threads in the same block can access
+    Fx = 0.0f; float Fy = 0.0f; float Fz = 0.0f;
+    int j;
+    for ( j = 0; j < n; j++) {
       float dx = p[j].x - p[i].x;
       float dy = p[j].y - p[i].y;
       float dz = p[j].z - p[i].z;
@@ -35,7 +38,6 @@ void bodyForce(Body *p, float dt, int n)
     }
     p[i].vx += dt*Fx; p[i].vy += dt*Fy; p[i].vz += dt*Fz;
   }
-
 }
 
 int main(const int argc, const char** argv)
@@ -54,9 +56,20 @@ int main(const int argc, const char** argv)
   randomizeBodies(buf, 6*nBodies); // Init pos/vel data
 
   const double t1 = omp_get_wtime();
+  Body *d_p;
+  /* Allocate memory for d_p */
+  CUDA_SAFE_CALL( cudaMalloc( (void **) &d_p, 6*nBodies*sizeof(Body) ) );
+ 
+ /* STEP 4: Copy host p to the device d_p */
+  CUDA_SAFE_CALL( cudaMemcpy( d_p, p, 6*nBodies*sizeof(Body), cudaMemcpyHostToDevice )  ); /* p->d_p */
+
 
   for (int iter = 1; iter <= nIters; iter++)
   {
+  dim dimGrid( row_blocks, col_blocks );
+  dim dimBlock( block_rows, block_cols );
+  compute_kernel<<< dimGrid, dimBlock >>>( p, dt, nBodies );
+
     bodyForce(p, dt, nBodies); // compute interbody forces
 
     for (int i = 0 ; i < nBodies; i++) { // integrate position

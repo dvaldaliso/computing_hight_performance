@@ -32,16 +32,16 @@ __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, floa
     int ty = threadIdx.y;
     /* Index of block in x dimension */ 
     /* Index of block in y dimension */ 
-    int BLOCK_X = blockIdx.x;
-    int BLOCK_Y = blockIdx.y;
+    int blockX = blockIdx.x;
+    int blockY = blockIdx.y;
     /* Global index to a row of A */
     /* Global index to a col of A */
     /* Global index to a row of B */
     /* Global index to a col of B */
-    int c_A = blockDim.x * BLOCK_X + tx;
-    int r_A = blockDim.y * BLOCK_Y + ty;
-    int c_B = blockDim.y * BLOCK_Y + tx;
-    int r_B = blockDim.x * BLOCK_X + ty;
+    int c_A = blockDim.x * blockX + tx;
+    int r_A = blockDim.y * blockY + ty;
+    int c_B = blockDim.y * blockY + tx;
+    int r_B = blockDim.x * blockX + ty;
 
     /* Declare a shared memory tile of size BLOCKSIZExBLOCKSIZE */
    __shared__ float tile[BLOCKSIZE][BLOCKSIZE];
