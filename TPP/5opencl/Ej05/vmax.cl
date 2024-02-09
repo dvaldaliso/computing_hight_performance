@@ -1,7 +1,7 @@
 // kernel:  vmax
 // Purpose: Compute the max
 // input: v float vectors of length count
-// output: vector of msx 
+// output: vector of vmax 
 //
 __kernel void vmax(                                           
    __global float* v 

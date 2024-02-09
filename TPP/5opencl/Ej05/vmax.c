@@ -25,7 +25,6 @@
 
 #include "cl_utils.h"
 
-#define TOL    (0.001)   // tolerance used in floating point comparisons
 #define LENGTH 1024*1024 // length of vectors v
 
 #define DEVICE_TYPE CL_DEVICE_TYPE_ALL
@@ -50,6 +49,13 @@ int main(int argc, char** argv)
     float*       h_v = (float*) calloc(LENGTH, sizeof(float));       // a vector
     float*       h_vmax = (float*) calloc(LENGTH, sizeof(float));       // a vector de maximos
 
+    if (argc != 3) {
+        printf("Uso: %s  <local_item_size>\n", argv[0]);
+        return -1;
+    }
+
+    // Obtener los parámetros de la línea de comandos
+    size_t local_item_size = atoi(argv[2]);
     // Fill vectors a and b with random float values
     size_t count = LENGTH;
     int i = 0;
@@ -104,8 +110,8 @@ int main(int argc, char** argv)
     checkError(err, "Creating kernel with vadd.cl");
 
     // Asocia objetos de memoria con los argumentos de la funcion kernel
-    err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_v);//Asigna a 0 el vector d_a, objetos de memorias a los parametros del kernel
-    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_vmax);//Asigna a 0 el vector d_a, objetos de memorias a los parametros del kernel
+    err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_v);
+    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_vmax);
     err |= clSetKernelArg(kernel, 2, sizeof(unsigned int), &count);
     checkError(err, "Setting kernel arguments");
 
@@ -118,7 +124,7 @@ int main(int argc, char** argv)
     // Ejecuta el kernel
     // count -> longitud del vector
     // 6to parametros-> numero de work-group
-    err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &count, NULL, 0, NULL, NULL);//comands ->cola que se quiere ejecutar, 1-> una dimension
+    err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &count, &local_item_size, 0, NULL, NULL);//comands ->cola que se quiere ejecutar, 1-> una dimension
     checkError(err, "Enqueueing kernel");
 
     // Lee los resultados del dispositivo al host
