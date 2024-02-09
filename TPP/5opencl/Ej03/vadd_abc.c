@@ -68,8 +68,8 @@ int main(int argc, char** argv)
 
     float*       h_a = (float*) calloc(LENGTH, sizeof(float));       // a vector
     float*       h_b = (float*) calloc(LENGTH, sizeof(float));       // b vector
-    float*       h_c = (float*) calloc(LENGTH, sizeof(float));       // c vector (a+b) returned from the compute device
-    float*       h_d = (float*) calloc(LENGTH, sizeof(float));       // d vector (a+b+c)
+    float*       h_c = (float*) calloc(LENGTH, sizeof(float));       // c vector
+    float*       h_d = (float*) calloc(LENGTH, sizeof(float));       // d vector (a+b+c) returned from the compute device
     unsigned int correct;           // number of correct results
 
     // Fill vectors a and b with random float values

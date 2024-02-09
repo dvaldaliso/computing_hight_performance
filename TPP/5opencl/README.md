@@ -1,4 +1,4 @@
-ssh tpp1_dvallop@nowherman.iteam.upv.es
+## ssh tpp1_dvallop@nowherman.iteam.upv.es
 
 ## OPencl -> permite programar en cpu y gpu(programacion heterogenea) mut flexible
 ## thread equivalente work-item

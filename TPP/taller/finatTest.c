@@ -22,6 +22,7 @@ __global__ void bodyForce(Body *p, float dt, int n)
 
   int i = blockDim.x * blockIdx.x + x;//Global index to a matrix row
   float Fx;
+  __shared__ float Fx;
   if(i < n){
     // fx put in shared, Allow that all threads in the same block can access
     Fx = 0.0f; float Fy = 0.0f; float Fz = 0.0f;
@@ -33,7 +34,9 @@ __global__ void bodyForce(Body *p, float dt, int n)
       float distSqr = dx*dx + dy*dy + dz*dz + SOFTENING;
       float invDist = rsqrtf(distSqr);
       float invDist3 = invDist * invDist * invDist;
-
+      
+      //syncthreds
+      __syncthreads();
       Fx += dx * invDist3; Fy += dy * invDist3; Fz += dz * invDist3;
     }
     p[i].vx += dt*Fx; p[i].vy += dt*Fy; p[i].vz += dt*Fz;

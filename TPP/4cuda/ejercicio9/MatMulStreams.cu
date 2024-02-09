@@ -115,10 +115,10 @@ int main( int argc, char *argv[] ) {
   CUDA_SAFE_CALL( cudaMemcpy( d_B, B, p*n*sizeof(float), cudaMemcpyHostToDevice ) );// -- Copy the p-by-n CPU matrix B into matrix d_B on GPU --
   for (int i = 0; i < nstreams; i++) {
     /* Perform the computation with the streams */
-    CUBLAS_SAFE_CALL( cublasSetMatrixAsync(k,p,sizeof(float),A,k,d_A,k,stream[i]) );//-- Send a k-by-p block of the CPU matrix A starting in row i*k to the corresponding position in the GPU matrix d_A. Use cublasSetMatrixAsync for simplicity. --
+    CUBLAS_SAFE_CALL( cublasSetMatrixAsync(k, p, sizeof(float),&A[k*i], m, &d_A[k*i], m, stream[i]) );//-- Send a k-by-p block of the CPU matrix A starting in row i*k to the corresponding position in the GPU matrix d_A. Use cublasSetMatrixAsync for simplicity. --
     CUBLAS_SAFE_CALL( cublasSetStream(handle, stream[i]) );//-- Set stream stream[i] as current. -- 
-    CUBLAS_SAFE_CALL( cublasSgemm( handle, CUBLAS_OP_N, CUBLAS_OP_N, m, n, p, &alpha, d_A, m, d_B, p, &beta, d_D, m ) );// -- Perform the matrix multiplication of the just sent block in d_A by matrix d_B (cublasSgemm). Store the result into the corresponding block of d_D. -- 
-    CUBLAS_SAFE_CALL( cublasGetMatrixAsync(m, m, sizeof(float), d_D, m, D, m,stream[i]) );//-- Send the resulting matrix of the last multiplication in d_D to the corresponding block into the CPU matrix D. Use cublasGetMatrixAsync for simplicity. -- 
+    CUBLAS_SAFE_CALL( cublasSgemm( handle, CUBLAS_OP_N, CUBLAS_OP_N, k, n, p, &alpha, &d_A[k*i], m, d_B, p, &beta, &d_D[k*i], m ) );// -- Perform the matrix multiplication of the just sent block in d_A by matrix d_B (cublasSgemm). Store the result into the corresponding block of d_D. -- 
+    CUBLAS_SAFE_CALL( cublasGetMatrixAsync(k, p, sizeof(float), &d_D[k*i], m, &D[k*i], m, stream[i]) );//-- Send the resulting matrix of the last multiplication in d_D to the corresponding block into the CPU matrix D. Use cublasGetMatrixAsync for simplicity. -- 
   }
   //-- Destroy the streams. --  
   for(int i = 0; i < nstreams; i++){  

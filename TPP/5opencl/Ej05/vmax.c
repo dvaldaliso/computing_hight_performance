@@ -26,7 +26,7 @@
 #include "cl_utils.h"
 
 #define TOL    (0.001)   // tolerance used in floating point comparisons
-#define LENGTH 1024*1024 // length of vectors a, b, and c
+#define LENGTH 1024*1024 // length of vectors v
 
 #define DEVICE_TYPE CL_DEVICE_TYPE_ALL
 
@@ -49,8 +49,6 @@ int main(int argc, char** argv)
 
     float*       h_v = (float*) calloc(LENGTH, sizeof(float));       // a vector
     float*       h_vmax = (float*) calloc(LENGTH, sizeof(float));       // a vector de maximos
-
-    unsigned int correct;           // number of correct results
 
     // Fill vectors a and b with random float values
     size_t count = LENGTH;
@@ -102,7 +100,7 @@ int main(int argc, char** argv)
     
 
     // Crea el kernel a partir del programa
-    kernel = clCreateKernel(program, "vmax", &err);// coje un kernel vadd -> es el nombre del fichero vadd.cl
+    kernel = clCreateKernel(program, "vmax", &err);// coje un kernel vmax -> es el nombre del fichero vadd.cl
     checkError(err, "Creating kernel with vadd.cl");
 
     // Asocia objetos de memoria con los argumentos de la funcion kernel
@@ -134,23 +132,15 @@ int main(int argc, char** argv)
     rtime = wtime() - rtime;
     printf("\nThe kernel ran in %lf seconds\n",rtime);
 
-    // Comprueba los resultados
-    correct = 0;
-    float tmp;
 
-    for(i = 0; i < LENGTH; i++)
-    {
-        tmp = h_a[i] + h_b[i];     // assign element i of a+b to tmp
-        tmp -= h_c[i];             // compute deviation of expected and output result
-        if(tmp*tmp < TOL*TOL)      // correct if square deviation is less than tolerance squared
-            correct++;
-        else {
-            printf(" tmp %f h_a %f h_b %f h_c %f \n",tmp, h_a[i], h_b[i], h_c[i]);
+   // Buscar el maximo en el resultado
+    float max = h_vmax[0];
+    for (int i = 1; i < VECTOR_SIZE / GROUP_SIZE; i++) {
+        if (h_vmax[i] > max) {
+            max = h_vmax[i];
         }
     }
 
-    // Resume los resultados
-    printf("C = A+B:  %d out of %d results were correct.\n", correct, LENGTH);
 
     // Libera los recursos y finaliza
     clReleaseMemObject(d_v);
