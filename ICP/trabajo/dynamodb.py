@@ -1,6 +1,7 @@
 import boto3
 import json
-
+import asyncio
+from boto3.dynamodb.conditions import Key, Attr
 # define the DynamoDB table that Lambda will connect to
 tableName = "alucloud50-project"
 
@@ -22,8 +23,19 @@ def handler(event, context):
         dynamo.put_item(**x)
 
     def ddb_read(x):
-        dynamo.get_item(**x)
-
+        print(x)
+        return dynamo.get_item(**x)
+     
+    def ddb_query(x):
+        return dynamo.query(
+        KeyConditionExpression='years = :value',
+        ExpressionAttributeValues={
+            ':value': {'S': '245'}
+        }
+        )
+    def ddb_scan(x):
+        return dynamo.scan()    
+     
     def ddb_update(x):
         dynamo.update_item(**x)
         
@@ -38,6 +50,8 @@ def handler(event, context):
     operations = {
         'create': ddb_create,
         'read': ddb_read,
+        'query': ddb_query,
+        'scan': ddb_scan,
         'update': ddb_update,
         'delete': ddb_delete,
         'echo': echo,

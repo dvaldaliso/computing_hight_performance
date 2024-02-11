@@ -2,11 +2,32 @@
     "operation": "create",
     "payload": {
         "Item": {
-            "year": "245",
+            "years": "245",
             "nombre":"david",
             "info":{
                 "apellidos":"valdaliso"
             }
         }
     }
+}
+
+{
+    "operation": "read",
+     "payload": {
+        "Key": 
+        {
+           "years": "245",
+           "nombre":"david"
+        }
+        }
+}
+
+{
+    "operation": "delete", 
+    "payload": {
+        "Key": 
+        {
+            "year": "11111"
+        }
+     }
 }
