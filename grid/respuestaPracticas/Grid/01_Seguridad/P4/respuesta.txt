@@ -1,0 +1,55 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 163655878 (0x9c130c6)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: O=Grid, OU=GlobusTest, OU=simpleCA-david.ccgc.mastercpd.upv.es, OU=local, CN=David Valdaliso
+        Validity
+            Not Before: Dec 26 23:28:57 2023 GMT
+            Not After : Dec 27 00:18:57 2023 GMT
+        Subject: O=Grid, OU=GlobusTest, OU=simpleCA-david.ccgc.mastercpd.upv.es, OU=local, CN=David Valdaliso, CN=163655878
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (1024 bit)
+                Modulus:
+                    00:ad:f5:35:85:52:1a:7c:6e:1d:d3:1b:2e:19:4f:
+                    78:7b:e6:82:bf:f6:e6:ab:6a:1d:b0:b0:97:16:9a:
+                    c6:02:a4:a5:6e:9c:52:80:c5:fc:d1:a8:f1:73:8c:
+                    36:38:e4:b8:30:29:31:62:44:4f:09:d9:06:58:ae:
+                    d2:d4:eb:e5:c4:c8:01:12:b3:08:4b:c3:e8:be:c5:
+                    d4:36:b8:c2:81:f0:65:69:70:10:82:01:79:fb:d4:
+                    1d:c0:06:29:1f:9f:3c:ab:ed:ae:ce:c4:72:6a:48:
+                    97:ff:ad:07:92:df:12:c5:9c:4b:f7:61:9f:22:1f:
+                    ae:b5:a0:7d:74:2f:ad:1d:c1
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            Proxy Certificate Information: critical
+                Path Length Constraint: infinite
+                Policy Language: Inherit all
+
+    Signature Algorithm: sha1WithRSAEncryption
+         6f:32:8d:3b:f1:7a:95:16:d5:39:2a:f7:fd:8f:80:28:f4:92:
+         04:ba:91:ae:c6:59:3e:7e:1f:eb:ae:24:b6:2e:c5:ab:4f:77:
+         11:e1:2d:bd:80:d5:9b:f8:47:a0:46:00:d8:ad:d1:17:e4:13:
+         b1:04:de:1d:72:fe:77:ae:35:a9:c9:2f:43:bb:06:f0:7d:34:
+         5d:8b:e3:3b:d8:d2:c8:17:dd:2d:a9:a7:ed:44:26:2a:60:02:
+         7b:8d:e6:64:48:9c:f6:f4:ca:fa:2e:85:c9:96:78:ec:0f:41:
+         5d:fd:c3:5b:f8:39:19:f3:b2:ff:e3:6c:71:2c:a9:66:e5:af:
+         2b:34
+
+RESPUESTAS:
+¿Cuál es el DN del Proxy?
+Nombre Distintivo(DN)
+Issuer: O=Grid, OU=GlobusTest, OU=simpleCA-david.ccgc.mastercpd.upv.es, OU=local, CN=David Valdaliso
+
+¿Cuál es el DN del firmante del proxy?
+Signature Algorithm: sha1WithRSAEncryption
+         6f:32:8d:3b:f1:7a:95:16:d5:39:2a:f7:fd:8f:80:28:f4:92:
+         04:ba:91:ae:c6:59:3e:7e:1f:eb:ae:24:b6:2e:c5:ab:4f:77:
+         11:e1:2d:bd:80:d5:9b:f8:47:a0:46:00:d8:ad:d1:17:e4:13:
+         b1:04:de:1d:72:fe:77:ae:35:a9:c9:2f:43:bb:06:f0:7d:34:
+         5d:8b:e3:3b:d8:d2:c8:17:dd:2d:a9:a7:ed:44:26:2a:60:02:
+         7b:8d:e6:64:48:9c:f6:f4:ca:fa:2e:85:c9:96:78:ec:0f:41:
+         5d:fd:c3:5b:f8:39:19:f3:b2:ff:e3:6c:71:2c:a9:66:e5:af:
+         2b:34
+

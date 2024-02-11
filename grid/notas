@@ -1,0 +1,7 @@
+para la MV.
+xxx=128
+ssh -oHostKeyAlgorithms=+ssh-dss ccgc@forward.i3m.upv.es -p 22128
+
+Practica0
+pass=vamosacambiarla
+vamosacambiarla

@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+cahash=9ec3610b
+name=globus-simple-ca-$(cahash)
+
+certdir = etc/grid-security/certificates
+certdirfiles = \
+	$(cahash).0 \
+	$(cahash).signing_policy \
+	globus-host-ssl.conf.$(cahash) \
+	globus-user-ssl.conf.$(cahash) \
+	grid-security.conf.$(cahash)
+
+
+
+install/$(name)::
+	dh_testdir 
+	dh_testroot 
+	dh_clean -k
+
+	[ -d $(CURDIR)/debian/tmp/$(certdir) ] || \
+	    mkdir -p $(CURDIR)/debian/tmp/$(certdir)
+	rm -f debian/$(name).install || true
+	touch debian/$(name).install
+	for file in $(certdirfiles); do \
+	    if [ -f "$$file" ]; then \
+	        cp "$$file" "$(CURDIR)/debian/tmp/$(certdir)" ; \
+	        echo "debian/tmp/$(certdir)/$$file" $(certdir) >> debian/$(name).install; \
+	    fi ; \
+	done
+
+clean::
+	dh_clean debian/*.install
+

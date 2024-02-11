@@ -1,0 +1,2 @@
+globus-job-run david.ccgc.mastercpd.upv.es mi_script.sh hostname
+Cuando he intentado correr este script, me dice que no existe.

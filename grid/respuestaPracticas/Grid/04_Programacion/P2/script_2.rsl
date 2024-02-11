@@ -1,0 +1,9 @@
+&
+(count = 1)
+(executable = /usr/bin/octave)
+(arguments = test_or.m 4 1.2 )
+(rsl_substitution = (GASS_URL
+https://david.ccgc.mastercpd.upv.es:34495/home/ccgc/Evidencias/Grid/04_Programacion/P2))
+(stdout = $(GASS_URL)/miStdout_2)
+(stderr = $(GASS_URL)/miStderr_2)
+(file_stage_in=( $(GASS_URL)/test_or.m test_or.m ) )

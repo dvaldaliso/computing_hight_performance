@@ -1,0 +1,11 @@
+
+
+Conclusiones
+Verificacion
+[ccgc@david Escenario_II]$ openssl smime -verify -in mensaje_firmado.txt -out mensaje.txt -CApath /etc/grid-security/certificates/
+Verification successful
+
+a- Autenticacion emiso
+El emisor firma el mensaje con su llave privada, eso dice que es realemnte el el que autorizo
+
+

@@ -1,0 +1,2 @@
+Se creado en el mismo sitio donde he lanzado el globsrun
+porque p5.rsl tiene un stdout="/home/ccgc/Evidencias/Grid/02_Trabajos_Grid/P5"

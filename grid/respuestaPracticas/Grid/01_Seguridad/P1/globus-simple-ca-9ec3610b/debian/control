@@ -1,0 +1,14 @@
+Source: globus-simple-ca-9ec3610b
+Section: net
+Priority: extra
+Maintainer: root@
+
+Package: globus-simple-ca-9ec3610b
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: CA Package for /O=Grid/OU=GlobusTest/OU=simpleCA-david.ccgc.mastercpd.upv.es/CN=Globus Simple CA
+  This package contains the CA certificate and related policy files
+  needed to allow the Globus Toolkit to trust the CA with the subject
+  name:
+  "/O=Grid/OU=GlobusTest/OU=simpleCA-david.ccgc.mastercpd.upv.es/CN=Globus Simple CA"
+  as well as request certificates from that CA.

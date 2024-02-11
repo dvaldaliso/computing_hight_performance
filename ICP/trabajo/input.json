@@ -1,0 +1,12 @@
+{
+    "operation": "create",
+    "payload": {
+        "Item": {
+            "year": "245",
+            "nombre":"david",
+            "info":{
+                "apellidos":"valdaliso"
+            }
+        }
+    }
+}

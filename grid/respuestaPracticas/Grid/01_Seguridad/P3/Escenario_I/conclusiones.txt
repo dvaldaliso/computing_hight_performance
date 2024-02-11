@@ -1,0 +1,6 @@
+Conclusiones
+c - Confidencialidad de los datos
+Ya que es cifrado con su calve publica, solo el con su clave privada puede decifrar y leerlo
+
+
+

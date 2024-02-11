@@ -1,0 +1,10 @@
+[ccgc@david P1]$ globus-job-run damian.ccgc.mastercpd.upv.es /bin/hostname
+ERROR: proxy is not valid long enough  (3 hours)
+
+Syntax : globus-job-run <contact string> [-np N] <executable> [<arg>...]
+
+Use -help to display full usage.
+Nos muestra este error sino tenemos proxy configurado
+
+Respuesta1
+Es necesario crear un certificado proxy

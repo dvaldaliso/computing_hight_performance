@@ -1,0 +1,8 @@
+&
+(count = 1)
+(executable = /home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/Compila_y_ejecuta.sh)
+(arguments = cpi.c )
+(rsl_substitution = (GASS_URL https://david.ccgc.mastercpd.upv.es:36656))
+(stdout = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/miStdOut)
+(stderr = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/miStdErr)
+(file_stage_in = ($(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/cpi.c cpi.c))

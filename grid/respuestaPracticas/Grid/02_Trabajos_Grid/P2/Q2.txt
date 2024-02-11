@@ -1,0 +1,6 @@
+globus-job-run david.ccgc.mastercpd.upv.es -s mi_script.sh david
+13:32:14
+El primer argumento es: david
+Argumento: david
+
+utilizando la opcion -stage o -s, si lo ha ejecutado correctamente.

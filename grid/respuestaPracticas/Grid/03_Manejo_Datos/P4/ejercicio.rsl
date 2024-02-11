@@ -1,0 +1,8 @@
+&
+(count = 1)
+(executable = /bin/sort)
+(arguments = /tmp/Entrada1.txt /tmp/Entrada2.txt -o Salida.txt )
+(rsl_substitution = (GASS_URL https://david.ccgc.mastercpd.upv.es:35914))
+(stdout = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P4/miStdOut)
+(stderr = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P4/miStdErr)
+(file_stage_out = (Salida.txt $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P4/Salida.txt))
