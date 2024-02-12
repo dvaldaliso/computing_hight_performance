@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 	 VecCreate(PETSC_COMM_WORLD, &u);
 	VecSetSizes(u, PETSC_DECIDE, dim_rows); // Set the size of u
 	VecCreate(PETSC_COMM_WORLD, &v);
-	VecSetSizes(v, PETSC_DECIDE, dim_rows); // Set the size of v
+	VecSetSizes(v, PETSC_DECIDE, dim_cols); // Set the size of v
     MatCreateVecs(A, &v,&u);
      
 		
