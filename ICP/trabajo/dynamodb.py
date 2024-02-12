@@ -11,16 +11,14 @@ dynamo = boto3.resource('dynamodb').Table(tableName)
 print('Loading function')
 
 def handler(event, context):
-    '''Provide an event that contains the following keys:
-
-      - operation: one of the operations in the operations dict below
-      - payload: a JSON object containing parameters to pass to the 
-                 operation being performed
-    '''
-    
+        
     # define the functions used to perform the CRUD operations
     def ddb_create(x):
-        dynamo.put_item(**x)
+        try:
+            dynamo.put_item(**x)
+            return "creado"
+        except ClientError as e:
+            return "error al insertar"
 
     def ddb_read(x):
         print(x)
@@ -37,10 +35,19 @@ def handler(event, context):
         return dynamo.scan()    
      
     def ddb_update(x):
-        dynamo.update_item(**x)
+        try:
+            dynamo.update_item(**x)
+            return  "actualizado"
+        except ClientError as e:
+            return "error al actualizar"
+        
         
     def ddb_delete(x):
-        dynamo.delete_item(**x)
+        try:
+            dynamo.delete_item(**x)
+            return "eliminado"
+        except ClientError as e:
+            return "error al eliminar"
 
     def echo(x):
         return x
