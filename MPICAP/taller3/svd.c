@@ -107,23 +107,26 @@ int main(int argc, char **argv)
 	 PetscScalar sigma;
 	 PetscScalar dot_product;
 	 PetscScalar scale_factor;
-     Vec u, v;
-//	 MatCreateVecs(A, NULL, &u); 
-//     MatCreateVecs(A, NULL, &v); 
+	  Vec u, v;
+
+	 VecCreate(PETSC_COMM_WORLD, &u);
+	VecSetSizes(u, PETSC_DECIDE, dim_rows); // Set the size of u
+	VecCreate(PETSC_COMM_WORLD, &v);
+	VecSetSizes(v, PETSC_DECIDE, dim_rows); // Set the size of v
+    MatCreateVecs(A, &v,&u);
+     
 		
 	 for (PetscInt i = 0; i < nsv; i++) {
-		 SVDGetSingularTriplet(svd, i, &sigma, NULL, NULL); 
+	 PetscCall(PetscPrintf(PETSC_COMM_WORLD," Elapsed Time: %d %d %d\n",i,dim_rows,dim_cols));
 
-		MatCreateVecs(A, NULL, &u); 
-		MatCreateVecs(A, NULL, &v); 
+    SVDGetSingularTriplet(svd, i, &sigma, u, v); // Get the i-th singular triplet
+    VecDot(b, u, &dot_product); 
+    scale_factor = 1.0 / sigma; 
+    dot_product /= sigma;
+    VecScale(v, scale_factor); 
 
-         SVDGetSingularTriplet(svd, i, &sigma, u, v); // Get the i-th singular triplet
-         VecDot(b, u, &dot_product); 
-         scale_factor = 1.0 / sigma; 
-         dot_product /= sigma;
-		 VecScale(v, scale_factor); 
+    VecAXPBY(x, dot_product, 1.0, v);
 
-    	 VecAXPBY(x, dot_product, 1.0, v);
 	}
 
 		/*	A COMPLETAR: Almacenar la solucion en formato MATLAB
