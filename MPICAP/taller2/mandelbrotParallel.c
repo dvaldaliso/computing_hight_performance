@@ -69,9 +69,9 @@ int main(int argc, char **argv)
                 ImMin = ImMinArray[dominio];
                 ImMax = ImMaxArray[dominio];
         case 5: strcpy(ArchivoImagen, argv[4]);
-                strcat(ArchivoImagen, "A.pgm");
+                strcat(ArchivoImagen, "imgA.pgm");
                 strcpy(ArchivoImagen2, argv[4]);
-                strcat(ArchivoImagen2, "B.pgm");
+                strcat(ArchivoImagen2, "imgB.pgm");
         case 4: sscanf(argv[3], "%i", &IterMax);
         case 3: sscanf(argv[2], "%i", &pixelYmax);
         case 2: sscanf(argv[1], "%i", &pixelXmax);

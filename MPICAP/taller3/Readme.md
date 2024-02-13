@@ -9,3 +9,8 @@ También puedes compararla con la que os di de referencia, IMref32.mat, y puedes
 # Ejercicio 2 svd
 ## compilacion -> make svd
 ## ejecucion -> ./svd -file A32_30.petsc -fileb b32_30_forbild.petsc -files salidalsvd.m
+
+## Matlab
+## run('salidalsvd.m') -> me da un vector ->Vec_0x55f02bda2500_0
+## reshape(Vec_0x55f02bda2500_0, 32,32) -> esto me da una variable llamada 'ans' que se la pasamos debajo
+## figure;imcontrast(imshow(ans))
