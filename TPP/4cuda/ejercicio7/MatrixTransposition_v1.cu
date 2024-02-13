@@ -30,7 +30,10 @@ __global__ void compute_kernel( unsigned int m, unsigned int n, float *d_A, floa
     int i = x + blockIdx.x + blockDim.x;
     int j = y + blockIdx.y + blockDim.y;
     /* Copy element A(i,j) into B(j,i) to form the transposed matrix */
+    if (i < m && j < n)
+    {
     d_B( j, i ) = d_A( i, j );
+    }
 }
 
 int cu_transpose( unsigned int m, unsigned int n, unsigned int block_size, float *h_A, float *h_B  ) {
