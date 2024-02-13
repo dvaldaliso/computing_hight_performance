@@ -89,10 +89,9 @@ int main(int argc, char **argv)
 	SVDSetFromOptions(svd);
 	
 	PetscCall(PetscPrintf(PETSC_COMM_WORLD," svd: %s\n",svd_nsv));
-	PetscInt int_svd_nsv;
-    PetscErrorCode ierr = PetscStrtoi(svd_nsv, NULL, &int_svd_nsv);
+	PetscInt int_svd_nsv=atoi(svd_nsv);
 	 //PetscInt svd_nsv = 1024; // Número de valores singulares a calcular
-    SVDSetDimensions(svd, svd_nsv, PETSC_DECIDE, PETSC_DECIDE);
+    SVDSetDimensions(svd, int_svd_nsv, PETSC_DECIDE, PETSC_DECIDE);
  
     SVDSetFromOptions(svd); 
 	/*	A COMPLETAR: Ejecutar solver SVD
