@@ -11,7 +11,7 @@
 #include <utmpx.h>
 
 static char help[] = "Computes SVD of sparse matrix.\n\n"
-                     "Usage: ./svd -file A_file_name -fileb b_file_name -filex solution_file_name\n";
+                     "Usage: ./svd -file A_file_name -fileb b_file_name -filex solution_file_name -svd_nsv 32x32\n";
 // ejecucion en Kaha
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -28,6 +28,7 @@ int main(int argc, char **argv)
 	char           filename[PETSC_MAX_PATH_LEN];
   	char           filenameb[PETSC_MAX_PATH_LEN];
   	char           filenameS[PETSC_MAX_PATH_LEN];
+	char           svd_nsv[PETSC_MAX_PATH_LEN];
 	/*  A COMPLETAR: Inicializar PETSc (PetscFunctionBeginUser; PetscInitialize) */
 	PetscFunctionBeginUser; // Begin user section
 	PetscInitialize(&argc, &argv, (char*)0, help); 
@@ -48,7 +49,9 @@ int main(int argc, char **argv)
 	PetscCheck(flg,PETSC_COMM_WORLD,PETSC_ERR_USER_INPUT,"Must indicate a file name with the -file option");
 	PetscCall(PetscOptionsGetString(NULL,NULL,"-files",filenameS,sizeof(filenameS),&flg));
 	PetscCheck(flg,PETSC_COMM_WORLD,PETSC_ERR_USER_INPUT,"Must indicate a file name with the -file option");
-
+	PetscCall(PetscOptionsGetString(NULL,NULL,"-svd_nsv",svd_nsv,sizeof(svd_nsv),&flg));
+	PetscCheck(flg,PETSC_COMM_WORLD,PETSC_ERR_USER_INPUT,"Must indicate a svd_nsv name with the -svd_nsv option");
+	
 
 	/*	A COMPLETAR: Leer los datos de los ficheros (matriz A, vector b)
 
@@ -83,7 +86,15 @@ int main(int argc, char **argv)
 	SVD svd;
 	SVDCreate(PETSC_COMM_WORLD, &svd); // Create the SVD solver context
 	SVDSetOperators(svd, A, NULL); // Set the operator matrix for the SVD solver
-	SVDSetFromOptions(svd); 
+	SVDSetFromOptions(svd);
+	
+	PetscCall(PetscPrintf(PETSC_COMM_WORLD," svd: %s\n",svd_nsv));
+	PetscInt int_svd_nsv;
+    PetscErrorCode ierr = PetscStrtoi(svd_nsv, NULL, &int_svd_nsv);
+	 //PetscInt svd_nsv = 1024; // Número de valores singulares a calcular
+    SVDSetDimensions(svd, svd_nsv, PETSC_DECIDE, PETSC_DECIDE);
+ 
+    SVDSetFromOptions(svd); 
 	/*	A COMPLETAR: Ejecutar solver SVD
 	FUNCIONES:
 	SVDSolve */
@@ -117,7 +128,7 @@ int main(int argc, char **argv)
      
 		
 	 for (PetscInt i = 0; i < nsv; i++) {
-	 PetscCall(PetscPrintf(PETSC_COMM_WORLD," Elapsed Time: %d %d %d\n",i,dim_rows,dim_cols));
+	 //PetscCall(PetscPrintf(PETSC_COMM_WORLD," Elapsed Time: %d %d %d\n",i,dim_rows,dim_cols));
 
     SVDGetSingularTriplet(svd, i, &sigma, u, v); // Get the i-th singular triplet
     VecDot(b, u, &dot_product); 
