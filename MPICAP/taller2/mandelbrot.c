@@ -7,7 +7,8 @@ typedef struct _MinMax{
    double Min;
    double Max;
 } MinMax;
-
+// gcc mandelbrot.c -o mandelbrot -lm
+// ./mandelbrot 512 512
 int main(int argc, char **argv)
 {
  int **Crear_matriz(int , int );

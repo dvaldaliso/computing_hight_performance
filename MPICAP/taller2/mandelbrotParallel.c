@@ -9,6 +9,82 @@ typedef struct _MinMax{
    double Max;
 } MinMax;
 
+typedef struct {
+    int *rowBn;
+    int *rowBn2;
+} Rows;
+ // Obtener nuevo trabajo, seria obtener proxima fila de la matriz con la cual trabajar
+double obtener_nuevo_trabajo(
+   int pixelY,
+   int pixelYmax,
+   double ImMin,
+   double AltoPixel){
+   if (pixelY<pixelYmax)
+   {
+      return ImMin + pixelY*AltoPixel;
+   }
+   return -1;
+   
+  /*for(pixelY=0;pixelY<pixelYmax;pixelY++)
+   {
+      Cimg=ImMin + pixelY*AltoPixel;
+      
+   }*/
+}
+
+// Esta funcion procesaria la fila, es lo que hace cada proceso
+Rows realizar_trabajo_asignado(double Cimg, 
+                     int pixelXmax, 
+                     double RealMin, 
+                     double AnchoPixel,
+                     double SumaExponencial,
+                     int Iter,
+                     int IterMax,
+                     int MaxValorTonos,
+                     double Salida2
+                     ){
+    int bn;
+    int bn2;                    
+    int pixelX;
+    double Creal;
+    double Zx;         //  Z=Zx+Zy*i  
+    double Zy;
+    double Zx2, Zy2;
+    Rows result;
+
+    // Asignar memoria para los dos arrays
+    result.rowBn = (int*)malloc(pixelXmax * sizeof(int));
+    result.rowBn2 = (int*)malloc(pixelXmax * sizeof(int));            // Zx2=Zx*Zx, Zy2=Zy*Zy  
+    for(pixelX=0;pixelX<pixelXmax;pixelX++)
+    {         
+       Creal=RealMin + pixelX*AnchoPixel;
+       Zx=0.0;         // Valor inicial
+       Zy=0.0;
+       Zx2=Zx*Zx;
+       Zy2=Zy*Zy;
+       for (Iter=0;Iter<IterMax && ((Zx2+Zy2)<Salida2);Iter++)
+       {
+           SumaExponencial += exp( -sqrt(Zx2+Zy2) )/IterMax;   // se mantiene siempre entre (0,1)            
+	        Zy=2*Zx*Zy + Cimg;
+           Zx=Zx2-Zy2 + Creal;
+           Zx2=Zx*Zx;
+           Zy2=Zy*Zy;
+       }
+       if (Iter==IterMax) { /*  interior del conjunto Mandelbrot = negro */    
+          bn=0;          
+          bn2=0;            
+       }
+       else { /* exterior del conjunto Mandelbrot = blanco modificado con exp */
+          bn = MaxValorTonos - SumaExponencial * 255; 
+          bn2 = (Iter +1 - (int)(log(log(sqrt(Zx2+Zy2)) / log(2)) / log(2)))*255;
+       }
+      //esto es lo que hay q enviar al proceso 0
+      //ver como devolver un struct con los siguientes datos
+       result.rowBn[pixelX] = bn;
+       result.rowBn2[pixelX] = bn2;
+     }
+   return result;
+}
 int main(int argc, char **argv)
 {
 
@@ -28,7 +104,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
  int pixelX,pixelY;               // Coordenadas de la imagen
  int pixelXmax = 512; 
  int pixelYmax = 512;
- double Creal,Cimg;               // Coordenadas de los puntos complejos
+ double Cimg;               // Coordenadas de los puntos complejos
  const double RealMinArray[] = {-2, -1.023438, -1.017579, -1.017523, -1.0190739863281251, -1.0184326403503419, -1.0175024721407624, -1.0176950869990224, 0.2720};
  const double RealMaxArray[] = { 1, -0.992188, -1.016968, -1.017493, -1.0178532832031251, -1.0184266798858643, -1.0175010058651026, -1.0173896129032258, 0.3720};
  const double ImMinArray[] = {-1.5, -0.285156, -0.274444, -0.274065, -0.2672003476562500, -0.2667537630310058,  -0.2740544516129032, -0.2772175483870968, 0.4805};
@@ -38,7 +114,6 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
  double RealMax=1.0;  
  double ImMin=-1.5; 
  double ImMax=1.5; 
- double AnchoPixel; 
  double AltoPixel;
  double Tinicial, Tfinal, Ttotal;
 
@@ -47,13 +122,8 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
  char ArchivoImagen[]="imgA.pgm";
  char ArchivoImagen2[]="imgB.pgm";
  char *comentario="# ";
- int bn, bn2;
- double Zx, Zy;             // Z=Zx+Zy*i  
- double Zx2, Zy2;           // Zx2=Zx*Zx, Zy2=Zy*Zy  
  int Iter,i,j;
  int IterMax=1000;
- const double Salida=2;    // valor de escape
- double Salida2=Salida*Salida, SumaExponencial;
  int dominio=0;
  int **matriz, **matriz2;
  MinMax  min_max_img;
@@ -104,8 +174,8 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
  fprintf(ImgFile,"P5\n %s\n %d\n %d\n %d\n",comentario,pixelXmax,pixelYmax,MaxValorTonos);
  fprintf(ImgFile2,"P5\n %s\n %d\n %d\n %d\n",comentario,pixelXmax,pixelYmax,MaxValorTonos);
 
- AnchoPixel=(RealMax-RealMin)/(pixelXmax-1); 
- AltoPixel=(ImMax-ImMin)/(pixelYmax-1);
+ 
+ 
  matriz = Crear_matriz(pixelYmax, pixelXmax);
  matriz2 = Crear_matriz(pixelYmax, pixelXmax);
  Tinicial = ctimer();
@@ -114,20 +184,32 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
 // y le manda un array de ressultados a el proceos 0(padre), luego por el status el padre
 // dice que proceso toma la siguente fila
 //---------
-    
+   //MPI_Type_vector(count, length, stride, type, newtype)
+
+    MPI_Datatype rowType;
+    MPI_Type_vector(0, 1, pixelYmax, MPI_DOUBLE, &rowType);
+    MPI_Type_commit(&rowType);
+
+    Rows result;
+
     if (myrank == 0) {
+      AltoPixel=(ImMax-ImMin)/(pixelYmax-1);
       for (rank = 1; rank < ntasks; ++rank) { // Inicializar el trabajo de los hijos. Se le manda una unidad de trabajo a cada hijo
-      work = obtener_nuevo_trabajo(pixelY, pixelYmax); // Se obtiene un nuevo trabajo para un hijo
+      Cimg = obtener_nuevo_trabajo(pixelY, pixelYmax, ImMin, AltoPixel); // Se obtiene un nuevo trabajo para un hijo
       pixelX++;   
-      MPI_Send(&work, 1, MPI_INT, rank, ETIQUETA_CONTINUAR, MPI_COMM_WORLD); // Se manda el trabajo al hijo
+      MPI_Send(&Cimg, 1, MPI_DOUBLE, rank, ETIQUETA_CONTINUAR, MPI_COMM_WORLD); // Se manda el trabajo al hijo
       } 
-      work = obtener_nuevo_trabajo(); // Vamos obteniendo nuevos trabajos y asignándolos a los hijos hasta que se agoten
-      while (work != -1) {
+      Cimg = obtener_nuevo_trabajo(pixelY, pixelYmax, ImMin, AltoPixel); // Vamos obteniendo nuevos trabajos y asignándolos a los hijos hasta que se agoten
+      while (Cimg != -1) {
          // Recibimos un resultado de un hijo cualquiera (MPI_ANY_SOURCE) y le mandamos trabajo a ese mismo hijo
          // identificandolo por "status.MPI_SOURCE"
-         MPI_Recv(&result, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-         MPI_Send(&work, 1, MPI_INT, status.MPI_SOURCE, ETIQUETA_CONTINUAR, MPI_COMM_WORLD);
-         work = obtener_nuevo_trabajo(pixelY, pixelYmax);
+         
+         MPI_Recv(&result.rowBn, 0, rowType, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+         // Recibe la segunda fila
+         MPI_Recv(&result.rowBn2, 0, rowType, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+         //Terminar no me dio el tiempo
+         MPI_Send(&Cimg, 1, MPI_INT, status.MPI_SOURCE, ETIQUETA_CONTINUAR, MPI_COMM_WORLD);
+         Cimg = obtener_nuevo_trabajo(pixelY, pixelYmax, ImMin, AltoPixel);
          pixelY++;
       }
       // Si no hay mas trabajos que mandar a los hijos, recogemos los resultados que queden del total de hijos
@@ -138,19 +220,31 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
          MPI_Send(0, 0, MPI_INT, rank, ETIQUETA_TERMINAR, MPI_COMM_WORLD);
    }else {
       while (1) {
+      const double Salida=2;    // valor de escape
+      double Salida2=Salida*Salida, SumaExponencial;
+      double AnchoPixel=(RealMax-RealMin)/(pixelXmax-1); 
+      
       // Recibir asignacion de trabajo del padre
-      MPI_Recv(&work, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+      MPI_Recv(&Cimg, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
       // Comprobar si la etiqueta de envio me indica que debo parar
       if (status.MPI_TAG == ETIQUETA_TERMINAR) {
          MPI_Finalize();
          return 0;
       }
-      result = realizar_trabajo_asignado(work);
+      result = realizar_trabajo_asignado(Cimg,
+       pixelXmax,RealMin, 
+       AnchoPixel,SumaExponencial,
+       Iter,IterMax,
+       MaxValorTonos,Salida2);
       // Enviar resultados al padre
-      MPI_Send(&result, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD); }
+      MPI_Send(result.rowBn, 1, rowType, 1, 0, MPI_COMM_WORLD);
+        // Envía la segunda fila apdre
+      MPI_Send(result.rowBn2, 1, rowType, 1, 1, MPI_COMM_WORLD);
       }
       MPI_Finalize();
       return 0;
+
+
 
 
     Tfinal = ctimer();
@@ -176,55 +270,11 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
     Liberar_matriz(matriz,pixelYmax);
     Liberar_matriz(matriz2,pixelYmax);
     return 0;
+ }
  } 
- // Obtener nuevo trabajo, seria obtener proxima fila de la matriz con la cual trabajar
-int obtener_nuevo_trabajo(int pixelY, int pixelYmax){
-   if (pixelY<pixelYmax)
-   {
-      return ImMin + pixelY*AltoPixel;
-   }
-   return -1;
-   
-  /*for(pixelY=0;pixelY<pixelYmax;pixelY++)
-   {
-      Cimg=ImMin + pixelY*AltoPixel;
-      
-   }*/
-}
 
-// Esta funcion procesaria la fila, es lo que hace cada proceso
-realizar_trabajo_asignado(int work){
-    for(pixelX=0;pixelX<pixelXmax;pixelX++)
-    {         
-       Creal=RealMin + pixelX*AnchoPixel;
-       Zx=0.0;         // Valor inicial
-       Zy=0.0;
-       Zx2=Zx*Zx;
-       Zy2=Zy*Zy;
-       SumaExponencial=0;
-       for (Iter=0;Iter<IterMax && ((Zx2+Zy2)<Salida2);Iter++)
-       {
-           SumaExponencial += exp( -sqrt(Zx2+Zy2) )/IterMax;   // se mantiene siempre entre (0,1)            
-	        Zy=2*Zx*Zy + Cimg;
-           Zx=Zx2-Zy2 + Creal;
-           Zx2=Zx*Zx;
-           Zy2=Zy*Zy;
-       }
-       if (Iter==IterMax) { /*  interior del conjunto Mandelbrot = negro */    
-          bn=0;          
-          bn2=0;            
-       }
-       else { /* exterior del conjunto Mandelbrot = blanco modificado con exp */
-          bn = MaxValorTonos - SumaExponencial * 255; 
-          bn2 = (Iter +1 - (int)(log(log(sqrt(Zx2+Zy2)) / log(2)) / log(2)))*255;
-       }
-      //esto es lo que hay q enviar al proceso 0
-      //ver como devolver un struct con los siguientes datos
-       matriz[pixelY][pixelX] = bn;
-       matriz2[pixelY][pixelX] = bn2;
-     }
 
-}
+
 
 int **Crear_matriz(int fila, int col)
 {
@@ -328,9 +378,51 @@ MinMax BuscarMinMax(int **array, int fil, int col) {
 
 
 
+// Para parallelizarlo utilizamos la idea de Pool siguiente
 
-
-
+/*
+int main(int argc, char **argv) {
+int myrank, ntasks, rank;
+#define ETIQUETA_CONTINUAR 1
+#define ETIQUETA_TERMINAR 99
+MPI_Status status;
+MPI_Init(&argc, &argv); MPI_Comm_rank(MPI_COMM_WORLD, &myrank); MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
+if (myrank == 0) {
+   for (rank = 1; rank < ntasks; ++rank) { // Inicializar el trabajo de los hijos. Se le manda una unidad de trabajo a cada hijo
+      work = obtener_nuevo_trabajo(); // Se obtiene un nuevo trabajo para un hijo
+      MPI_Send(&work, 1, MPI_INT, rank, ETIQUETA_CONTINUAR, MPI_COMM_WORLD); // Se manda el trabajo al hijo
+   }
+   work = obtener_nuevo_trabajo(); // Vamos obteniendo nuevos trabajos y asignándolos a los hijos hasta que se agoten
+   while (work != NULL) {
+      // Recibimos un resultado de un hijo cualquiera (MPI_ANY_SOURCE) y le mandamos trabajo a ese mismo hijo
+      // identificandolo por "status.MPI_SOURCE"
+      MPI_Recv(&result, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+      MPI_Send(&work, 1, MPI_INT, status.MPI_SOURCE, ETIQUETA_CONTINUAR, MPI_COMM_WORLD);
+      work = obtener_nuevo_trabajo(); 
+   }
+   // Si no hay mas trabajos que mandar a los hijos, recogemos los resultados que queden del total de hijos
+   for (rank = 1; rank < ntasks; ++rank)
+      MPI_Recv(&result, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+   // Indicamos a los hijos que deben dejar de trabajar mediante el envio de la etiqueta "ETIQUETA_TERMINAR"
+   for (rank = 1; rank < ntasks; ++rank)
+      MPI_Send(0, 0, MPI_INT, rank, ETIQUETA_TERMINAR, MPI_COMM_WORLD);
+}
+   else {
+      while (1) {
+      // Recibir asignacion de trabajo del padre
+         MPI_Recv(&work, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+         // Comprobar si la etiqueta de envio me indica que debo parar
+         if (status.MPI_TAG == ETIQUETA_TERMINAR) {
+         MPI_Finalize();
+         return 0; }
+         result = realizar_trabajo_asignado(work);
+         // Enviar resultados al padre
+         MPI_Send(&result, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD); }
+         }
+   MPI_Finalize();
+return 0;
+}
+*/
 
 
 
