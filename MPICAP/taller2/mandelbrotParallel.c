@@ -117,16 +117,18 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
     
     if (myrank == 0) {
       for (rank = 1; rank < ntasks; ++rank) { // Inicializar el trabajo de los hijos. Se le manda una unidad de trabajo a cada hijo
-      work = obtener_nuevo_trabajo(); // Se obtiene un nuevo trabajo para un hijo
+      work = obtener_nuevo_trabajo(pixelY, pixelYmax); // Se obtiene un nuevo trabajo para un hijo
+      pixelX++;   
       MPI_Send(&work, 1, MPI_INT, rank, ETIQUETA_CONTINUAR, MPI_COMM_WORLD); // Se manda el trabajo al hijo
       } 
       work = obtener_nuevo_trabajo(); // Vamos obteniendo nuevos trabajos y asignándolos a los hijos hasta que se agoten
-      while (work != NULL) {
+      while (work != -1) {
          // Recibimos un resultado de un hijo cualquiera (MPI_ANY_SOURCE) y le mandamos trabajo a ese mismo hijo
          // identificandolo por "status.MPI_SOURCE"
          MPI_Recv(&result, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
          MPI_Send(&work, 1, MPI_INT, status.MPI_SOURCE, ETIQUETA_CONTINUAR, MPI_COMM_WORLD);
-         work = obtener_nuevo_trabajo();
+         work = obtener_nuevo_trabajo(pixelY, pixelYmax);
+         pixelY++;
       }
       // Si no hay mas trabajos que mandar a los hijos, recogemos los resultados que queden del total de hijos
       for (rank = 1; rank < ntasks; ++rank)
@@ -176,12 +178,12 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
     return 0;
  } 
  // Obtener nuevo trabajo, seria obtener proxima fila de la matriz con la cual trabajar
-int obtener_nuevo_trabajo(pixelY, pixelYmax){
+int obtener_nuevo_trabajo(int pixelY, int pixelYmax){
    if (pixelY<pixelYmax)
    {
       return ImMin + pixelY*AltoPixel;
    }
-   return NULL
+   return -1;
    
   /*for(pixelY=0;pixelY<pixelYmax;pixelY++)
    {
@@ -216,8 +218,10 @@ realizar_trabajo_asignado(int work){
           bn = MaxValorTonos - SumaExponencial * 255; 
           bn2 = (Iter +1 - (int)(log(log(sqrt(Zx2+Zy2)) / log(2)) / log(2)))*255;
        }
-       matriz[pixelY][pixelX] = bn;//esto es lo que hay q enviar al proceso 0
-       matriz2[pixelY][pixelX] = bn2;//esto es lo que hay q enviar al proceso 0
+      //esto es lo que hay q enviar al proceso 0
+      //ver como devolver un struct con los siguientes datos
+       matriz[pixelY][pixelX] = bn;
+       matriz2[pixelY][pixelX] = bn2;
      }
 
 }
