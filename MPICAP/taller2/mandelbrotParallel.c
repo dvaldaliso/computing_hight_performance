@@ -218,6 +218,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
       // Indicamos a los hijos que deben dejar de trabajar mediante el envio de la etiqueta "ETIQUETA_TERMINAR"
       for (rank = 1; rank < ntasks; ++rank)
          MPI_Send(0, 0, MPI_INT, rank, ETIQUETA_TERMINAR, MPI_COMM_WORLD);
+
    }else {
       while (1) {
       const double Salida=2;    // valor de escape
@@ -229,6 +230,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
       // Comprobar si la etiqueta de envio me indica que debo parar
       if (status.MPI_TAG == ETIQUETA_TERMINAR) {
          MPI_Finalize();
+         finalizar(Tfinal,Ttotal,Tinicial,pixelYmax,pixelXmax,min_max_img,ImgFile,ImgFile2,matriz,matriz2);
          return 0;
       }
       result = realizar_trabajo_asignado(Cimg,
@@ -242,25 +244,39 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
       MPI_Send(result.rowBn2, 1, rowType, 1, 1, MPI_COMM_WORLD);
       }
       MPI_Finalize();
+      finalizar(Tfinal,Ttotal,Tinicial,pixelYmax,pixelXmax,min_max_img,ImgFile,ImgFile2,matriz,matriz2);
       return 0;
+  
+   }
+ } 
 
 
-
+void finalizar(
+   double Tfinal,
+   double Ttotal,
+   double Tinicial,
+   int pixelYmax,
+   int pixelXmax,
+   MinMax min_max_img,
+   File *ImgFile,
+   File *ImgFile2,
+   int ** matriz,
+   int ** matriz2) {
 
     Tfinal = ctimer();
     Ttotal = Tfinal-Tinicial;
     printf("\nTiempo: %f segundos\n", Ttotal);
     min_max_img = BuscarMinMax(matriz2,pixelYmax,pixelXmax);
-    for (i=0;i<pixelYmax;i++) {
-        for (j=0;j<pixelXmax;j++) {
+    for (int i=0;i<pixelYmax;i++) {
+        for (int j=0;j<pixelXmax;j++) {
             matriz2[i][j] = matriz2[i][j] - min_max_img.Min;
             matriz2[i][j] = matriz2[i][j] * (255.0/(min_max_img.Max-min_max_img.Min));
         }
     }
     min_max_img = BuscarMinMax(matriz2,pixelYmax,pixelXmax);
 
-    for (pixelY=0;pixelY<pixelYmax;pixelY++) {
-        for(pixelX=0;pixelX<pixelXmax;pixelX++){
+    for (int pixelY=0;pixelY<pixelYmax;pixelY++) {
+        for(int pixelX=0;pixelX<pixelXmax;pixelX++){
            fwrite(&matriz[pixelY][pixelX],1,1,ImgFile);
            fwrite(&matriz2[pixelY][pixelX],1,1,ImgFile2);
         }
@@ -269,12 +285,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
     fclose(ImgFile2);
     Liberar_matriz(matriz,pixelYmax);
     Liberar_matriz(matriz2,pixelYmax);
-    return 0;
- }
- } 
-
-
-
+}
 
 int **Crear_matriz(int fila, int col)
 {
