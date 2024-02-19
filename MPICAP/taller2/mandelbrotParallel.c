@@ -435,5 +435,63 @@ return 0;
 }
 */
 
+//Comentarions del profe
+/*
+La nota de vuestra práctica es 7. Como sabéis está incompleta, pero revisando vuestra práctica se nota que habéis trabajado, y con un poco más de tiempo la habrías acabado bien.
+Os comento algunas cosas.
+
+La estructura de vuestro código es buena, aunque hay algunos detalles que imposibilitan que funcione.
+
+
+Principal problema:
+
+- Os habéis liado con el uso de MPI_Type_vector. Entiendo que utilizáis MPI_Type_vector para almacenar una fila de la imagen. 
+
+
+Pero la sentencia
+
+MPI_Type_vector(0, 1, pixelYmax, MPI_DOUBLE, &rowType);
+
+No hace eso. Con esa sentencia os generáis un tipo de datos con 0 bloques, …, esto no sirve, pues ese tipo de dato no almacena dato alguno.
+
+
+Se podría crear un tipo de dato con MPI_Type_vector como habéis hecho, pero realmente en este caso las comunicaciones son sencillas y no es necesario, sería suficiente con enviar los elementos de un array, por ejemplo, los procesos hijos podrían tener un código como:
+
+
+
+              bn = MaxValorTonos - (SumaExponencial * 255)/IterMax;
+
+              otrobn = (Iter +1 - (int)(log(log(sqrt(Zx2+Zy2)) / log(2)) / log(2)))*255;
+
+//mu As Double = iteration + 1 - _
+
+//    Math.Log(Math.Log(Z.Magnitude)) / log_escape
+
+//    mu = mu / MaxIterations * Colors.Count
+
+         } 
+
+         aux[pixelX] = bn;
+
+         aux2[pixelX] = otrobn;
+
+       } 
+
+       MPI_Send(&pixelY, 1, MPI_INT, 0, 2, MPI_COMM_WORLD);
+
+       MPI_Send(aux, pixelXmax, MPI_INT, 0, pixelY, MPI_COMM_WORLD);
+
+       MPI_Send(aux2, pixelXmax, MPI_INT, 0, pixelY, MPI_COMM_WORLD);
+
+     }
+
+     free(aux);
+
+     free(aux2);
+
+
+
+*/
+
 
 
