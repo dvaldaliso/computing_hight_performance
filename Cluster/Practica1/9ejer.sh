@@ -11,7 +11,6 @@ USER=practica
 PASS=cos
 All=0
 
-# while getopts ${OPTSTRING} opcion;
 
 while [ $# -ge 1 ]
 do
