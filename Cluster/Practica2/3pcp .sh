@@ -11,7 +11,7 @@ archivo_a_copiar="$1"
 directorio_o_archivo_destino="$2"
 
 # Lista de nodos restantes
-nodos=(cac2 cac3 cac4 cac5)
+nodos=(cac2 cac3 cac4 cac5 cac6 cac7 cac8)
 
 # Copiar el archivo a cada uno de los nodos restantes
 for nodo in "${nodos[@]}"; do
