@@ -40,12 +40,12 @@ fi
 if [ -n "$ALL"  ]
 then
 	echo "todos $last_param"
-	pdsh -w cac[2-8] -R ssh $last_param
+	pdsh -w cac[1-8] -R ssh $last_param
 fi
 
 #chequea si estan definidas y no esta vacia
 if [ -n "$FROM" ] || [ -n "$TO" ]
 then
-    echo "enceder rango $last_param"
+    echo "rango $last_param"
 	pdsh -w cac[$FROM-$TO] -R ssh $last_param
 fi
