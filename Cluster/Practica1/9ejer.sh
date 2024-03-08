@@ -34,7 +34,7 @@ echo NUM $NumNodo
 echo FROM $from
 echo TO $to
 
-if [ -n "$All"  ] # chequea si esta definida y no esta vacia
+if [ -n "$All"  ] && [ $All -eq 1 ] # chequea si esta definida y no esta vacia
 then
 echo "encender todas = true"
  { printf "$USER\n$PASS\n1\n9\n$ACTION\nyes\n\n\e\e4"; sleep 2; }|telnet $PDU
