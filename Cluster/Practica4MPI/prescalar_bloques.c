@@ -9,7 +9,7 @@ int main( int argc, char *argv[] )
     int idproc, numprocs;
     double a[MAXV], b[MAXV], /* vectores operando */
            prod, /* producto escalar */ 
-           datoa[MAXV], datob[MAXV] /* datos recibidos en cada proc */
+           datoa[MAXV], datob[MAXV], /* datos recibidos en cada proc */
            dato; /* producto enviado al 0 */
     int vsize, /* tam vectores */
         cadaproc, /* lo que le toca a cada proc */
