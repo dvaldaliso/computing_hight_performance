@@ -1,5 +1,6 @@
 #include "mpi.h"
 #include <stdio.h>
+#include <omp.h>
 
 #define MAXV 10000
 
@@ -69,6 +70,7 @@ int main( int argc, char *argv[] )
        printf("Recv: dst %d src %d dato %f hasta %f\n", idproc, status.MPI_SOURCE, datoa[0], datoa[cadaproc - 1]); 
        printf("Recv: dst %d src %d dato %f hasta %f\n", idproc, status.MPI_SOURCE, datob[0], datob[cadaproc - 1]); 
        prod = 0;
+       #pragma omp parallel for private(j) reduction(+:prod)
        for (j=0; j<cadaproc; j++) {
          prod = prod + datoa[j] * datob[j];
        }
