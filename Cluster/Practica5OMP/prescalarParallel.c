@@ -35,7 +35,7 @@ int main( int argc, char *argv[] )
      empieza = omp_get_wtime();
 
      prod = 0;
-    #pragma omp parallel for private(i)	
+    #pragma omp parallel for private(i)	reduction(+:prod)
      for (i=0; i<vsize; i++) {
 
          idproc = omp_get_thread_num() ;
