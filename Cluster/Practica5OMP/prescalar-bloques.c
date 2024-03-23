@@ -47,6 +47,7 @@ int main( int argc, char *argv[] )
        }
        /* el resto lo hace el cero */       
        prod =0;
+       #pragma omp parallel for private(j) reduction(+:prod)
        for (j=0; j<resto; j++) {
          prod = prod+(a[k]*b[k]);
          k++;
