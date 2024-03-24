@@ -32,8 +32,8 @@ int main( int argc, char *argv[] )
          b[i]=(double) i;
          
          }
-       cadaproc = vsize / (numprocs-1);
-       resto = vsize % (numprocs-1);  
+       cadaproc = vsize / (numprocs);
+       resto = vsize % (numprocs);  
       
        k=0;
        for (i=1; i<numprocs; i++) {
@@ -51,7 +51,7 @@ int main( int argc, char *argv[] )
        prod =0;
        printf("k %d ,resto%d\n",k,resto); 
        #pragma omp parallel for private(j) reduction(+:prod)
-       for (j=0; j<resto; j++) {
+       for (j=0; j<vsize; j++) {
          prod = prod+(a[j+k]*b[j+k]);
        } 
      
