@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <omp.h>
 
-#define MAXV 10000
-
+#define MAXV 10
+// mpicc -fopenmp prescalar-bloques.c -lm -o hibrido
+// mpirun -np 2 hibrido
 int main( int argc, char *argv[] )
 {
 
@@ -29,10 +30,11 @@ int main( int argc, char *argv[] )
        for (i=0; i<vsize; i++) {
          a[i]=(double) i;
          b[i]=(double) i;
-       }
+         
+         }
        cadaproc = vsize / (numprocs-1);
        resto = vsize % (numprocs-1);  
-
+      
        k=0;
        for (i=1; i<numprocs; i++) {
           /* Enviamos a cada procesador cuantos datos le tocan */
@@ -45,13 +47,13 @@ int main( int argc, char *argv[] )
           printf("Send: src %d dst %d dato %f hasta %f\n", idproc, i, b[k], b[k + cadaproc - 1]); 
           k += cadaproc;
        }
-       /* el resto lo hace el cero */       
+       /* el resto lo hace el cero*/       
        prod =0;
+       printf("k %d ,resto%d\n",k,resto); 
        #pragma omp parallel for private(j) reduction(+:prod)
        for (j=0; j<resto; j++) {
-         prod = prod+(a[k]*b[k]);
-         k++;
-       }
+         prod = prod+(a[j+k]*b[j+k]);
+       } 
      
        for (i=1; i<numprocs; i++) {
          /* Recibimos de cada procesador su resultado */
