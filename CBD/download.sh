@@ -1,0 +1,1 @@
+wget https://raw.githubusercontent.com/apache/hadoop/master/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples/WordCount.java -O wordcount/src/WordCount.java
