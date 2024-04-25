@@ -1,0 +1,2 @@
+#hadoop jar wordcount/wordcount.jar cursocloudaws.WordCount wordcount/input/nistdef.txt wordcount/output3
+hadoop jar wordcount/wordcount.jar cursocloudaws.WordCount /datasets/gutenberg/gutenberg.txt gutenberg/output1

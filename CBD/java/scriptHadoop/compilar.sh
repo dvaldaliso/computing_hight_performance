@@ -1,0 +1,1 @@
+javac -classpath `hadoop classpath` -d wordcount/classes wordcount/src/WordCount.java

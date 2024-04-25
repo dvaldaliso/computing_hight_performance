@@ -1,7 +1,8 @@
 /**
 modificar el ejemplo para que no se incluya esta distinción, convirtiendo
 en la fase de "map" todas las palabras a minúsculas y además que separe las palabras teniendo en
-cuenta diversos separadores. Además, sería deseable que la salida únicamente incluyera las palabras
+cuenta diversos separadores. 
+Además, sería deseable que la salida únicamente incluyera las palabras
 más repetidas, por ejemplo sólo las que se repitan cinco o más veces
  */
 package org.apache.hadoop.examples;
@@ -37,8 +38,12 @@ public class WordCount {
                     ) throws IOException, InterruptedException {
       StringTokenizer itr = new StringTokenizer(value.toString(), " \"\t\n\r\f,.:;?![]()'");
       while (itr.hasMoreTokens()) {
-        word.set(itr.nextToken().toLowerCase());
-        context.write(word, one);
+        String token = itr.nextToken(); // get next token
+        if(!token.startsWith("*")){//chequea que no comience con *
+          word.set(token.toLowerCase());
+          context.write(word, one);
+        }
+        
       }
     }
   }
