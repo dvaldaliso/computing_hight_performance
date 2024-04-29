@@ -18,7 +18,7 @@ for line in sys.stdin:
     if oldKey and oldKey == thisKey:
         print(oldKey, "\t", salesTotal)
         oldKey = thisKey
-        salesTotal += salesTotal  
+        salesTotal = 0  
 
     oldKey = thisKey
     salesTotal += float(thisSale)
