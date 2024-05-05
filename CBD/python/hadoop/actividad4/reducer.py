@@ -15,7 +15,7 @@ for line in sys.stdin:
         continue
     thisKey, thisSale = data_mapped
 
-    if oldKey and oldKey == thisKey:
+    if oldKey and oldKey != thisKey:
         print(oldKey, "\t", salesTotal)
         oldKey = thisKey
         salesTotal = 0  
