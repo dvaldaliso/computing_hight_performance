@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "PubSubProject/src"
+    ],
+    "java.project.referencedLibraries": [
+        "**/lib/**/*.jar"
+    ]
+}
