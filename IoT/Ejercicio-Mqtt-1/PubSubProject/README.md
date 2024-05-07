@@ -16,5 +16,9 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-##
+
+## Para chequear los socket
 - Usar la herramienta mqttx, mqttexplore, mqttfx 
+# Abrir
+- Para abrir este proyecto instalar en el vscode Extension Pack for Java
+- Luego con vscode abrir proyecto en java, sino no toma las lib

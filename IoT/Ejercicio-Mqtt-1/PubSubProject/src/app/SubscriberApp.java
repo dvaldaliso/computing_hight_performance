@@ -18,7 +18,7 @@ public class SubscriberApp {
         String broker = "tcp://tambori.dsic.upv.es:1883";;
         cliente.connect(broker);
 
-        String topic = "iot/dvallop/deportista";
+        String topic = "iot/+/deportista";
         Subscriber subscriber = new Subscriber(clientId+"-pub");
         cliente.subscribe(topic, subscriber);
 
