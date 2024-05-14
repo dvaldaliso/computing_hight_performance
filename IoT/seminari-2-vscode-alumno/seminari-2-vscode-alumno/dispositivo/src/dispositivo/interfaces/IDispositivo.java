@@ -5,6 +5,8 @@ import java.util.Collection;
 public interface IDispositivo {
 
 	public String getId();
+	public void setActivePlus(String value);
+	public String getActivePlus();
 	
 	public IDispositivo iniciar();
 	public IDispositivo detener();

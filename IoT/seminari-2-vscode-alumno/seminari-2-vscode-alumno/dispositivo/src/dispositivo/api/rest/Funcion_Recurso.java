@@ -29,6 +29,8 @@ public class Funcion_Recurso extends Recurso {
 		JSONObject jsonResult = new JSONObject();
 		try {
 			jsonResult.put("id", f.getId());
+			jsonResult.put("status", f.getStatus());
+			System.out.println(f.getStatus());
 		} catch (JSONException e) {
 		}
 		return jsonResult;
@@ -71,13 +73,21 @@ public class Funcion_Recurso extends Recurso {
 		if ( f == null ) {
 			return this.generateResponseWithErrorCode(Status.CLIENT_ERROR_NOT_FOUND);
 		}
-
+		
 		// Función encontrada
 		// Ejecutamos acción indicada en campo 'accion' del JSON recibido
 		JSONObject payload = null;
 		try {
-			payload = new JSONObject(entity.getText());
+			String valorText=entity.getText();
+			System.out.println(valorText);
+			payload = new JSONObject(valorText);
 			String action = payload.getString("accion");
+			
+			String isAplus = this.getDispositivo_RESTApplication().getDispositivo().getActivePlus();
+			if ( isAplus != null && isAplus.equalsIgnoreCase("deshabilitar") ){
+				this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+				return new StringRepresentation("No se pude", MediaType.APPLICATION_JSON);
+			}
 			
 			if ( action.equalsIgnoreCase("encender") )
 				f.encender();

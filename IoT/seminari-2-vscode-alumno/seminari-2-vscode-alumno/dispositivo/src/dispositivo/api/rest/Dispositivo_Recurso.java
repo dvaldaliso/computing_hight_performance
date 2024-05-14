@@ -17,6 +17,7 @@ import org.restlet.resource.Options;
 import org.restlet.resource.Put;
 
 import dispositivo.interfaces.IDispositivo;
+import dispositivo.interfaces.IFuncion;
 
 public class Dispositivo_Recurso extends Recurso {
 	
@@ -27,8 +28,15 @@ public class Dispositivo_Recurso extends Recurso {
 		
 		try {
 			jsonResult.put("id", dispositivo.getId());
+			jsonResult.put("ActivarPlus", dispositivo.getActivePlus());
+			JSONArray arrayFunciones = new JSONArray();
+
 			if ( dispositivo.getFunciones() != null ) {
-				JSONArray arrayFunciones = new JSONArray();
+				JSONObject funcionJsonObject;
+				for (IFuncion funcion : dispositivo.getFunciones()) {
+					funcionJsonObject = Funcion_Recurso.serialize(funcion);
+					arrayFunciones.put(funcionJsonObject);
+				}
 
 				jsonResult.put("funciones", arrayFunciones);
 			}
@@ -45,7 +53,7 @@ public class Dispositivo_Recurso extends Recurso {
 
     @Get
     public Representation get() {
-
+		System.out.println("Esta llegando aqui get");
     	// Obtenemos el dispositivo
 		IDispositivo d = this.getDispositivo();
 
@@ -64,7 +72,6 @@ public class Dispositivo_Recurso extends Recurso {
 	public Representation put(Representation entity) {
 
     	// Obtenemos la función indicada como parámetro en la Ruta
-
 		IDispositivo d = this.getDispositivo();
 		if ( d == null ) {
 			return generateResponseWithErrorCode(Status.CLIENT_ERROR_NOT_FOUND);
@@ -75,6 +82,12 @@ public class Dispositivo_Recurso extends Recurso {
 		try {
 			payload = new JSONObject(entity.getText());
 			String action = payload.getString("accion");
+			if ( action.equalsIgnoreCase("habilitar") ){
+				d.setActivePlus(action);
+			}
+			if ( action.equalsIgnoreCase("deshabilitar") ){
+				d.setActivePlus(action);
+			}
 			
 
 		} catch (JSONException | IOException e) {
@@ -98,6 +111,7 @@ public class Dispositivo_Recurso extends Recurso {
 		Set<Method> meths = new HashSet<Method>();
 		meths.add(Method.GET);
 		meths.add(Method.OPTIONS);
+		
 		this.getResponse().setAllowedMethods(meths);
 	}	
 

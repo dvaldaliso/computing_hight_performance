@@ -13,6 +13,7 @@ import dispositivo.interfaces.IFuncion;
 public class Dispositivo implements IDispositivo {
 	
 	protected String deviceId = null;
+	protected String ActivarPlus = null;
 
 	protected Map<String, IFuncion> functions = null;
 	protected Dispositivo_RegistradorMQTT registrador = null;
@@ -38,6 +39,7 @@ public class Dispositivo implements IDispositivo {
 
 	protected Dispositivo(String deviceId) {
 		this.deviceId = deviceId;
+		this.ActivarPlus = "habilitado";
 	}
 	
 	@Override
@@ -45,6 +47,16 @@ public class Dispositivo implements IDispositivo {
 		return this.deviceId;
 	}
 
+	@Override
+	public void setActivePlus(String value) {
+		this.ActivarPlus = value;
+	}
+
+	@Override
+	public String getActivePlus() {
+		return this.ActivarPlus;
+	}
+	
 	protected Map<String, IFuncion> getFunctions() {
 		return this.functions;
 	}
