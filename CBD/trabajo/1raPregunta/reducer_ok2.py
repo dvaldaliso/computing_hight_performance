@@ -27,7 +27,7 @@ for line in sys.stdin:
 
 correlation = (n * sum_xy - sum_x * sum_y) / ((n * sum_x_squared - sum_x ** 2) * (n * sum_y_squared - sum_y ** 2)) ** 0.5
 t = correlation * np.sqrt((n - 2) / (1 - correlation**2))
-# Calcular el valor p (doble cola)
+# Calcular el valor p 
 p_value = 2 * (1 - stats.t.cdf(abs(t), df=n-2))
 
 

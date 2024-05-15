@@ -15,8 +15,9 @@ for line in sys.stdin:
         requestTotal += 1  
     else:
         if oldKey:
-            print('%s\t%s' % (oldKey, requestTotal))
+            print('%s,%s' % (oldKey, requestTotal))
         oldKey = thisKey
         requestTotal = 1
 
-    
+if oldKey:
+    print('%s,%s' % (oldKey, requestTotal))
