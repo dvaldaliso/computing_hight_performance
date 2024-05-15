@@ -31,3 +31,4 @@ cat datasets/MOVIES.csv | head -n 100 | script/mapper_cuarta.py | sort -k 1,1 | 
 cat datasets/MOVIES.csv | head -n 10 | script/mapper.py sort -k 1,1 | script/reducer.py | head -n 20
 # Ejecucion con hadoop
 hs ./mapper.py ./reducer.py movies purchases/output
+hadoop fs -text purchases/output/part-00000

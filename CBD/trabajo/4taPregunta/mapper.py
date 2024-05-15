@@ -7,4 +7,7 @@ for line in sys.stdin:
     data = next(csv.reader([line.strip()]))
     if len(data) == 15:
         budget, original_language, original_title,popularity,release_date,revenue,runtime,title,vote_average,vote_count,languages,year,genre,companies,countries = data
-        print("{0}\t{1} \n".format(year, genre))
+        try:
+            print("{0}\t{1} \n".format(float(year), genre))
+        except Exception as a:
+            pass    

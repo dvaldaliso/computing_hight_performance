@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 
-requestTotal = 0
+requestTotal = 1
 oldKey = None
 
 for line in sys.stdin:
@@ -11,14 +11,12 @@ for line in sys.stdin:
         continue
     thisKey, _ = data_mapped
     
-    if oldKey and oldKey == thisKey:
+    if oldKey == thisKey:
         requestTotal += 1  
     else:
         if oldKey:
             print('%s\t%s' % (oldKey, requestTotal))
         oldKey = thisKey
-        requestTotal = 0
+        requestTotal = 1
+
     
-    
-if oldKey:
-    print(oldKey, "\t", requestTotal)

@@ -15,8 +15,11 @@ for line in sys.stdin:
     if oldKey and oldKey != thisKey and float(popular) > float(popular_max):
         popular_max = popular
         maxKey = thisKey
+    print(f"The title of movie  is{thisKey} popularity {popular}")    
     oldKey = thisKey
-if oldKey != None:
-    print(f"The title of movie with greater budge is{maxKey} value {popular_max}")    
+    
+if maxKey != None:
+    print(f"--------------------------------------------------------")    
+    print(f"The title of movie with greater popularity is{maxKey} value {popular_max}")    
 else:
     print("No movie with greater popular")
