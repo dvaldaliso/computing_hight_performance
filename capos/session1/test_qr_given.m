@@ -1,2 +1,2 @@
-A=rand(6);
+A = rand(6);
 QR_givens(A);
