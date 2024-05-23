@@ -1,0 +1,3 @@
+- el metodo de la cuerda(chord) es mas rapido que el de newton
+- El metodo de newton es paralelizable
+- parpool('thread') ponemos esto en la consola y los script van por threads
