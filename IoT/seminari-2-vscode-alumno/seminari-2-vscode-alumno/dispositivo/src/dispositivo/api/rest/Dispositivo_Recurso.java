@@ -53,7 +53,6 @@ public class Dispositivo_Recurso extends Recurso {
 
     @Get
     public Representation get() {
-		System.out.println("Esta llegando aqui get");
     	// Obtenemos el dispositivo
 		IDispositivo d = this.getDispositivo();
 

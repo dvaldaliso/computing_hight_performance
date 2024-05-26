@@ -79,7 +79,6 @@ public class Funcion_Recurso extends Recurso {
 		JSONObject payload = null;
 		try {
 			String valorText=entity.getText();
-			System.out.println(valorText);
 			payload = new JSONObject(valorText);
 			String action = payload.getString("accion");
 			
