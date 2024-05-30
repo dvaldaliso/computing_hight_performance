@@ -9,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
+import org.json.JSONObject;
 
 import dispositivo.interfaces.Configuracion;
 import dispositivo.interfaces.IDispositivo;
@@ -75,6 +76,8 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		String[] topicNiveles = topic.split("/");
 		String funcionId = topicNiveles[topicNiveles.length-2];
 		
+		System.out.println("funcio:  "+funcionId);
+		
 		IFuncion f = this.dispositivo.getFuncion(funcionId);
 		if ( f == null ) {
 			MySimpleLogger.warn(this.loggerId, "No encontrada funcion " + funcionId);
@@ -88,13 +91,22 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 
 		// Ejecutamos acción indicada en campo 'accion' del JSON recibido
 		String action = payload;
-		
-		if ( action.equalsIgnoreCase("encender") )
+		JSONObject payloaJsonObject = new JSONObject(payload);
+		action=payloaJsonObject.getString("accion");
+		String topicp = this.calculateInfoTopic(f);
+		if ( action.equalsIgnoreCase("encender") ){
 			f.encender();
-		else if ( action.equalsIgnoreCase("apagar") )
+			this.push(topicp, action);
+		}			
+		else if ( action.equalsIgnoreCase("apagar") ){
 			f.apagar();
-		else if ( action.equalsIgnoreCase("parpadear") )
+			this.push(topicp, action);
+		}			
+		else if ( action.equalsIgnoreCase("parpadear") ){
 			f.parpadear();
+			this.push(topicp, action);
+		}
+			
 		else
 			MySimpleLogger.warn(this.loggerId, "Acción '" + payload + "' no reconocida. Sólo admitidas: encender, apagar o parpadear");
 
@@ -171,6 +183,22 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		}
 		
 	}
+
+	protected void push(String myTopic, String content) {
+		
+		// subscribe to topic
+		try {
+			int subQoS = 0;
+			MqttMessage message = new MqttMessage(content.getBytes());
+            message.setQos(subQoS);		
+			
+            myClient.publish(myTopic, message);
+			MySimpleLogger.info(this.loggerId, "push al topic " + myTopic);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 
 	protected void unsubscribe(String myTopic) {
@@ -192,8 +220,10 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		if ( this.dispositivo == null )
 			return;
 		
-		for(IFuncion f : this.dispositivo.getFunciones())
+		for(IFuncion f : this.dispositivo.getFunciones()){
 			this.subscribe(this.calculateCommandTopic(f));
+		}
+			
 
 	}
 	

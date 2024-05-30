@@ -22,3 +22,13 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 # Abrir
 - Para abrir este proyecto instalar en el vscode Extension Pack for Java
 - Luego con vscode abrir proyecto en java, sino no toma las lib
+
+# Api
+- ttmi001->semaforo
+- ttmi010->enchufe
+- ttmi016 -> coches
+- ttmi0H -> coches
+# Socket mqttx
+- tcp://ttmi008.iot.upv.es:1883
+- tcp://tambori.dsic.upv.es:1883/10083
+- tcp://mqtt.dsic.upv.es:1883 o 8883 (giirob / UPV2023)

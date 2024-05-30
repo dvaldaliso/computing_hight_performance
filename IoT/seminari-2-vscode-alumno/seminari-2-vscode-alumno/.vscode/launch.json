@@ -6,6 +6,29 @@
     "configurations": [
         {
             "type": "java",
+            "name": "SubscriberApp",
+            "request": "launch",
+            "mainClass": "app.SubscriberApp",
+            "projectName": "seminari-2-vscode-alumno_80ff8313",
+            "args": ["subscriber"]
+        },
+        {
+            "type": "java",
+            "name": "PublisherApp",
+            "request": "launch",
+            "mainClass": "app.PublisherApp",
+            "projectName": "seminari-2-vscode-alumno_80ff8313",
+            "args": ["publiser"]
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "seminari-2-vscode-alumno_80ff8313"
+        },
+        {
+            "type": "java",
             "name": "Dispositivo",
             "request": "launch",
             "mainClass": "dispositivo.iniciador.DispositivoIniciador",
@@ -13,7 +36,20 @@
                 "ttmi059",
                 "ttmi059.iot.upv.es",
                 8182,
-                "tcp://tambori.dsic.upv.es:1883"]
+                "tcp://tambori.dsic.upv.es:1883"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Dispositivo Externo",
+            "request": "launch",
+            "mainClass": "dispositivo_externo.App",
+            "args": [
+                "ttmi059",
+                "ttmi059.iot.upv.es",
+                8182,
+                "tcp://tambori.dsic.upv.es:1883"
+            ]
         },
         {
             "type": "java",
@@ -24,7 +60,8 @@
                 "ttmi050",
                 "ttmi050.iot.upv.es",
                 8182,
-                "tcp://mqttserver:1883"]
+                "tcp://mqttserver:1883"
+            ]
         }
     ]
 }
