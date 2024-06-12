@@ -12,4 +12,4 @@ end
 end
 
 %test
-%min_steep('function_min',x0)
+% [x,iter] = min_steep('function_min',x0)
