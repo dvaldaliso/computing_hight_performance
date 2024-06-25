@@ -6,7 +6,7 @@ z = feval(f_sistema, x0);
 
 norm(z);
 
-while norm(z) < 5.4390e-16
+for i=1:5
     A = difjacn(f_sistema, x0);
     %z = feval(f_sistema, x0);
     [L,U]=lu(A)
