@@ -1,12 +1,12 @@
-x0 = ones(1, 6);
+x0 = ones(6, 1);
 
 
 f_sistema = 'f_sistema';
 z = feval(f_sistema, x0);
-
+tol = 1e-5;
 norm(z);
 
-for i=1:5
+while norm(z) > tol
     A = difjacn(f_sistema, x0);
     %z = feval(f_sistema, x0);
     [L,U]=lu(A)
