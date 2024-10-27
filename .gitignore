@@ -6,3 +6,9 @@ PSC/Tarea4.2/NodeJS/01.1_REQ-REP/node_modules/*
 PSC/Tarea4.2/NodeJS/02.1_PUB_SUB/node_modules/*
 # Ignorar todos los node_modules
 **/node_modules/
+
+node_modules
+
+.DS_Store
+
+.idea/*

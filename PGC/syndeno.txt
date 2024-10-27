@@ -1,7 +1,0 @@
-d.valdaliso@advisorsy.es
-Advisorsy332024*-
-
-jenkin
-https://jenkins.plt.advisorsy.syndeno.io/
-user:admin
-password:eEPsqz1pqXZeT72Mfwbz09PXAXY2yPqhu97XOVWv
