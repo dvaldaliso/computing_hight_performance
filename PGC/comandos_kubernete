@@ -1,0 +1,28 @@
+Deployment manage replicaset
+Replicaset manage all replica of pod
+Pod is an abstraction of a container 
+COntainer 
+
+- kubectl create deployment nginx-depl --image=nginx
+- kubectl create deployment mongo-depl --image=mongo
+- kubectl get replicaset
+
+-- este falla mientras se esta creando
+- kubectl logs name-pod
+
+-- usamos el sigueinte para ver que esta pasando 
+- kubectl describe pod mongo-depl-67d7db846c-4f8ks
+
+-- edit deployment si lo edito me crea una replica 
+- kubectl edit deployment nginx-depl 
+
+--interactuar con un pod
+- kubectl exec -it  mongo-depl-67d7db846c-4f8ks -- bin/bash
+
+- kubectl delete deployment mongo-depl
+
+-- Despliegue con un file
+- kubectl apply -f deployment/nginx-deployment.yaml
+
+-- en el curso me quede en la 1 hora https://www.youtube.com/watch?v=X48VuDVv0do
+
