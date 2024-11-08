@@ -11,6 +11,12 @@ services:
     image: my-app
     ports:
       - "3000:3000"
+    environment:
+    - NODE_ENV=production
+    - PORT=3000
+    - MONGO_URL=mongodb
+    - MONGO_USER=admin
+    - MONGO_PASSWORD=password
   mongodb:
     image: mongo
     ports:

@@ -1,3 +1,4 @@
+const config = require('./config.js');
 let express = require('express');
 let path = require('path');
 let fs = require('fs');
@@ -24,7 +25,8 @@ app.get('/profile-picture', function (req, res) {
 let mongoUrlLocal = "mongodb://admin:password@localhost:27017";
 
 // use when starting application as docker container
-let mongoUrlDocker = "mongodb://admin:password@mongodb";
+//let mongoUrlDocker = "mongodb://admin:password@mongodb";
+let mongoUrlDocker = `mongodb://${config.MONGO_DB_USERNAME}:${config.MONGO_DB_PWD}@${config.MONGO_URL}`;
 
 // pass these options to mongo client connect request to avoid DeprecationWarning for current Server Discovery and Monitoring engine
 let mongoClientOptions = { useNewUrlParser: true, useUnifiedTopology: true };
@@ -77,4 +79,11 @@ app.get('/get-profile', function (req, res) {
 
 app.listen(3000, function () {
   console.log("app listening on port 3000!");
+  console.log(`NODE_ENV=${config.NODE_ENV}`);
+  console.log(`HOST=${config.HOST}`);
+  console.log(`PORT=${config.PORT}`);
+  console.log(`MONGO_URL=${config.MONGO_URL}`);
+  console.log(`MONGO_DB_USERNAME=${config.MONGO_DB_USERNAME}`);
+  console.log(`MONGO_DB_PWD=${config.MONGO_DB_PWD}`);
+  console.log(mongoUrlDocker);
 });

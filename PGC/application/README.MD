@@ -35,7 +35,7 @@ Step 6: Start your nodejs application locally - go to `app` directory of project
 
     npm install 
     node server.js
-    
+    node --env-file=.env server.js 
 Step 7: Access you nodejs application UI from browser
 
     http://localhost:3000
@@ -45,7 +45,9 @@ Step 7: Access you nodejs application UI from browser
 #### To start the application
 
 Step 1: start mongodb and mongo-express
+    docker-compose -f mongo.yaml up
 
+    -- Para correr mongo,express, app node
     docker-compose -f docker-compose.yaml up
     
 _You can access the mongo-express under localhost:8080 from your browser_
@@ -65,6 +67,14 @@ Step 5: access the nodejs application from browser
 
 #### To build a docker image from the application
 
-    docker build -t my-app:1.0 .       
+    docker build -t my-app:1.0 .
+    Enviroment
+    PORT=port
+    NODE_ENV ='',
+    HOST = '',
+
+    MONGO_URL = '',
+    MONGO_USER = '',
+    MONGO_PASSWORD = '',
     
 The dot "." at the end of the command denotes location of the Dockerfile.
