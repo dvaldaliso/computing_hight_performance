@@ -9,7 +9,7 @@ kubectl apply -f mongo_deployment_service.yaml
 --- Creamos la web
 kubectl apply -f webapp.yaml 
 
-para webapp utilice la imagen de la aplicacion que tengo en /application
+para webapp utilice la imagen de la aplicacion que tengo en /application tengo que crear su imagen y meterla dentro de kubernete
 me install la aplicacion "kind"
 dentro del entorno de kubectl contrui la imagen y luego
 luego la cargue
