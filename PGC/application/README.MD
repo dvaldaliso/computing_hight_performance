@@ -78,3 +78,6 @@ Step 5: access the nodejs application from browser
     MONGO_PASSWORD = '',
     
 The dot "." at the end of the command denotes location of the Dockerfile.
+### new image to this repository
+    docker tag local-image:tagname new-repo:tagname
+    docker push new-repo:tagname

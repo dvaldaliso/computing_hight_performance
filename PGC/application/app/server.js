@@ -26,8 +26,14 @@ let mongoUrlLocal = "mongodb://admin:password@localhost:27017";
 
 // use when starting application as docker container
 //let mongoUrlDocker = "mongodb://admin:password@mongodb";
-let mongoUrlDocker = `mongodb://${config.MONGO_DB_USERNAME}:${config.MONGO_DB_PWD}@${config.MONGO_URL}`;
-
+let mongoUrlDocker = config.MONGO_URL;
+if (config.DB_URL.includes("//")) {
+  //mongoUrlDocker = mongoUrlDocker.replace("mongodb://", `mongodb://${config.MONGO_DB_USERNAME}:${config.MONGO_DB_PWD}@`);
+  //mongoUrlDocker = mongoUrlDocker.replace("mongodb://", `mongodb://${config.MONGO_DB_USERNAME}:${config.MONGO_DB_PWD}@`).replace(/:\d+$/, '');
+  mongoUrlDocker = mongoUrlDocker
+}else{
+  mongoUrlDocker = `mongodb://${config.MONGO_DB_USERNAME}:${config.MONGO_DB_PWD}@${config.DB_URL}`;
+}
 // pass these options to mongo client connect request to avoid DeprecationWarning for current Server Discovery and Monitoring engine
 let mongoClientOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
