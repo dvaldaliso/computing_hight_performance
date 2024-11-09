@@ -12,7 +12,7 @@ Container
 - kubectl create deployment mongo-depl --image=mongo
 - kubectl get replicaset
 
--- edit deployment si lo edito me crea una replica 
+## edit deployment si lo edito me crea una replica 
 - kubectl edit deployment nginx-depl 
 - kubectl get nodes|pod|service|replicaset|deployment
 
@@ -26,23 +26,23 @@ Container
 
 - kubectl delete deployment mongo-depl
 
--- Apply configuration file
+## Apply configuration file
 - kubectl apply -f deployment/nginx-deployment.yaml
 -- Delete configuration file
 - kubectl delete -f deployment/nginx-deployment.yaml
 
 - kubectl apply -f service/nginx-serv.yaml
 
-More info about pod
+## More info about pod
 -- El siguiente comando nos muestra los detalles del servicio como ip
 - kubectl describe service nginx-service
 -- El siguiente comando nos muestra todos los pods con su ip
 - kubectl get pod -o wide
 
--- para mas detalles de un deployment creado
+## para mas detalles de un deployment creado
 - kubectl get deployment nginx-deployment -o yaml > deployment/nginx-deployment-result.yaml
 
--- Ejercicio general
+## Ejercicio general
 Creamos un secret para las contrsenas, las contrasenasl las creamos en base 64
 - echo -n "username" | base64
 - echo -n "password" | base64
