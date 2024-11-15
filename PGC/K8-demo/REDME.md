@@ -34,6 +34,6 @@ minikube   Ready    control-plane   6d7h   v1.31.0   192.168.58.2   <none>      
 para acceder seria con estos datos
 192.168.58.2:30100
 
-
+kubectl port-forward svc/webapp-service 3000:3000
 
 

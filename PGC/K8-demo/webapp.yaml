@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: my-app:1.0
+        image: dvaldaliso/devops:my-app
         resources:
           limits:
             memory: "128Mi"
